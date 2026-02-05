@@ -186,7 +186,6 @@
     <Compile Include="Utility\IncidentWorker_WarObjectMeeting.cs" />
     <Compile Include="Utility\RimWar_DebugToolsPlanet.cs" />
     <Compile Include="Utility\ColorUtility.cs" />
-    <Compile Include="Utility\WorldReachability.cs" />
     <Compile Include="Utility\RW_Find.cs" />
     <Compile Include="Utility\TweenerUtility.cs" />
     <Compile Include="RocketTools\RocketShip.cs" />
