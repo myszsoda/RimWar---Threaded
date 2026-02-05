@@ -147,15 +147,17 @@ namespace RimWar.Planet
             }
             if (!this.HasMap)
             {
-                Command_Action command_Action = new Command_Action();
-                command_Action.icon = AttackCommand;
-                command_Action.defaultLabel = "RW_CommandAttackBattleSite".Translate();
-                command_Action.defaultDesc = "RW_CommandAttackBattleSiteDesc".Translate();
-                command_Action.action = delegate
-                {
-                    IncidentUtility.AttackBattleSite(caravan, this);
-                };
-                yield return (Gizmo)command_Action;
+				Command_Action command_Action = new Command_Action
+				{
+					icon = AttackCommand,
+					defaultLabel = "RW_CommandAttackBattleSite".Translate(),
+					defaultDesc = "RW_CommandAttackBattleSiteDesc".Translate(),
+					action = delegate
+						{
+							IncidentUtility.AttackBattleSite(caravan, this);
+						}
+				};
+				yield return (Gizmo)command_Action;
             }
         }
 

@@ -106,9 +106,9 @@ namespace RimWar.Harmony
             //    }, null), new HarmonyMethod(patchType, "GivePodGiftAsRimWarPoints_Prefix", null), null, null);
             harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
                 {
-                                typeof(List<Tradeable>),
-                                typeof(Faction),
-                                typeof(GlobalTargetInfo)
+                    typeof(List<Tradeable>),
+                    typeof(Faction),
+                    typeof(GlobalTargetInfo)
                 }, null), new HarmonyMethod(patchType, "GiveGiftAsRimWarPoints_Prefix", null), null, null);
             harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker), "TryExecute", new Type[]
                 {
@@ -168,6 +168,11 @@ namespace RimWar.Harmony
                     typeof(GenStepParams),
                     typeof(int)
                 }, null), new HarmonyMethod(patchType, "GenStep_Map_ID_Prefix", null), null, null);
+
+            harmonyInstance.Patch(AccessTools.Method(typeof(WorldPathPool), "GetEmptyWorldPath"),
+                prefix: new HarmonyMethod(patchType, nameof(WorldPathPool_Prefix_Patch)));
+            // TODO should use this but too much to check at the moment
+            //harmonyInstance.PatchAll();
         }
 
         //public static void WorldSettings_RimWarControls(PlaySettings __instance, ref WidgetRow row, bool worldView)
@@ -887,32 +892,42 @@ namespace RimWar.Harmony
             }
         }
 
-        [HarmonyPatch(typeof(WorldPathPool), "GetEmptyWorldPath", null)]
-        public class WorldPathPool_Prefix_Patch
+        public static bool WorldPathPool_Prefix_Patch(List<WorldPath> ___paths, ref WorldPath __result)
         {
-            public static bool Prefix(WorldPathPool __instance, ref List<WorldPath> ___paths, ref WorldPath __result)
+            //Log.Message("Using custom GetEmptyWorldPath");
+            for (int i = 0; i < ___paths.Count; i++)
             {
-                //List<WorldPath> paths = Traverse.Create(root: __instance).Field(name: "paths").GetValue<List<WorldPath>>();
-                for (int i = 0; i < ___paths.Count; i++)
+                if (!___paths[i].inUse)
                 {
-                    if (!___paths[i].inUse)
-                    {
-                        ___paths[i].inUse = true;
-                        __result = ___paths[i];
-                        return false;
-                    }
+                    ___paths[i].inUse = true;
+                    __result = ___paths[i];
+                    return false;
                 }
-                if (___paths.Count > Find.WorldObjects.CaravansCount + 2 + (Find.WorldObjects.RoutePlannerWaypointsCount - 1))
-                {
-                    //Log.ErrorOnce("WorldPathPool leak: more paths than caravans. Force-recovering.", 664788);
-                    ___paths.Clear();
-                }
-                WorldPath worldPath = new WorldPath();
-                ___paths.Add(worldPath);
-                worldPath.inUse = true;
-                __result = worldPath;
-                return false;
             }
+
+            int caravanCount = 0;
+            List<WorldObject> allObjects = Find.WorldObjects.AllWorldObjects;
+
+            for (int i = 0; i < allObjects.Count; i++)
+            {
+                if (allObjects[i] is Caravan ||
+                    allObjects[i] is WarObject)
+                {
+                    caravanCount++;
+                }
+            }
+
+            if (___paths.Count > caravanCount + 2 + (Find.WorldObjects.RoutePlannerWaypointsCount - 1))
+            {
+                Log.WarningOnce(string.Format("WorldPathPool leak: more paths ({0}) than caravans ({1}). Force-recovering.",
+                    ___paths.Count, caravanCount + 2 + (Find.WorldObjects.RoutePlannerWaypointsCount - 1)), 664788);
+                ___paths.Clear();
+            }
+            WorldPath worldPath = new WorldPath();
+            ___paths.Add(worldPath);
+            worldPath.inUse = true;
+            __result = worldPath;
+            return false;
         }
 
         [HarmonyPatch(typeof(IncidentWorker_Ambush_EnemyFaction), "CanFireNowSub", null)]

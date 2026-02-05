@@ -62,11 +62,6 @@ namespace RimWar.Utility
 
         protected override bool TryExecuteWorker(IncidentParms parms)
         {
-            //if(this.wo != null)
-            //{
-            //    this.wo.interactable = false;
-            //}
-
             if (parms.target is Map)
             {
                 return IncidentDefOf.TravelerGroup.Worker.TryExecute(parms);
@@ -81,14 +76,7 @@ namespace RimWar.Utility
             {
                 colonySettlement = rwsc.parent as Settlement;
             }
-            //if (parms.faction != null && factionCanTrade)
-            //{
-            //    faction = parms.faction;
-            //}
-            //else
-            //{
-            //    return false;                
-            //}
+            
             List<Pawn> list = GenerateCaravanPawns(faction, wo.RimWarPoints);
             if (!list.Any())
             {

@@ -8,6 +8,7 @@ using RimWar.History;
 using Verse;
 using UnityEngine;
 using HarmonyLib;
+using Verse.Noise;
 
 namespace RimWar.Planet
 {
@@ -18,6 +19,10 @@ namespace RimWar.Planet
         private static List<Pawn> tmpPawns = new List<Pawn>();
 
         private static WorldComponent_PowerTracker wcpt = null;
+
+        // Do not scan literally everything, put some arbitrary limit
+        private const int maxObjectsPerScan = 5;
+
         public static WorldComponent_PowerTracker Get_WCPT()
         {
             if (wcpt == null)
@@ -29,7 +34,7 @@ namespace RimWar.Planet
                     if (cp != null)
                     {
                         return cp;
-                        wcpt = cp; // why does the world component get initialized twice?  this is leading to an empty world component and many manay bugs... for now, return the first component
+                        //wcpt = cp; // why does the world component get initialized twice?  this is leading to an empty world component and many manay bugs... for now, return the first component
                     }
                 }
             }
@@ -1374,7 +1379,6 @@ namespace RimWar.Planet
 
         public static List<WorldObject> GetWorldObjectsInRange(PlanetTile from, float range)
         {
-
             List<WorldObject> tmpObjects = null;
             //List<WorldObject> tmpObjects = Find.WorldObjects.AllWorldObjects;
             if (WorldObjectsHolder == null)
@@ -1387,18 +1391,15 @@ namespace RimWar.Planet
             if (tmpObjects != null && tmpObjects.Count > 0)
             {
                 List<WorldObject> worldObjects = tmpObjects.InRandomOrder().ToList();
-                //List<WorldObject> tmpObjects = Find.WorldObjects.AllWorldObjects;
-                //if (WorldObjectsHolder == null)
-                //    CopyData();
-                //lock (locker)
-                //{
-                //    worldObjects = WorldObjectsHolder.InRandomOrder().ToList();
-                //}
                 if (worldObjects != null)
                 {                    
                     for (int i = 0; i < worldObjects.Count; i++)
                     {
                         PlanetTile to = worldObjects[i].Tile;
+                        
+                        if (objectsInRange.Count >= maxObjectsPerScan)
+                            break;
+
                         if (from == to)
                         {
                             objectsInRange.Add(worldObjects[i]);
@@ -1715,46 +1716,6 @@ namespace RimWar.Planet
                 }
             }
             return false;
-        }
-
-        public static int RelativePowerCostAdjustment(int pts, RimWarData thisRWD)
-        {
-            int adjustedCost = 0;
-            List<RimWarData> rwdList = Get_WCPT().RimWarData;
-            float totalPoints= 0;
-            float totalFactions = 0;
-            float averagePoints = 0;
-            float thisFactionPts = 0;
-            float relativePower = 1f;
-            
-            if(rwdList != null && rwdList.Count > 0)
-            {
-                for(int i = 0; i < rwdList.Count; i++)
-                {
-                    RimWarData rwd = rwdList[i];
-                    if(rwd.behavior != RimWarBehavior.Player && rwd.behavior != RimWarBehavior.Vassal && rwd.behavior != RimWarBehavior.Undefined && rwd.behavior != RimWarBehavior.Excluded)
-                    {
-                        totalFactions++;
-                        totalPoints += rwd.TotalFactionPoints;
-                        if(thisRWD.RimWarFactionKey == rwd.RimWarFactionKey)
-                        {
-                            thisFactionPts = rwd.TotalFactionPoints;
-                        }
-                    }
-                }
-
-                if (totalFactions != 0)
-                {
-                    averagePoints = totalPoints / totalFactions;
-                    if (averagePoints != 0)
-                    {
-                        relativePower = Mathf.Clamp(thisFactionPts / averagePoints, .75f, 1.25f);
-                        adjustedCost = Mathf.RoundToInt(relativePower * pts);
-                    }
-                }
-            }
-            
-            return Mathf.RoundToInt(adjustedCost/2f);
         }
 
         public static WorldObject ReturnCloserWorldObjectTo(WorldObject wo1, WorldObject wo2, PlanetTile to)

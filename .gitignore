@@ -1,0 +1,115 @@
+# Build Folders
+bin/
+obj/
+
+# Rider Specific
+.idea/
+*.sln.iml
+
+# Visual Studio Code Specific
+.vscode/
+
+# Visual Studio Specific
+.vs/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# macOS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# UNIX files
+.Trashes
+.nfs*
+
+# Certificate files
+*.pfx
+*.p12
+
+# Azure Pipelines
+.azuredevops/
+
+# Node.js folders
+node_modules/
+
+# JetBrains Rider config files
+.idea/
+
+# Microsoft Azure Web App
+.project
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# VS Code specific settings
+.vscode/
+
+# Rider specific settings
+.idea/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# .NET user secrets
+secrets.json
+
+# Local history for Visual Studio Code
+.history/
+
+# Coverage Reports
+coverage/
+*.coverage
+*.coveragexml
+*.log
+
+# Crash and other diagnostic reports
+*.crash
+*.diagsession
+*.dmp
+*.hl
+*.dmp
+*.lst
+*.mdmp
+
+# Docker files
+docker-compose.override.yml
+
+# Resharper files
+_ReSharper.Caches/
+
+# Temporary folders
+tmp/
+temp/
+
+# Other general exclusions
+*.lock
+*.swp
+*.bak
+*.orig
+*.rej
+*~

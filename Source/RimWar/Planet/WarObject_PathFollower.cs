@@ -68,6 +68,8 @@ namespace RimWar.Planet
             }
             if (moving && curPath != null && this.destTile == destTile)
             {
+                curPath.ReleaseToPool();
+                curPath = null;
                 return true;
             }
             if (!Find.WorldReachability.CanReach(warObject.Tile, destTile))
@@ -90,8 +92,8 @@ namespace RimWar.Planet
             if (curPath != null)
             {
                 curPath.ReleaseToPool();
+                curPath = null;
             }
-            curPath = null;
             moving = true;
             if (repathImmediately && TrySetNewPath() && nextTileCostLeft <= 0f && moving)
             {
@@ -339,31 +341,21 @@ namespace RimWar.Planet
 
         private bool TrySetNewPath()
         {
-            //Log.Message("trystartnewpath");
             WorldPath worldPath = GenerateNewPath();
-            //if (!worldPath.Found)
-            //{
-            //    PatherFailed();
-            //    return false;
-            //}
-            //if (curPath != null)
-            //{
-            //    curPath.ReleaseToPool();
-            //}
-            //Log.Message("new world path found with " + worldPath.NodeCount + " nodes");
             curPath = worldPath;
             return true;
         }
 
         private WorldPath GenerateNewPath()
         {
-            //Log.Message("start path gen for " + this.warObject.Label + " cur tile: " + this.warObject.Tile + " next tile: " + this.warObject.pather.nextTile + " dest tile: " + this.warObject.DestinationTile);
+            //Log.Message("start path gen for " + this.warObject.Label + " cur tile: " + this.warObject.Tile + " next tile: " + this.warObject.pather.nextTile + " dest tile: " + this.warObject.pather.destTile);
+            //Log.Message(string.Format("Caravans on map {0}", Find.WorldObjects.CaravansCount));
             PlanetTile planetTile = (moving && nextTile.Valid && IsNextTilePassable()) ? nextTile : warObject.Tile;
             lastPathedTargetTile = this.destTile;
 
             //try
             //{
-            WorldPath worldPath = planetTile.Layer.Pather.FindPath(planetTile, destTile, null); // Verse.Find.WorldPathFinder.FindPath(num, destTile, null);
+            WorldPath worldPath = planetTile.Layer.Pather.FindPath(planetTile, destTile, null);
             //Log.Message("new world path generated with " + worldPath.NodeCount + " nodes");
             if (worldPath.Found && planetTile != warObject.Tile)
             {

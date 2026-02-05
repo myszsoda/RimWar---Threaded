@@ -11,8 +11,6 @@ namespace RimWar
 {
     public static class RimWarFactionUtility
     {
-        private static bool showAll;
-
         private const float FactionColorRectSize = 15f;
 
         private const float FactionColorRectGap = 10f;

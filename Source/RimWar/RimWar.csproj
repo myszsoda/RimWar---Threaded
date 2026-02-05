@@ -47,12 +47,8 @@
       <HintPath>..\..\..\..\..\..\workshop\content\294100\2009463077\Current\Assemblies\HarmonyMod.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HugsLib">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\818773962\v1.5\Assemblies\HugsLib.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="RimCities">
-      <HintPath>..\..\..\..\..\..\workshop\content\294100\1775170117\1.5\Assemblies\RimCities.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\workshop\content\294100\1775170117\1.6\Assemblies\RimCities.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />

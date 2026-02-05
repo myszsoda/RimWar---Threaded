@@ -29,8 +29,6 @@ namespace RimWar.Planet
 
         private bool movesAtNight = false;
         public bool launched = false;
-        private bool cachedImmobilized;
-        private int cachedImmobilizedForTicks = -99999;
         private const int ImmobilizedCacheDuration = 60;
         public bool interactable = true;
 
@@ -86,9 +84,6 @@ namespace RimWar.Planet
             internal WorldObject destinationTarget;
             internal PlanetTile destinationTile;
         }
-
-        //public static RocketTasker<ContextStorage> tasker = new RocketTasker<ContextStorage>();
-        //public static int MainthreadID = -1;
 
         public virtual WorldObjectDef GetDef
         {

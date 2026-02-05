@@ -9,6 +9,7 @@ using HarmonyLib;
 using RimWar;
 using RimWorld;
 using RimWorld.Planet;
+using System.Threading;
 //using FactionColonies;
 
 namespace RimWar.Planet
@@ -29,6 +30,9 @@ namespace RimWar.Planet
         public int lastUnitRequest = 0;
         public int unitRequestDelay = 110000;
         public int vassalHeat = 0;
+
+        // Copy-paste from Planet/WorldUtility.cs
+        private const int maxObjectsPerScan = 20;
 
         public override void PostExposeData()
         {
@@ -282,16 +286,18 @@ namespace RimWar.Planet
 
         private List<RimWorld.Planet.Settlement> settlementsInRange;
         private List<Settlement> tmpSettlementsInRange;
+        private Mutex settlementsMutex;
         public List<RimWorld.Planet.Settlement> OtherSettlementsInRange
         {
             get
             {
+                this.settlementsMutex.WaitOne();
                 if (this.settlementsInRange == null)
                 {
                     this.settlementsInRange = new List<RimWorld.Planet.Settlement>();
                     this.settlementsInRange.Clear();
                 }
-                if(tmpSettlementsInRange == null)
+                if (tmpSettlementsInRange == null)
                 {
                     tmpSettlementsInRange = new List<Settlement>();
                     tmpSettlementsInRange.Clear();
@@ -312,7 +318,9 @@ namespace RimWar.Planet
                             List<RimWorld.Planet.Settlement> scanSettlements = WorldUtility.GetRimWorldSettlementsInRange(this.parent.Tile, SettlementScanRange);
                             if (scanSettlements != null && scanSettlements.Count > 0)
                             {
+                                this.settlementsMutex.WaitOne();
                                 AddSettlementsToTmp(scanSettlements);
+                                this.settlementsMutex.ReleaseMutex();
                             }
                             //this.settlementsInRange = tmpSettlementsInRange;
                             return null;
@@ -338,6 +346,7 @@ namespace RimWar.Planet
                         this.nextSettlementScan = Find.TickManager.TicksGame + settingsRef.settlementScanDelay;
                     }                    
                 }
+                this.settlementsMutex.ReleaseMutex();
                 return this.settlementsInRange;
             }
             set
@@ -348,6 +357,7 @@ namespace RimWar.Planet
 
         private void AddTmpSettlementsToMain()
         {
+            this.settlementsMutex.WaitOne();
             try
             {
                 foreach (Settlement s in tmpSettlementsInRange)
@@ -359,10 +369,12 @@ namespace RimWar.Planet
                 }
             }
             catch { }
+            this.settlementsMutex.ReleaseMutex();
         }
 
         private void AddSettlementsToTmp(List<RimWorld.Planet.Settlement> scanSettlements)
         {
+            this.settlementsMutex.WaitOne();
             for (int i = 0; i < scanSettlements.Count; i++)
             {
                 if (scanSettlements[i] != this.parent)
@@ -370,6 +382,7 @@ namespace RimWar.Planet
                     tmpSettlementsInRange.Add(scanSettlements[i]);
                 }
             }
+            this.settlementsMutex.ReleaseMutex();
         }
 
         public List<RimWorld.Planet.Settlement> NearbyHostileSettlements
@@ -377,6 +390,7 @@ namespace RimWar.Planet
             get
             {
                 List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
+                this.settlementsMutex.WaitOne();
                 tmpSettlements.Clear();
                 if (OtherSettlementsInRange != null && OtherSettlementsInRange.Count > 0)
                 {
@@ -384,6 +398,9 @@ namespace RimWar.Planet
                     {
                         for (int i = 0; i < OtherSettlementsInRange.Count; i++)
                         {
+                            if (tmpSettlements.Count >= maxObjectsPerScan)
+                                break;
+
                             RimWarSettlementComp rwsc = OtherSettlementsInRange[i].GetComponent<RimWarSettlementComp>();
                             if (OtherSettlementsInRange[i] != null && rwsc != null && rwsc.RimWarPoints > 0 && OtherSettlementsInRange[i].Faction != null && OtherSettlementsInRange[i].Faction.HostileTo(this.parent.Faction))
                             {
@@ -396,6 +413,7 @@ namespace RimWar.Planet
                         return tmpSettlements;
                     }
                 }
+                this.settlementsMutex.ReleaseMutex();
                 return tmpSettlements;
             }
         }
@@ -405,6 +423,7 @@ namespace RimWar.Planet
             get
             {
                 List<Settlement> tmpPlayerSettlements = new List<Settlement>();
+                this.settlementsMutex.WaitOne();
                 tmpPlayerSettlements.Clear();
                 foreach(Settlement s in NearbyHostileSettlements)
                 {
@@ -413,6 +432,7 @@ namespace RimWar.Planet
                         tmpPlayerSettlements.Add(s);
                     }
                 }
+                this.settlementsMutex.ReleaseMutex();
                 return tmpPlayerSettlements;
             }
         }
@@ -441,6 +461,7 @@ namespace RimWar.Planet
             get
             {
                 List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
+                this.settlementsMutex.WaitOne();
                 tmpSettlements.Clear();
                 if (OtherSettlementsInRange != null && OtherSettlementsInRange.Count > 0)
                 {
@@ -448,6 +469,9 @@ namespace RimWar.Planet
                     {
                         for (int i = 0; i < OtherSettlementsInRange.Count; i++)
                         {
+                            if (tmpSettlements.Count >= maxObjectsPerScan)
+                                break;
+
                             RimWarSettlementComp rwsc = OtherSettlementsInRange[i].GetComponent<RimWarSettlementComp>();
                             if (OtherSettlementsInRange[i] != null && rwsc != null && rwsc.RimWarPoints > 0 && !OtherSettlementsInRange[i].Faction.HostileTo(this.parent.Faction))
                             {
@@ -461,6 +485,7 @@ namespace RimWar.Planet
                         return tmpSettlements;
                     }
                 }
+                this.settlementsMutex.ReleaseMutex();
                 return tmpSettlements;
             }
         }
@@ -468,12 +493,16 @@ namespace RimWar.Planet
         public List<RimWorld.Planet.Settlement> NearbyFriendlySettlementsWithinRange(float range)
         {
             List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
+            this.settlementsMutex.WaitOne();
             tmpSettlements.Clear();
             List<Settlement> allSettlements = Find.WorldObjects.Settlements;
             if(allSettlements != null && allSettlements.Count > 0)
             {
                 for (int i = 0; i < allSettlements.Count; i++)
                 {
+                    if (tmpSettlements.Count >= maxObjectsPerScan)
+                        break;
+
                     RimWarSettlementComp rwsc = allSettlements[i].GetComponent<RimWarSettlementComp>();
                     if (rwsc != null && allSettlements[i].Faction == this.parent.Faction && Find.WorldGrid.ApproxDistanceInTiles(allSettlements[i].Tile, this.parent.Tile) <= range)
                     {
@@ -482,6 +511,7 @@ namespace RimWar.Planet
                     }
                 }
             }
+            this.settlementsMutex.ReleaseMutex();
             return tmpSettlements;            
         }
 
@@ -490,6 +520,7 @@ namespace RimWar.Planet
             base.Initialize(props);
             this.settlementsInRange = new List<RimWorld.Planet.Settlement>();
             this.settlementsInRange.Clear();
+            this.settlementsMutex = new Mutex();
         }
 
         public override void CompTick()

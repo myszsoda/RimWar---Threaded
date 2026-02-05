@@ -300,7 +300,7 @@ namespace RimWar.Options
             TooltipHandler.TipRegion(rowRect6, "RW_eventFrequencyInfo".Translate());            
             num++;
             Rect rowRect4 = UIHelper.GetRowRect(rowRect6, rowHeight, num);
-            Settings.Instance.settlementScanRangeDivider = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect4, Settings.Instance.settlementScanRangeDivider, 200, 20, false, "RW_scanRange".Translate() + " " + Mathf.RoundToInt(1000 / Settings.Instance.settlementScanRangeDivider), "Close", "Far", 1f));
+            Settings.Instance.settlementScanRangeDivider = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect4, Settings.Instance.settlementScanRangeDivider, 20, 200, false, "RW_scanRange".Translate() + " " + Mathf.RoundToInt(1000 / Settings.Instance.settlementScanRangeDivider), "Far", "Close", 1f));
             TooltipHandler.TipRegion(rowRect4, "RW_scanRangeInfo".Translate());
             num++;
             Rect rowRect3 = UIHelper.GetRowRect(rowRect4, rowHeight, num);

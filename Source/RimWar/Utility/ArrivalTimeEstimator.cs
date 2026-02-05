@@ -12,19 +12,11 @@ namespace RimWar.Utility
     public static class ArrivalTimeEstimator
     {
         public static int EstimatedTicksToArrive(PlanetTile from, PlanetTile to, WarObject warObject)
-        { 
-            //using (WorldPath worldPath = warObject.pather.curPath ?? GeneratePathForWarObject(from, to, warObject))// Verse.Find.WorldPathFinder.FindPath(from, to, null))
-            //{
-            //    if(!worldPath.Found)
-            //    {
-            //        return 0;
-            //    }
-                //return CaravanArrivalTimeEstimator.EstimatedTicksToArrive(from, to, worldPath, 0, warObject.TicksPerMove, Verse.Find.TickManager.TicksAbs);
-                float distance = Find.WorldGrid.ApproxDistanceInTiles(from, to);
-                float travelTimePerTile = 2500f/warObject.MovementModifier;
-                int travelTime = Mathf.RoundToInt(distance * travelTimePerTile);
-                return travelTime;
-            //}
+        {
+            float distance = Find.WorldGrid.ApproxDistanceInTiles(from, to);
+            float travelTimePerTile = 2500f/warObject.MovementModifier;
+            int travelTime = Mathf.RoundToInt(distance * travelTimePerTile);
+            return travelTime;
         }
 
         // Add this method for LaunchedWarObjects (including LaunchedWarband)

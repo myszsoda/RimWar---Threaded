@@ -125,15 +125,6 @@ namespace RimWar.RocketTools
 
         public void Tick()
         {
-            //try
-            //{
-            //    WorldReachability_CanReach_Patch.FlushMessages();
-            //}
-            //catch
-            //{
-            //    if (Prefs.LogVerbose) Log.Warning("RIMWAR: message stream intrupted");
-            //}
-
             var remaining = new List<RocketTask<T>>();
             var startedCounter = 0;
             var finishedCounter = 0;
@@ -154,8 +145,8 @@ namespace RimWar.RocketTools
 
             this.tasks = remaining;
 
-            if (Prefs.LogVerbose && startedCounter > 0) Log.Message(
-                string.Format("RIMWAR: started {0} tasks", startedCounter));
+            if (Prefs.LogVerbose && startedCounter > 0)
+                Log.Message(string.Format("RIMWAR: started {0} tasks", startedCounter));
 
             remaining = new List<RocketTask<T>>();
             for (int i = 0; i < finishedTasks.Count; i++)

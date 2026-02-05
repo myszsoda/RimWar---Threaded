@@ -47,8 +47,6 @@ namespace RimWar.Options
 
         private static Vector2 scroll = Vector2.zero;
 
-        private Rect viewRect;
-
         public RimWarSettingsWindow()
         {
             base.closeOnCancel = true;
