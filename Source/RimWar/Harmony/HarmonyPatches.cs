@@ -171,8 +171,15 @@ namespace RimWar.Harmony
 
             harmonyInstance.Patch(AccessTools.Method(typeof(WorldPathPool), "GetEmptyWorldPath"),
                 prefix: new HarmonyMethod(patchType, nameof(WorldPathPool_Prefix_Patch)));
-            // TODO should use this but too much to check at the moment
-            //harmonyInstance.PatchAll();
+
+            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_Ambush_EnemyFaction), "CanFireNowSub"),
+                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_Ambush_EnemyFaction_RemovalPatch_Prefix)));
+            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanDemand), "CanFireNowSub"),
+                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanDemand_RemovalPatch_Prefix)));
+            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanMeeting), "CanFireNowSub"),
+                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanMeeting_RemovalPatch_Prefix)));
+            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_PawnsArrive), "CanFireNowSub"),
+                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_PawnsArrive_RemovalPatch_Prefix)));
         }
 
         //public static void WorldSettings_RimWarControls(PlaySettings __instance, ref WidgetRow row, bool worldView)
@@ -930,85 +937,52 @@ namespace RimWar.Harmony
             return false;
         }
 
-        [HarmonyPatch(typeof(IncidentWorker_Ambush_EnemyFaction), "CanFireNowSub", null)]
-        public class CanFireNow_Ambush_EnemyFaction_RemovalPatch
+        public static bool CanFireNow_Ambush_EnemyFaction_RemovalPatch_Prefix(IncidentWorker_Ambush_EnemyFaction __instance, IncidentParms parms, ref bool __result)
         {
-            public static bool Prefix(IncidentWorker_Ambush_EnemyFaction __instance, IncidentParms parms, ref bool __result)
+            Options.SettingsRef settingsRef = new Options.SettingsRef();
+            if (settingsRef.restrictEvents)
             {
-                Options.SettingsRef settingsRef = new Options.SettingsRef();
-                if (settingsRef.restrictEvents)
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                    !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
-                    if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
-                        !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
-                    {
-                        __result = false;
-                        //try
-                        //{
-                        //    Log.Message("Filtered event: " + __instance.def.defName);
-                        //}
-                        //catch
-                        //{
-                        //    Log.Message("filtered an event without a def...");
-                        //}
-                        return false;
-                    }
+                    __result = false;
+
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
 
-        [HarmonyPatch(typeof(IncidentWorker_CaravanDemand), "CanFireNowSub", null)]
-        public class CanFireNow_CaravanDemand_RemovalPatch
+        public static bool CanFireNow_CaravanDemand_RemovalPatch_Prefix(IncidentWorker_CaravanDemand __instance, IncidentParms parms, ref bool __result)
         {
-            public static bool Prefix(IncidentWorker_CaravanDemand __instance, IncidentParms parms, ref bool __result)
+            Options.SettingsRef settingsRef = new Options.SettingsRef();
+            if (settingsRef.restrictEvents)
             {
-                Options.SettingsRef settingsRef = new Options.SettingsRef();
-                if (settingsRef.restrictEvents)
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                    !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
-                    if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
-                        !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
-                    {
-                        __result = false;
-                        //try
-                        //{
-                        //    Log.Message("Filtered event: " + __instance.def.defName);
-                        //}
-                        //catch
-                        //{
-                        //    Log.Message("filtered an event without a def...");
-                        //}
-                        return false;
-                    }
+                    __result = false;
+
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
 
-        [HarmonyPatch(typeof(IncidentWorker_CaravanMeeting), "CanFireNowSub", null)]
-        public class CanFireNow_CaravanMeeting_RemovalPatch
+        public static bool CanFireNow_CaravanMeeting_RemovalPatch_Prefix(IncidentWorker_CaravanMeeting __instance, IncidentParms parms, ref bool __result)
         {
-            public static bool Prefix(IncidentWorker_CaravanMeeting __instance, IncidentParms parms, ref bool __result)
+            Options.SettingsRef settingsRef = new Options.SettingsRef();
+            if (settingsRef.restrictEvents)
             {
-                Options.SettingsRef settingsRef = new Options.SettingsRef();
-                if (settingsRef.restrictEvents)
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                    !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
-                    if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
-                        !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
-                    {
-                        __result = false;
-                        //try
-                        //{
-                        //    Log.Message("Filtered event: " + __instance.def.defName);
-                        //}
-                        //catch
-                        //{
-                        //    Log.Message("filtered an event without a def...");
-                        //}
-                        return false;
-                    }
+                    __result = false;
+
+                    return false;
                 }
-                return true;
             }
+            return true;
         }
 
         [HarmonyPatch(typeof(SettlementProximityGoodwillUtility), "AppendProximityGoodwillOffsets", null)]
@@ -1033,41 +1007,30 @@ namespace RimWar.Harmony
             }
         }
 
-        [HarmonyPatch(typeof(IncidentWorker_PawnsArrive), "CanFireNowSub", null)]
-        public class CanFireNow_PawnsArrive_RemovalPatch
+        public static bool CanFireNow_PawnsArrive_RemovalPatch_Prefix(IncidentWorker_PawnsArrive __instance, IncidentParms parms, ref bool __result)
         {
-            public static bool Prefix(IncidentWorker_PawnsArrive __instance, IncidentParms parms, ref bool __result)
+            Options.SettingsRef settingsRef = new Options.SettingsRef();
+            if (settingsRef.restrictEvents)
             {
-                Options.SettingsRef settingsRef = new Options.SettingsRef();
-                if (settingsRef.restrictEvents)
-                {
-                    if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
-                        !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code"))
-                    { 
-                        if(parms.faction != null)
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                    !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code"))
+                { 
+                    if(parms.faction != null)
+                    {
+                        if(parms.faction.Hidden || WorldUtility.GetRimWarDataForFaction(parms.faction).behavior == RimWarBehavior.Excluded)
                         {
-                            if(parms.faction.Hidden || WorldUtility.GetRimWarDataForFaction(parms.faction).behavior == RimWarBehavior.Excluded)
-                            {
-                                return true;
-                            }
-                        }
-                        if (__instance.def == IncidentDefOf.RaidEnemy || __instance.def == IncidentDefOf.RaidFriendly || __instance.def == IncidentDefOf.TraderCaravanArrival)
-                        {
-                            __result = false;
-                            //try
-                            //{
-                            //    Log.Message("Filtered event: " + __instance.def.defName);
-                            //}
-                            //catch
-                            //{
-                            //    Log.Message("filtered an event without a def...");
-                            //}
-                            return false;
+                            return true;
                         }
                     }
+                    if (__instance.def == IncidentDefOf.RaidEnemy || __instance.def == IncidentDefOf.RaidFriendly)
+                    {
+                        __result = false;
+
+                        return false;
+                    }
                 }
-                return true;
             }
+            return true;
         }
 
         [HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
