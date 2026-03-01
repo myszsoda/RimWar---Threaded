@@ -180,6 +180,8 @@ namespace RimWar.Harmony
                 prefix: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanMeeting_RemovalPatch_Prefix)));
             harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_PawnsArrive), "CanFireNowSub"),
                 prefix: new HarmonyMethod(patchType, nameof(CanFireNow_PawnsArrive_RemovalPatch_Prefix)));
+
+            harmonyInstance.PatchAll();
         }
 
         //public static void WorldSettings_RimWarControls(PlaySettings __instance, ref WidgetRow row, bool worldView)
