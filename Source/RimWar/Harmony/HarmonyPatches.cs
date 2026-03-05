@@ -944,7 +944,8 @@ namespace RimWar.Harmony
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             if (settingsRef.restrictEvents)
             {
-                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" &&
+                    !__instance.def.defName.Contains("Cult") && !__instance.def.defName.Contains("Salvagers") && parms.quest == null &&
                     !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
                     __result = false;
@@ -960,7 +961,8 @@ namespace RimWar.Harmony
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             if (settingsRef.restrictEvents)
             {
-                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" &&
+                    !__instance.def.defName.Contains("Cult") && !__instance.def.defName.Contains("Salvagers") && parms.quest == null &&
                     !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
                     __result = false;
@@ -976,7 +978,8 @@ namespace RimWar.Harmony
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             if (settingsRef.restrictEvents)
             {
-                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" &&
+                    !__instance.def.defName.Contains("Cult") && !__instance.def.defName.Contains("Salvagers") && parms.quest == null &&
                     !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code") && !(parms.faction != null && parms.faction.Hidden))
                 {
                     __result = false;
@@ -1014,8 +1017,9 @@ namespace RimWar.Harmony
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             if (settingsRef.restrictEvents)
             {
-                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" && !__instance.def.defName.Contains("Cult") && parms.quest == null &&
-                    !parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code"))
+                if (__instance != null && __instance.def.defName != "VisitorGroup" && __instance.def.defName != "VisitorGroupMax" &&
+                    !__instance.def.defName.Contains("Cult") && !__instance.def.defName.Contains("Salvagers") &&
+                    parms.quest == null &&!parms.forced && !__instance.def.workerClass.ToString().StartsWith("Rumor_Code"))
                 { 
                     if(parms.faction != null)
                     {
