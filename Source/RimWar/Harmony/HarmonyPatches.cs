@@ -1028,7 +1028,7 @@ namespace RimWar.Harmony
                             return true;
                         }
                     }
-                    if (__instance.def == IncidentDefOf.RaidEnemy || __instance.def == IncidentDefOf.RaidFriendly)
+                    if (__instance.def == IncidentDefOf.RaidEnemy || __instance.def == IncidentDefOf.RaidFriendly || __instance.def == IncidentDefOf.TraderCaravanArrival)
                     {
                         __result = false;
 
