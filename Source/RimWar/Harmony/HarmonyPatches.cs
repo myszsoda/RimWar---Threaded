@@ -213,18 +213,14 @@ namespace RimWar.Harmony
 
         public static bool GiveGiftAsRimWarPoints_Prefix(List<Tradeable> tradeables, Faction giveTo, GlobalTargetInfo lookTarget)
         {
-            if (giveTo.PlayerRelationKind == FactionRelationKind.Ally)
+            Settlement s = Find.WorldObjects.SettlementAt(lookTarget.Tile);
+            if (s != null)
             {
-                Settlement s = Find.WorldObjects.SettlementAt(lookTarget.Tile);
-                if(s != null)
+                RimWarSettlementComp rwsc = s.GetComponent<RimWarSettlementComp>();
+                if (rwsc != null)
                 {
-                    RimWarSettlementComp rwsc = s.GetComponent<RimWarSettlementComp>();
-                    if (rwsc != null)
-                    {
-                        int goodwillChange = FactionGiftUtility.GetGoodwillChange(tradeables, giveTo);
-                        rwsc.RimWarPoints += goodwillChange * 90;
-                        return false;
-                    }
+                    int goodwillChange = FactionGiftUtility.GetGoodwillChange(tradeables, giveTo);
+                    rwsc.RimWarPoints += goodwillChange * 90;
                 }
             }
             return true;
