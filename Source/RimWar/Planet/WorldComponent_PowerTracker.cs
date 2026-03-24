@@ -1810,7 +1810,7 @@ namespace RimWar.Planet
                     if (wo is Caravan)
                     {
                         Caravan playerCaravan = wo as Caravan;
-                        if ((playerCaravan.PlayerWealthForStoryteller / 200) <= (rwsComp.RimWarPoints * .5f) && ((Find.WorldGrid.TraversalDistanceBetween(wo.Tile, parentSettlement.Tile) <= Mathf.RoundToInt(targetRange * playerCaravan.Visibility)) || ignoreRestrictions))
+                        if ((playerCaravan.PlayerWealthForStoryteller / 200) <= ((rwsComp.RimWarPoints - rwsComp.PointDamage) * .5f) && ((Find.WorldGrid.TraversalDistanceBetween(wo.Tile, parentSettlement.Tile) <= Mathf.RoundToInt(targetRange * playerCaravan.Visibility)) || ignoreRestrictions))
                         {
                             shouldExecute = true;
                             break;
@@ -1819,7 +1819,7 @@ namespace RimWar.Planet
                     else if (wo is WarObject)
                     {
                         WarObject warObject = wo as WarObject;
-                        if (warObject.RimWarPoints <= (rwsComp.RimWarPoints * .5f) || ignoreRestrictions)
+                        if (warObject.RimWarPoints <= ((rwsComp.RimWarPoints - rwsComp.PointDamage) * .5f) || ignoreRestrictions)
                         {
                             shouldExecute = true;
                             break;
@@ -1828,7 +1828,7 @@ namespace RimWar.Planet
                     else if (wo is RimWorld.Planet.Settlement)
                     {
                         RimWarSettlementComp rwsc = WorldUtility.GetRimWarSettlementAtTile(wo.Tile);
-                        if (rwsc != null && (rwsc.RimWarPoints <= (rwsComp.RimWarPoints * .5f) || ignoreRestrictions))
+                        if (rwsc != null && (rwsc.RimWarPoints <= ((rwsComp.RimWarPoints - rwsComp.PointDamage) * .5f) || ignoreRestrictions))
                         {
                             shouldExecute = true;
                             break;
