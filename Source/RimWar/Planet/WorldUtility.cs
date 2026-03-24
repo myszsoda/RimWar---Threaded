@@ -1400,6 +1400,12 @@ namespace RimWar.Planet
                         if (objectsInRange.Count >= maxObjectsPerScan)
                             break;
 
+                        // Probably in future add attacks between same layers
+                        if (to.Layer == Find.WorldGrid.Orbit)
+                        {
+                            continue;
+                        }
+
                         if (from == to)
                         {
                             objectsInRange.Add(worldObjects[i]);
