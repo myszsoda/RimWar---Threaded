@@ -1066,6 +1066,12 @@ namespace RimWar.Harmony
         {
             private static void Postfix(Pawn negotiator, Faction faction, ref DiaNode __result)
             {
+                // Do not allow custom options in space
+                if (negotiator.Map.TileInfo.Layer == Find.WorldGrid.Orbit)
+                {
+                    return;
+                }
+
                 List<DiaOption> removeList = new List<DiaOption>();
                 removeList.Clear();
                 foreach (DiaOption x in __result.options)
