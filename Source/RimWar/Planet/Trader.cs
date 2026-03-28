@@ -197,8 +197,8 @@ namespace RimWar.Planet
                                         IncidentUtility.DoSettlementTradeWithPoints(this, playerSettlement, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), traderKind);
                                         if (this.WarSettlementComp != null)
                                         {
-                                            this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt((this.RimWarPoints / 2f) * (Rand.Range(1.05f, 1.25f)));
-                                            this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
+                                            this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt((this.RimWarPoints) * (Rand.Range(1.05f, 1.25f)));
+                                            this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage);
                                         }
                                         base.ArrivalAction();
                                     });
