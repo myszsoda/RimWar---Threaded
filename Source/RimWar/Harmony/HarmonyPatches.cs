@@ -29,6 +29,7 @@ namespace RimWar.Harmony
     [StaticConstructorOnStartup]
     public class RimWarMod : Mod
     {
+        public static int RimpointsPerGift = 90;
         private static readonly Type patchType = typeof(RimWarMod);
 
         public RimWarMod(ModContentPack content) : base(content)
@@ -99,11 +100,11 @@ namespace RimWar.Harmony
 
             //Prefix
 
-            //harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
-            //    {
-            //        typeof(List<ActiveDropPodInfo>),
-            //        typeof(Settlement)
-            //    }, null), new HarmonyMethod(patchType, "GivePodGiftAsRimWarPoints_Prefix", null), null, null);
+            harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
+                {
+                    typeof(List<ActiveTransporterInfo>),
+                    typeof(Settlement)
+                }, null), new HarmonyMethod(patchType, "GivePodGiftAsRimWarPoints_Prefix", null), null, null);
             harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
                 {
                     typeof(List<Tradeable>),
@@ -192,24 +193,17 @@ namespace RimWar.Harmony
         //    }
         //}
 
-        //public static bool GivePodGiftAsRimWarPoints_Prefix(List<ActiveDropPodInfo> pods, Settlement giveTo)
-        //{            
-        //    if(giveTo.Faction.PlayerRelationKind == FactionRelationKind.Ally)
-        //    {                
-        //        RimWarSettlementComp rwsc = giveTo.GetComponent<RimWarSettlementComp>();
-        //        if(rwsc != null)
-        //        {
-        //            int goodwillChange = FactionGiftUtility.GetGoodwillChange(pods.Cast<IThingHolder>(), giveTo);
-        //            rwsc.RimWarPoints += goodwillChange * 100;
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            return true;
-        //        }
-        //    }
-        //    return true;
-        //}
+        public static bool GivePodGiftAsRimWarPoints_Prefix(List<ActiveTransporterInfo> pods, Settlement giveTo)
+        {              
+            RimWarSettlementComp rwsc = giveTo.GetComponent<RimWarSettlementComp>();
+            if(rwsc != null)
+            {
+                int goodwillChange = FactionGiftUtility.GetGoodwillChange(pods.Cast<IThingHolder>(), giveTo);
+                rwsc.RimWarPoints += goodwillChange * RimWarMod.RimpointsPerGift;
+            }
+           
+            return true;
+        }
 
         public static bool GiveGiftAsRimWarPoints_Prefix(List<Tradeable> tradeables, Faction giveTo, GlobalTargetInfo lookTarget)
         {
@@ -220,7 +214,7 @@ namespace RimWar.Harmony
                 if (rwsc != null)
                 {
                     int goodwillChange = FactionGiftUtility.GetGoodwillChange(tradeables, giveTo);
-                    rwsc.RimWarPoints += goodwillChange * 90;
+                    rwsc.RimWarPoints += goodwillChange * RimWarMod.RimpointsPerGift;
                 }
             }
             return true;
