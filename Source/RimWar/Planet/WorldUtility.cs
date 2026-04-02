@@ -1381,6 +1381,13 @@ namespace RimWar.Planet
         {
             List<WorldObject> tmpObjects = null;
             //List<WorldObject> tmpObjects = Find.WorldObjects.AllWorldObjects;
+
+            if (from.Layer == Find.WorldGrid.Orbit)
+            {
+                Log.WarningOnce("Attempting to GetWorldObjectsInRange while in space", 664799);
+                return null;
+            }
+
             if (WorldObjectsHolder == null)
                 CopyData();
             lock (locker)
