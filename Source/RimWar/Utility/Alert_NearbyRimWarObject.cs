@@ -8,12 +8,15 @@ using System.Linq;
 using Verse;
 using RimWar.Planet;
 using UnityEngine;
+using Verse.Noise;
 
 namespace RimWar.Utility
 {
     public class Alert_NearbyRimWarObject : Alert
     {
         private List<GlobalTargetInfo> woGTIList = new List<GlobalTargetInfo>();
+        private int updateRate = 0;
+        private static readonly int refreshRate = 60;
         private List<GlobalTargetInfo> WOGTIList
         {
             get
@@ -28,32 +31,38 @@ namespace RimWar.Utility
         {
             get
             {
-                woNearbyResult.Clear();
-                woGTIList.Clear();
-                RimWar.Options.SettingsRef settingsRef = new Options.SettingsRef();
-                if (settingsRef.alertRange > 0)
-                {
-                    Map playerMap = Find.AnyPlayerHomeMap;
-                    if (playerMap.Tile.Layer == Find.WorldGrid.Orbit)
-                    {
-                        return null;
-                    }
+                if (updateRate >= refreshRate) {
+                    updateRate = 0;
 
-                    foreach (WorldObject wo in WorldUtility.GetWorldObjectsInRange(playerMap.Tile, settingsRef.alertRange))
+                    woNearbyResult.Clear();
+                    woGTIList.Clear();
+                    RimWar.Options.SettingsRef settingsRef = new Options.SettingsRef();
+                    if (settingsRef.alertRange > 0)
                     {
-                        if (wo != null && wo.Faction != Faction.OfPlayer)
+                        Map playerMap = Find.AnyPlayerHomeMap;
+                        if (playerMap.Tile.Layer == Find.WorldGrid.Orbit)
                         {
-                            List<WarObject> tmpList = WorldUtility.GetRimWarObjectsAt(wo.Tile);
-                            if (tmpList != null && tmpList.Count > 0)
+                            return null;
+                        }
+
+                        foreach (WorldObject wo in WorldUtility.GetWorldObjectsInRange(playerMap.Tile, settingsRef.alertRange))
+                        {
+                            if (wo != null && wo.Faction != Faction.OfPlayer)
                             {
-                                foreach (WarObject warObj in tmpList)
+                                List<WarObject> tmpList = WorldUtility.GetRimWarObjectsAt(wo.Tile);
+                                if (tmpList != null && tmpList.Count > 0)
                                 {
-                                    woNearbyResult.Add(warObj);
+                                    foreach (WarObject warObj in tmpList)
+                                    {
+                                        woNearbyResult.Add(warObj);
+                                    }
+                                    woGTIList.Add(wo);
                                 }
-                                woGTIList.Add(wo);
                             }
                         }
-                    }                    
+                    }
+                } else {
+                    updateRate++;
                 }
 
                 List<WarObject> orderedList = woNearbyResult.OrderBy(name => name.Name).ToList();
