@@ -483,9 +483,9 @@ namespace RimWar.Planet
             return count;
         }
 
-        public void CheckForNewFactions()
+        private void CheckForNewFactions()
         {
-            if(WorldComponent_PowerTracker.CountOnPlanetFactions() > this.RimWarData.Count)
+            if (WorldComponent_PowerTracker.CountOnPlanetFactions() > this.RimWarData.Count)
             {
                 Utility.RimWar_DebugToolsPlanet.ResetFactions(false, true);
             }
@@ -727,8 +727,47 @@ namespace RimWar.Planet
             this.minimumHeatForPlayerAction = Mathf.Clamp(this.minimumHeatForPlayerAction - Rand.RangeInclusive(1, 2), 0, 10000);
         }
 
+        private void CheckFactionDefeated()
+        {
+            /* This shouldn't be needed as Rimworld should mark faction as
+             * defeated by itself, but this does not seem to be a case.
+             * Usually faction can be only defeated by player destroying last
+             * settlement, but this will happen without player intervention.
+             * As such, mark faction as defeated ourselves if not already.
+             */
+            List<Faction> factionList = Find.World.factionManager.AllFactionsVisible.ToList();
+
+            for (int i = 0; i < factionList.Count; i++)
+            {
+                /* TODO Actually check both layers, but traders can be killed only by player currently.
+                 * TODO This will also defeat "Refugee faction" but I find it neat,
+                 *      them coming to player defeated. Sadly RimWorld itself does not
+                 *      have pretty check for these factions.
+                 *      But need to fix this.
+                 */
+                if (factionList[i].IsPlayer || factionList[i] == Faction.OfTradersGuild)
+                    continue;
+
+                if (!Find.WorldObjects.AnyFactionSettlementOnRootSurface(factionList[i]))
+                {
+                    if (factionList[i].defeated)
+                        continue;
+
+                    factionList[i].defeated = true;
+
+                    Find.LetterStack.ReceiveLetter(
+                        // TODO add translation
+                        "Faction destroyed", 
+                        string.Format("All settlements of {0} have been destroyed.", factionList[i].Name), 
+                        LetterDefOf.PositiveEvent
+                    );
+                }
+            }
+        }
+
         public void UpdateFactions()
         {            
+            CheckFactionDefeated();
             IncrementSettlementGrowth();
             ReconstituteSettlements();
             UpdateFactionSettlements(this.RimWarData.RandomElement());
