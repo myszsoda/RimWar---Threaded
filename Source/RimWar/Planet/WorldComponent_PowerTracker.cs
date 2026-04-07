@@ -750,6 +750,11 @@ namespace RimWar.Planet
 
                 if (!Find.WorldObjects.AnyFactionSettlementOnRootSurface(factionList[i]))
                 {
+                    // Check for active parties
+                    List<WarObject> wosList = WorldUtility.GetRimWarDataForFaction(factionList[i]).FactionUnits;
+                    if (wosList != null && wosList.Count > 0)
+                        continue;
+
                     if (factionList[i].defeated)
                         continue;
 
