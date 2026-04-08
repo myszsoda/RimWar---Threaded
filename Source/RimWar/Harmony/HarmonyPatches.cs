@@ -46,23 +46,29 @@ namespace RimWar.Harmony
             MethodInfo targetMethod = AccessTools.Method(rimworldMethodType, rimworldMethodName, prms, null);
             Patches info = HarmonyLib.Harmony.GetPatchInfo(targetMethod);
             if (info != null) {
-                foreach (Patch patch in info.Prefixes)
-                {
-                    if (patch.owner != ModId)
-                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
-                                                patch.owner, targetMethod.Name));
+                if (prefixMethod != null) {
+                    foreach (Patch patch in info.Prefixes)
+                    {
+                        if (patch.owner != ModId)
+                            Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
+                                                    patch.owner, targetMethod.Name));
+                    }
                 }
-                foreach (Patch patch in info.Postfixes)
-                {
-                    if (patch.owner != ModId)
-                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
-                                                patch.owner, targetMethod.Name));
+                if (postfixMethod != null) {
+                    foreach (Patch patch in info.Postfixes)
+                    {
+                        if (patch.owner != ModId)
+                            Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
+                                                    patch.owner, targetMethod.Name));
+                    }
                 }
-                foreach (Patch patch in info.Transpilers)
-                {
-                    if (patch.owner != ModId)
-                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
-                                                patch.owner, targetMethod.Name));
+                if (transpilerMethod != null) {
+                    foreach (Patch patch in info.Transpilers)
+                    {
+                        if (patch.owner != ModId)
+                            Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod {0} also patches {1}.",
+                                                    patch.owner, targetMethod.Name));
+                    }
                 }
             }
 
