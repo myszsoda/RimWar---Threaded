@@ -29,12 +29,26 @@ namespace RimWar.Harmony
     [StaticConstructorOnStartup]
     public class RimWarMod : Mod
     {
+        private readonly string ModId = "rimworld.torann.rimwar";
         public static int RimpointsPerGift = 90;
         private static readonly Type patchType = typeof(RimWarMod);
 
+        private HarmonyLib.Harmony harmonyInstance;
+
+        private void PatchHarmonyMethod(Type rimworldMethodType,
+                                        string rimworldMethodName,
+                                        Type[] prms = null,
+                                        HarmonyMethod prefixMethod = null,
+                                        HarmonyMethod postfixMethod = null,
+                                        HarmonyMethod transpilerMethod = null)
+        {
+            harmonyInstance.Patch(AccessTools.Method(rimworldMethodType, rimworldMethodName, prms, null),
+                                  prefix: prefixMethod, postfix: postfixMethod, transpiler: transpilerMethod);
+        }
+
         public RimWarMod(ModContentPack content) : base(content)
         {
-            HarmonyLib.Harmony harmonyInstance = new HarmonyLib.Harmony("rimworld.torann.rimwar");
+            harmonyInstance = new HarmonyLib.Harmony(ModId);
             //Postfix
             //1.3 //
             //harmonyInstance.Patch(AccessTools.Method(typeof(TransportPodsArrivalAction_Shuttle), "Arrived", new Type[]
@@ -42,50 +56,108 @@ namespace RimWar.Harmony
             //                    typeof(List<ActiveDropPodInfo>),
             //                    typeof(int)
             //    }, null), null, new HarmonyMethod(patchType, "ShuttleArrived_SettlementHasAttackers_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(TransportersArrivalAction_AttackSettlement), "Arrived", new Type[]
-                {
-                                typeof(List<ActiveTransporterInfo>),
-                                typeof(PlanetTile)
-                }, null), null, new HarmonyMethod(patchType, "PodsArrived_SettlementHasAttackers_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(RimWorld.Planet.SettlementUtility), "AttackNow", new Type[]
-                {
-                    typeof(Caravan),
-                    typeof(RimWorld.Planet.Settlement)
-                }, null), null, new HarmonyMethod(patchType, "AttackNow_SettlementReinforcement_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(Settlement), "GetInspectString", new Type[]
-                {
-                }, null), null, new HarmonyMethod(patchType, "Settlement_InspectString_WithPoints_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(Caravan_PathFollower), "StartPath", new Type[]
-                {
-                    typeof(PlanetTile),
-                    typeof(CaravanArrivalAction),
-                    typeof(bool),
-                    typeof(bool)
-                }, null), null, new HarmonyMethod(patchType, "Pather_StartPath_WarObjects", null), null);
+
+            PatchHarmonyMethod(typeof(TransportersArrivalAction_AttackSettlement),
+                                "Arrived",
+                                new Type[]{ typeof(List<ActiveTransporterInfo>),
+                                            typeof(PlanetTile) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(PodsArrived_SettlementHasAttackers_Postfix)));
+            PatchHarmonyMethod(typeof(RimWorld.Planet.SettlementUtility),
+                                "AttackNow",
+                                new Type[]{ typeof(Caravan),
+                                            typeof(RimWorld.Planet.Settlement) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(AttackNow_SettlementReinforcement_Postfix)));
+            PatchHarmonyMethod(typeof(Settlement),
+                                "GetInspectString",
+                                postfixMethod: new HarmonyMethod(patchType, nameof(Settlement_InspectString_WithPoints_Postfix)));
+            PatchHarmonyMethod(typeof(Caravan_PathFollower), "StartPath",
+                                new Type[]{ typeof(PlanetTile),
+                                            typeof(CaravanArrivalAction),
+                                            typeof(bool),
+                                            typeof(bool) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(Pather_StartPath_WarObjects_Postfix)));
+            PatchHarmonyMethod(typeof(WorldSelectionDrawer), "DrawSelectionOverlays",
+                                postfixMethod: new HarmonyMethod(patchType, nameof(WorldCapitolOverlay)));
+            PatchHarmonyMethod(typeof(CaravanEnterMapUtility), "Enter",
+                                new Type[]{ typeof(Caravan), typeof(Map),
+                                            typeof(Func<Pawn, IntVec3>),
+                                            typeof(CaravanDropInventoryMode),
+                                            typeof(bool) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(AttackInjuredSettlement_Postfix)));
+            PatchHarmonyMethod(typeof(Settlement), "GetShuttleFloatMenuOptions",
+                                new Type[]{ typeof(IEnumerable<IThingHolder>),
+                                            typeof(Action<PlanetTile, TransportersArrivalAction>) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(Settlement_ShuttleReinforce_Postfix)));
+            PatchHarmonyMethod(typeof(ThingSetMaker), "Generate",
+                                new Type[]{ typeof(ThingSetMakerParams) },
+                                postfixMethod: new HarmonyMethod(patchType, nameof(ThingSetMaker_TraderCheck_Postfix)));
+            PatchHarmonyMethod(typeof(FactionGiftUtility), "GiveGift",
+                                new Type[]{ typeof(List<ActiveTransporterInfo>),
+                                            typeof(Settlement) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(GivePodGiftAsRimWarPoints_Prefix)));
+            PatchHarmonyMethod(typeof(FactionGiftUtility), "GiveGift",
+                                new Type[]{ typeof(List<Tradeable>),
+                                            typeof(Faction),
+                                            typeof(GlobalTargetInfo) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(GiveGiftAsRimWarPoints_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker), "TryExecute",
+                                new Type[]{ typeof(IncidentParms) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(IncidentWorker_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker_CaravanDemand), "ActionGive",
+                                new Type[]{ typeof(Caravan),
+                                            typeof(List<ThingCount>),
+                                            typeof(List<Pawn>) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(Caravan_Give_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker_NeutralGroup), "TryResolveParms",
+                                new Type[]{ typeof(IncidentParms) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(TryResolveParms_Points_Prefix)));
+            PatchHarmonyMethod(typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan",
+                                new Type[]{ typeof(IEnumerable<Pawn>),
+                                            typeof(Faction),
+                                            typeof(PlanetTile),
+                                            typeof(PlanetTile),
+                                            typeof(PlanetTile),
+                                            typeof(bool) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(ExitMapPostBattle_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentQueue), "Add",
+                                new Type[]{ typeof(IncidentDef),
+                                            typeof(int),
+                                            typeof(IncidentParms),
+                                            typeof(int) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(IncidentQueueAdd_Replacement_Prefix)));
+            PatchHarmonyMethod(typeof(FactionDialogMaker), "CallForAid",
+                                new Type[]{ typeof(Map), typeof(Faction) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(CallForAid_Replacement_Patch)));
+            PatchHarmonyMethod(typeof(SymbolStack), "Push",
+                                new Type[]{ typeof(string),
+                                            typeof(ResolveParams),
+                                            typeof(string) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(GenStep_Map_Params_Prefix)));
+            PatchHarmonyMethod(typeof(GenStep_Settlement), "ScatterAt",
+                                new Type[]{ typeof(IntVec3),
+                                            typeof(Map),
+                                            typeof(GenStepParams),
+                                            typeof(int) },
+                                prefixMethod: new HarmonyMethod(patchType, nameof(GenStep_Map_ID_Prefix)));
+
+            PatchHarmonyMethod(typeof(WorldPathPool), "GetEmptyWorldPath",
+                                prefixMethod: new HarmonyMethod(patchType, nameof(WorldPathPool_Prefix_Patch)));
+            PatchHarmonyMethod(typeof(IncidentWorker_Ambush_EnemyFaction), "CanFireNowSub",
+                                prefixMethod: new HarmonyMethod(patchType, nameof(CanFireNow_Ambush_EnemyFaction_RemovalPatch_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker_CaravanDemand), "CanFireNowSub",
+                                prefixMethod: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanDemand_RemovalPatch_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker_CaravanMeeting), "CanFireNowSub",
+                                prefixMethod: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanMeeting_RemovalPatch_Prefix)));
+            PatchHarmonyMethod(typeof(IncidentWorker_PawnsArrive), "CanFireNowSub",
+                                prefixMethod: new HarmonyMethod(patchType, nameof(CanFireNow_PawnsArrive_RemovalPatch_Prefix)));
+
+            harmonyInstance.PatchAll();
+
             //harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanMeeting), "RemoveAllPawnsAndPassToWorld", new Type[]
             //    {
             //        typeof(Caravan)
             //    }, null), null, new HarmonyMethod(patchType, "Caravan_MoveOn_Prefix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(WorldSelectionDrawer), "DrawSelectionOverlays", new Type[]
-                {
-                }, null), null, new HarmonyMethod(patchType, "WorldCapitolOverlay", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(CaravanEnterMapUtility), "Enter", new Type[]
-                {
-                    typeof(Caravan),
-                    typeof(Map),
-                    typeof(Func<Pawn, IntVec3>),
-                    typeof(CaravanDropInventoryMode),
-                    typeof(bool)
-                }, null), null, new HarmonyMethod(patchType, "AttackInjuredSettlement_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(Settlement), "GetShuttleFloatMenuOptions", new Type[]
-                {
-                    typeof(IEnumerable<IThingHolder>),
-                    typeof(Action<PlanetTile, TransportersArrivalAction>)
-                }, null), null, new HarmonyMethod(patchType, "Settlement_ShuttleReinforce_Postfix", null), null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(ThingSetMaker), "Generate", new Type[]
-                {
-                    typeof(ThingSetMakerParams)
-                }, null), null, new HarmonyMethod(patchType, "ThingSetMaker_TraderCheck_Postfix", null), null);
+
             //harmonyInstance.Patch(AccessTools.Method(typeof(PlaySettings), "DoPlaySettingsGlobalControls", new Type[]
             //    {
             //        typeof(WidgetRow),
@@ -100,40 +172,6 @@ namespace RimWar.Harmony
 
             //Prefix
 
-            harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
-                {
-                    typeof(List<ActiveTransporterInfo>),
-                    typeof(Settlement)
-                }, null), new HarmonyMethod(patchType, "GivePodGiftAsRimWarPoints_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(FactionGiftUtility), "GiveGift", new Type[]
-                {
-                    typeof(List<Tradeable>),
-                    typeof(Faction),
-                    typeof(GlobalTargetInfo)
-                }, null), new HarmonyMethod(patchType, "GiveGiftAsRimWarPoints_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker), "TryExecute", new Type[]
-                {
-                    typeof(IncidentParms)
-                }, null), new HarmonyMethod(patchType, "IncidentWorker_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanDemand), "ActionGive", new Type[]
-                {
-                    typeof(Caravan),
-                    typeof(List<ThingCount>),
-                    typeof(List<Pawn>)
-                }, null), new HarmonyMethod(patchType, "Caravan_Give_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_NeutralGroup), "TryResolveParms", new Type[]
-                {
-                    typeof(IncidentParms)
-                }, null), new HarmonyMethod(patchType, "TryResolveParms_Points_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(CaravanExitMapUtility), "ExitMapAndCreateCaravan", new Type[]
-                {
-                    typeof(IEnumerable<Pawn>),
-                    typeof(Faction),
-                    typeof(PlanetTile),
-                    typeof(PlanetTile),
-                    typeof(PlanetTile),
-                    typeof(bool)
-                }, null), new HarmonyMethod(patchType, "ExitMapPostBattle_Prefix", null), null, null);
             //Unused
             //harmonyInstance.Patch(AccessTools.Method(typeof(Faction), "TryAffectGoodwillWith", new Type[]
             //    {
@@ -144,45 +182,6 @@ namespace RimWar.Harmony
             //        typeof(HistoryEventDef),
             //        typeof(GlobalTargetInfo?)
             //    }, null), new HarmonyMethod(patchType, "TryAffectGoodwillWith_Reduction_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentQueue), "Add", new Type[]
-                {
-                    typeof(IncidentDef),
-                    typeof(int),
-                    typeof(IncidentParms),
-                    typeof(int)
-                }, null), new HarmonyMethod(patchType, "IncidentQueueAdd_Replacement_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(FactionDialogMaker), "CallForAid", new Type[]
-                {
-                    typeof(Map),
-                    typeof(Faction)
-                }, null), new HarmonyMethod(patchType, "CallForAid_Replacement_Patch", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(SymbolStack), "Push", new Type[]
-                {
-                    typeof(string),
-                    typeof(ResolveParams),
-                    typeof(string)
-                }, null), new HarmonyMethod(patchType, "GenStep_Map_Params_Prefix", null), null, null);
-            harmonyInstance.Patch(AccessTools.Method(typeof(GenStep_Settlement), "ScatterAt", new Type[]
-                {
-                    typeof(IntVec3),
-                    typeof(Map),
-                    typeof(GenStepParams),
-                    typeof(int)
-                }, null), new HarmonyMethod(patchType, "GenStep_Map_ID_Prefix", null), null, null);
-
-            harmonyInstance.Patch(AccessTools.Method(typeof(WorldPathPool), "GetEmptyWorldPath"),
-                prefix: new HarmonyMethod(patchType, nameof(WorldPathPool_Prefix_Patch)));
-
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_Ambush_EnemyFaction), "CanFireNowSub"),
-                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_Ambush_EnemyFaction_RemovalPatch_Prefix)));
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanDemand), "CanFireNowSub"),
-                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanDemand_RemovalPatch_Prefix)));
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_CaravanMeeting), "CanFireNowSub"),
-                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_CaravanMeeting_RemovalPatch_Prefix)));
-            harmonyInstance.Patch(AccessTools.Method(typeof(IncidentWorker_PawnsArrive), "CanFireNowSub"),
-                prefix: new HarmonyMethod(patchType, nameof(CanFireNow_PawnsArrive_RemovalPatch_Prefix)));
-
-            harmonyInstance.PatchAll();
         }
 
         //public static void WorldSettings_RimWarControls(PlaySettings __instance, ref WidgetRow row, bool worldView)
@@ -641,7 +640,7 @@ namespace RimWar.Harmony
             }
         }
 
-        public static void Pather_StartPath_WarObjects(Caravan_PathFollower __instance, Caravan ___caravan, PlanetTile destTile, CaravanArrivalAction arrivalAction, ref bool __result, bool repathImmediately = false, bool resetPauseStatus = true)
+        public static void Pather_StartPath_WarObjects_Postfix(Caravan_PathFollower __instance, Caravan ___caravan, PlanetTile destTile, CaravanArrivalAction arrivalAction, ref bool __result, bool repathImmediately = false, bool resetPauseStatus = true)
         {
             if (__result == true)
             {
