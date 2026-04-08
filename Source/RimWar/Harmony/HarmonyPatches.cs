@@ -26,6 +26,7 @@ namespace RimWar.Harmony
 
     //    static HarmonyPatches()
     //    {
+    
     [StaticConstructorOnStartup]
     public class RimWarMod : Mod
     {
@@ -42,8 +43,31 @@ namespace RimWar.Harmony
                                         HarmonyMethod postfixMethod = null,
                                         HarmonyMethod transpilerMethod = null)
         {
-            harmonyInstance.Patch(AccessTools.Method(rimworldMethodType, rimworldMethodName, prms, null),
-                                  prefix: prefixMethod, postfix: postfixMethod, transpiler: transpilerMethod);
+            MethodInfo targetMethod = AccessTools.Method(rimworldMethodType, rimworldMethodName, prms, null);
+            Patches info = HarmonyLib.Harmony.GetPatchInfo(targetMethod);
+            if (info != null) {
+                foreach (Patch patch in info.Prefixes)
+                {
+                    if (patch.owner != ModId)
+                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod ${0} also patches ${1}.",
+                                                patch.owner, targetMethod.Name));
+                }
+                foreach (Patch patch in info.Postfixes)
+                {
+                    if (patch.owner != ModId)
+                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod ${0} also patches ${1}.",
+                                                patch.owner, targetMethod.Name));
+                }
+                foreach (Patch patch in info.Transpilers)
+                {
+                    if (patch.owner != ModId)
+                        Log.Error(string.Format("[RimWar] Possible mod conflict detected: Mod ${0} also patches ${1}.",
+                                                patch.owner, targetMethod.Name));
+                }
+            }
+
+            harmonyInstance.Patch(targetMethod, prefix: prefixMethod, 
+                                  postfix: postfixMethod, transpiler: transpilerMethod);
         }
 
         public RimWarMod(ModContentPack content) : base(content)
