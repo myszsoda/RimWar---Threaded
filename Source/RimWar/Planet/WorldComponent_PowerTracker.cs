@@ -745,7 +745,7 @@ namespace RimWar.Planet
                  *      have pretty check for these factions.
                  *      But need to fix this.
                  */
-                if (factionList[i].IsPlayer || factionList[i] == Faction.OfTradersGuild)
+                if (factionList[i].IsPlayer || factionList[i] == Faction.OfTradersGuild || factionList[i].temporary)
                     continue;
 
                 if (!Find.WorldObjects.AnyFactionSettlementOnRootSurface(factionList[i]))
