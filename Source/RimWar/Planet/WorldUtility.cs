@@ -21,7 +21,7 @@ namespace RimWar.Planet
         private static WorldComponent_PowerTracker wcpt = null;
 
         // Do not scan literally everything, put some arbitrary limit
-        private const int maxObjectsPerScan = 20;
+        private const int maxObjectsPerScan = 10;
 
         public static WorldComponent_PowerTracker Get_WCPT()
         {
