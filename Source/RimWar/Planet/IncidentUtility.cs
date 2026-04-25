@@ -1208,6 +1208,15 @@ namespace RimWar.Planet
                 defenderResult *= 1.15f;
             }
 
+            if (defender.parent.def.defName == "City_Faction")
+            {
+                defenderResult *= 1.25f;
+            }
+            else if (defender.parent.def.defName == "City_Citadel")
+            {
+                defenderResult *= 1.5f;
+            }
+
             float atkMod = Rand.Range(.5f, .7f);
             float defMod = Rand.Range(.5f, .7f);
 
