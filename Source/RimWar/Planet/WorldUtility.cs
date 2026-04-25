@@ -1243,6 +1243,8 @@ namespace RimWar.Planet
                 int distance = 0;
                 for (int i = 0; i < settlements.Count; i++)
                 {
+                    // TODO refactor this call to TraversalDistanceBetween(),
+                    // cost of this is absurd - edge case measured is 4s
                     if (closestSettlement == null)
                     {
                         closestSettlement = settlements[i];
@@ -1255,6 +1257,13 @@ namespace RimWar.Planet
                         {
                             closestSettlement = settlements[i];
                             distance = dist;
+                            /* Cut off. Scanning after some point is from all settlements on map
+                             * is absurd amount of calculation, stop at some arbitrary limit.
+                             * Probably should calculate with party speed setting,
+                             * but whatever, right now just cut calculation.
+                             */
+                            if (distance < 25)
+                                break;
                         }
                     }
                 }

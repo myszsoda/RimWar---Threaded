@@ -1233,16 +1233,7 @@ namespace RimWar.Planet
             {
                 tmpSettlements = rwsComp.NearbyHostileSettlements;
             }
-            if (rwd.IsAtWar)
-            {
-                RimWorld.Planet.Settlement warSettlement = WorldUtility.GetClosestSettlementInRWDTo(rwd, rwsComp.parent.Tile, Mathf.Min(Mathf.RoundToInt((rwsComp.RimWarPoints * 1.5f) / (settingsRef.settlementScanRangeDivider)), (int)settingsRef.maxSettelementScanRange));
-                if (warSettlement != null)
-                {
-                    tmpSettlements.Add(warSettlement);
-                }
-                targetRange = Mathf.RoundToInt(targetRange * 1.5f);
-            }
-
+            
             if (rwd != null && rwsComp != null)
             {
                 if (tmpSettlements != null && tmpSettlements.Count > 0)
@@ -1254,7 +1245,7 @@ namespace RimWar.Planet
                         {
                             return;
                         }
-                        if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !ignoreRestrictions)
+                        if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !rwd.IsAtWarWith(Faction.OfPlayer) && !ignoreRestrictions)
                         {
                             return;
                         }
@@ -1420,7 +1411,7 @@ namespace RimWar.Planet
                     {
                         return;
                     }
-                    if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !ignoreRestrictions)
+                    if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !rwd.IsAtWarWith(Faction.OfPlayer) && !ignoreRestrictions)
                     {
                         return;
                     }
@@ -1503,15 +1494,6 @@ namespace RimWar.Planet
             {
                 tmpSettlements = rwsComp.NearbyHostileSettlements;
             }
-            if (rwd.IsAtWar)
-            {
-                RimWorld.Planet.Settlement warSettlement = WorldUtility.GetClosestSettlementInRWDTo(rwd, parentSettlement.Tile, Mathf.Min(Mathf.RoundToInt(targetRange), (int)settingsRef.maxSettelementScanRange));
-                if (warSettlement != null)
-                {
-                    tmpSettlements.Add(warSettlement);
-                }
-                targetRange = Mathf.RoundToInt(targetRange * 1.5f);
-            }
 
             if (tmpSettlements != null && tmpSettlements.Count > 0)
             {
@@ -1522,7 +1504,7 @@ namespace RimWar.Planet
                     {
                         return;
                     }
-                    if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !ignoreRestrictions)
+                    if (targetTown.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !rwd.IsAtWarWith(Faction.OfPlayer) && !ignoreRestrictions)
                     {
                         return;
                     }
@@ -1835,7 +1817,7 @@ namespace RimWar.Planet
                     {
                         continue;
                     }
-                    if (wo.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !ignoreRestrictions)
+                    if (wo.Faction == Faction.OfPlayer && rwsComp.PlayerHeat < minimumHeatForPlayerAction && !rwd.IsAtWarWith(Faction.OfPlayer) && !ignoreRestrictions)
                     {
                         continue;
                     }
