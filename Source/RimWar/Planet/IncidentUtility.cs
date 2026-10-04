@@ -1735,14 +1735,15 @@ namespace RimWar.Planet
             {
                 for (int i = 0; i <lord.Graph.transitions.Count; i++)
                 {
-                    if (lord.Graph.transitions[i].target is LordToil_PanicFlee)
+                    if (!(lord.Graph.transitions[i].target is LordToil_PanicFlee))
                     {
-                        for (int j = 0; j < lord.Graph.transitions[i].triggers.Count; j++)
+                        continue;
+                    }
+                    for (int j = 0; j < lord.Graph.transitions[i].triggers.Count; j++)
+                    {
+                        if (lord.Graph.transitions[i].triggers[j] is Trigger_FractionPawnsLost)
                         {
-                            if (lord.Graph.transitions[i].triggers[j] is Trigger_FractionPawnsLost)
-                            {
-                                lord.Graph.transitions[i].triggers[j] = new Trigger_FractionPawnsLost(Rand.Range(.8f, 1f));
-                            }
+                            lord.Graph.transitions[i].triggers[j] = new Trigger_FractionPawnsLost(Rand.Range(.8f, 1f));
                         }
                     }
                 }

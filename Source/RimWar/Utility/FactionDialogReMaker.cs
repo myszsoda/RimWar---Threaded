@@ -72,17 +72,18 @@ namespace RimWar.Utility
                 {
                     foreach (RoyalTitle item in royalty.AllTitlesInEffectForReading)
                     {
-                        if (item.def.permits != null)
+                        if (item.def.permits == null)
                         {
-                            foreach (RoyalTitlePermitDef permit in item.def.permits)
+                            continue;
+                        }
+                        foreach (RoyalTitlePermitDef permit in item.def.permits)
+                        {
+                            IEnumerable<DiaOption> factionCommDialogOptions = permit.Worker.GetFactionCommDialogOptions(map, dc0.negotiator, faction);
+                            if (factionCommDialogOptions != null)
                             {
-                                IEnumerable<DiaOption> factionCommDialogOptions = permit.Worker.GetFactionCommDialogOptions(map, dc0.negotiator, faction);
-                                if (factionCommDialogOptions != null)
+                                foreach (DiaOption item2 in factionCommDialogOptions)
                                 {
-                                    foreach (DiaOption item2 in factionCommDialogOptions)
-                                    {
-                                        AddAndDecorateOption(item2, true, ref dc0);
-                                    }
+                                    AddAndDecorateOption(item2, true, ref dc0);
                                 }
                             }
                         }

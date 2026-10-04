@@ -570,17 +570,18 @@ namespace RimWar.Planet
             float tmpPoints = 0f;
             foreach (Pawn p in FactionPawnsOnMap)
             {
-                if (!p.DestroyedOrNull())
+                if (p.DestroyedOrNull())
                 {
-                    if (p.Dead || p.Downed)
-                    {
-                        tmpPoints += this.PointsPerPawn;
-                    }
-                    else
-                    {
-                        //Log.Message("summary health for " + p.LabelShort + " is " + p.health.summaryHealth.SummaryHealthPercent);
-                        tmpPoints += (this.PointsPerPawn * (1f - p.health.summaryHealth.SummaryHealthPercent));
-                    }
+                    continue;
+                }
+                if (p.Dead || p.Downed)
+                {
+                    tmpPoints += this.PointsPerPawn;
+                }
+                else
+                {
+                    //Log.Message("summary health for " + p.LabelShort + " is " + p.health.summaryHealth.SummaryHealthPercent);
+                    tmpPoints += (this.PointsPerPawn * (1f - p.health.summaryHealth.SummaryHealthPercent));
                 }
             }
 

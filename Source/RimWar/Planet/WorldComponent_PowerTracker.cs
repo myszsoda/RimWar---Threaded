@@ -476,10 +476,11 @@ namespace RimWar.Planet
                  * but outside standard calculations.
                  * So we need to ignore them manually.
                  */
-                if (factionList[i] == Faction.OfTradersGuild)
+                if (factionList[i] != Faction.OfTradersGuild)
                 {
-                    count--;
+                    continue;
                 }
+                count--;
             }
 
             return count;
@@ -866,18 +867,19 @@ namespace RimWar.Planet
                 {
                     foreach (Faction f in Find.FactionManager.AllFactionsVisible)
                     {
-                        if (f != rwd.RimWarFaction && f != Faction.OfPlayer)
-                        {                            
-                            FactionRelation frPlayer = Faction.OfPlayer.RelationWith(f);
-                            FactionRelation frVassal = rwd.RimWarFaction.RelationWith(f);
-                            FactionRelationKind frVassalKind = frVassal.kind;
-                            if (frPlayer !=null && frPlayer.kind != frVassalKind)
-                            {
-                                rwd.RimWarFaction.SetRelation(frPlayer);
-                                bool letterSent;
-                                rwd.RimWarFaction.Notify_RelationKindChanged(f, frVassalKind, false, "Vassal Alignment", rwd.GetCapitol, out letterSent);
-                            }
-                        }                        
+                        if (f == rwd.RimWarFaction || f == Faction.OfPlayer)
+                        {
+                            continue;
+                        }
+                        FactionRelation frPlayer = Faction.OfPlayer.RelationWith(f);
+                        FactionRelation frVassal = rwd.RimWarFaction.RelationWith(f);
+                        FactionRelationKind frVassalKind = frVassal.kind;
+                        if (frPlayer !=null && frPlayer.kind != frVassalKind)
+                        {
+                            rwd.RimWarFaction.SetRelation(frPlayer);
+                            bool letterSent;
+                            rwd.RimWarFaction.Notify_RelationKindChanged(f, frVassalKind, false, "Vassal Alignment", rwd.GetCapitol, out letterSent);
+                        }
                     }
                 }
             }

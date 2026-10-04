@@ -1167,30 +1167,31 @@ namespace RimWar.Planet
                 List<RimWarData> rwdInst = rwdList.InRandomOrder().ToList();
                 for (int i = 0; i < rwdInst.Count; i++)
                 {
-                    if (rwdInst[i] != rwd && rwdInst[i].WorldSettlements != null && rwdInst[i].WorldSettlements.Count > 0)
+                    if (rwdInst[i] == rwd || rwdInst[i].WorldSettlements == null || rwdInst[i].WorldSettlements.Count <= 0)
                     {
-                        List<RimWorld.Planet.Settlement> wosList = rwdList[i].WorldSettlements.InRandomOrder().ToList();
-                        for (int j = 0; j < wosList.Count; j++)
+                        continue;
+                    }
+                    List<RimWorld.Planet.Settlement> wosList = rwdList[i].WorldSettlements.InRandomOrder().ToList();
+                    for (int j = 0; j < wosList.Count; j++)
+                    {
+                        RimWorld.Planet.Settlement settlement = wosList[j];
+                        PlanetTile to = settlement.Tile;
+                        //int ticksToArrive = Utility.ArrivalTimeEstimator.EstimatedTicksToArrive(from, to, 1);
+                        //int tileDistance = Find.WorldGrid.TraversalDistanceBetween(from, to, false, range);
+                        int tileDistance = (int)Find.WorldGrid.ApproxDistanceInTiles(from, to);
+                        if (tileDistance != 0 && tileDistance <= range)
                         {
-                            RimWorld.Planet.Settlement settlement = wosList[j];
-                            PlanetTile to = settlement.Tile;
-                            //int ticksToArrive = Utility.ArrivalTimeEstimator.EstimatedTicksToArrive(from, to, 1);
-                            //int tileDistance = Find.WorldGrid.TraversalDistanceBetween(from, to, false, range);
-                            int tileDistance = (int)Find.WorldGrid.ApproxDistanceInTiles(from, to);
-                            if (tileDistance != 0 && tileDistance <= range)
+                            tileDistance = Find.WorldGrid.TraversalDistanceBetween(from, to, false, range);
+                            if (tileDistance <= range)
                             {
-                                tileDistance = Find.WorldGrid.TraversalDistanceBetween(from, to, false, range);
-                                if (tileDistance <= range)
+                                RimWarSettlementComp rwsc = settlement.GetComponent<RimWarSettlementComp>();
+                                if (rwsc != null)
                                 {
-                                    RimWarSettlementComp rwsc = settlement.GetComponent<RimWarSettlementComp>();
-                                    if (rwsc != null)
-                                    {
-                                        tmpSettlements.Add(rwsc);
-                                    }
-                                    if (tmpSettlements.Count >= 3)
-                                    {
-                                        return tmpSettlements;
-                                    }
+                                    tmpSettlements.Add(rwsc);
+                                }
+                                if (tmpSettlements.Count >= 3)
+                                {
+                                    return tmpSettlements;
                                 }
                             }
                         }
@@ -1210,28 +1211,29 @@ namespace RimWar.Planet
             {
                 for (int i = 0; i < settlementsInRange.Count; i++)
                 {
-                    if (Find.WorldGrid.ApproxDistanceInTiles(tile, settlementsInRange[i].parent.Tile) <= maxRange)
+                    if (!(Find.WorldGrid.ApproxDistanceInTiles(tile, settlementsInRange[i].parent.Tile) <= maxRange))
                     {
-                        if (closestSettlement != null)
-                        {
-                            //if(Find.WorldGrid.TraversalDistanceBetween(tile, settlementsInRange[i].Tile, false, maxRange) < Find.WorldGrid.TraversalDistanceBetween(tile, closestSettlement.Tile, false, maxRange))
-                            //{
-                            //    closestSettlement = settlementsInRange[i];
-                            //}
+                        continue;
+                    }
+                    if (closestSettlement != null)
+                    {
+                        //if(Find.WorldGrid.TraversalDistanceBetween(tile, settlementsInRange[i].Tile, false, maxRange) < Find.WorldGrid.TraversalDistanceBetween(tile, closestSettlement.Tile, false, maxRange))
+                        //{
+                        //    closestSettlement = settlementsInRange[i];
+                        //}
 
-                            float otherDist = Find.WorldGrid.ApproxDistanceInTiles(tile, settlementsInRange[i].parent.Tile);
-                            if (otherDist < closestDist)
-                            {
-                                closestDist = otherDist;
-                                closestSettlement = settlementsInRange[i];
-                            }
-
-                        }
-                        else
+                        float otherDist = Find.WorldGrid.ApproxDistanceInTiles(tile, settlementsInRange[i].parent.Tile);
+                        if (otherDist < closestDist)
                         {
+                            closestDist = otherDist;
                             closestSettlement = settlementsInRange[i];
-                            closestDist = Find.WorldGrid.ApproxDistanceInTiles(tile, closestSettlement.parent.Tile);
                         }
+
+                    }
+                    else
+                    {
+                        closestSettlement = settlementsInRange[i];
+                        closestDist = Find.WorldGrid.ApproxDistanceInTiles(tile, closestSettlement.parent.Tile);
                     }
                 }
             }

@@ -170,15 +170,16 @@ namespace RimWar
             List<IArchivable> archivablesListForReading = Find.Archive.ArchivablesListForReading;
             for (int num2 = archivablesListForReading.Count - 1; num2 >= 0; num2--)
             {
-                if (showLetters && archivablesListForReading[num2] is RW_Letter)
+                if (!showLetters || !(archivablesListForReading[num2] is RW_Letter))
                 {
-                    flag = true;
-                    if (num + 30f >= messagesScrollPos.y && num <= messagesScrollPos.y + outRect.height)
-                    {
-                        DoArchivableRow(new Rect(0f, num, viewRect.width, 30f), archivablesListForReading[num2], num2);
-                    }
-                    num += 30f;
+                    continue;
                 }
+                flag = true;
+                if (num + 30f >= messagesScrollPos.y && num <= messagesScrollPos.y + outRect.height)
+                {
+                    DoArchivableRow(new Rect(0f, num, viewRect.width, 30f), archivablesListForReading[num2], num2);
+                }
+                num += 30f;
                 
             }
             messagesLastHeight = num;

@@ -63,14 +63,15 @@ namespace RimWar.Planet
             {                
                 for(int i = 0; i < Units.Count; i++)
                 {
-                    if(Units[i].EffectivePoints > 0)
+                    if (Units[i].EffectivePoints <= 0)
                     {
-                        for(int j = i + 1; j < Units.Count; j++)
+                        continue;
+                    }
+                    for(int j = i + 1; j < Units.Count; j++)
+                    {
+                        if(Units[j].EffectivePoints > 0 && Units[j].Faction.HostileTo(Units[i].Faction))
                         {
-                            if(Units[j].EffectivePoints > 0 && Units[j].Faction.HostileTo(Units[i].Faction))
-                            {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }

@@ -47,17 +47,18 @@ namespace RimWar.Utility
 
                         foreach (WorldObject wo in WorldUtility.GetWorldObjectsInRange(playerMap.Tile, settingsRef.alertRange))
                         {
-                            if (wo != null && wo.Faction != Faction.OfPlayer)
+                            if (wo == null || wo.Faction == Faction.OfPlayer)
                             {
-                                List<WarObject> tmpList = WorldUtility.GetRimWarObjectsAt(wo.Tile);
-                                if (tmpList != null && tmpList.Count > 0)
+                                continue;
+                            }
+                            List<WarObject> tmpList = WorldUtility.GetRimWarObjectsAt(wo.Tile);
+                            if (tmpList != null && tmpList.Count > 0)
+                            {
+                                foreach (WarObject warObj in tmpList)
                                 {
-                                    foreach (WarObject warObj in tmpList)
-                                    {
-                                        woNearbyResult.Add(warObj);
-                                    }
-                                    woGTIList.Add(wo);
+                                    woNearbyResult.Add(warObj);
                                 }
+                                woGTIList.Add(wo);
                             }
                         }
                     }

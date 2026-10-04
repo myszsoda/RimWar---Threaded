@@ -130,14 +130,15 @@ namespace RimWar
                     {
                         foreach(RimWarSettlementComp rwsc in WarSettlementComps)
                         {
-                            if(rwsc.isCapitol)
+                            if (!rwsc.isCapitol)
                             {
-                                if(capitol == null)
-                                {
-                                    capitol = (Settlement)rwsc.parent;
-                                }
-                                return true;
+                                continue;
                             }
+                            if(capitol == null)
+                            {
+                                capitol = (Settlement)rwsc.parent;
+                            }
+                            return true;
                         }
                     }
                 }
@@ -312,13 +313,14 @@ namespace RimWar
             {
                 for (int i = 0; i < WorldSettlements.Count; i++)
                 {
-                    if (wos == WorldSettlements[i])
+                    if (wos != WorldSettlements[i])
                     {
-                        rwsc = WorldSettlements[i].GetComponent<RimWarSettlementComp>();
-                        if (rwsc != null)
-                        {
-                            return true;
-                        }
+                        continue;
+                    }
+                    rwsc = WorldSettlements[i].GetComponent<RimWarSettlementComp>();
+                    if (rwsc != null)
+                    {
+                        return true;
                     }
                 }
             }

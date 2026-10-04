@@ -48,28 +48,29 @@ namespace RimWar.Planet
             {
                 for (int j = 0; j < pods[i].innerContainer.Count; j++)
                 {
-                    if (pods[i].innerContainer[j] is Pawn pawn)
+                    if (!(pods[i].innerContainer[j] is Pawn pawn))
                     {
-                        if (pawn.RaceProps.Humanlike)
+                        continue;
+                    }
+                    if (pawn.RaceProps.Humanlike)
+                    {
+                        Pawn result;
+                        if (pawn.HomeFaction == settlement.Faction)
                         {
-                            Pawn result;
-                            if (pawn.HomeFaction == settlement.Faction)
-                            {
-                                GenGuest.AddHealthyPrisonerReleasedThoughts(pawn);
-                            }
-                            else if (PawnsFinder.AllMapsCaravansAndTravellingTransporters_AliveSpawned_FreeColonists.TryRandomElement(out result))
-                            {
-                                Find.HistoryEventsManager.RecordEvent(new HistoryEvent(HistoryEventDefOf.SoldSlave, result.Named(HistoryEventArgsNames.Doer)));
-                            }
+                            GenGuest.AddHealthyPrisonerReleasedThoughts(pawn);
                         }
-                        else if (pawn.RaceProps.Animal && pawn.relations != null)
+                        else if (PawnsFinder.AllMapsCaravansAndTravellingTransporters_AliveSpawned_FreeColonists.TryRandomElement(out result))
                         {
-                            Pawn firstDirectRelationPawn = pawn.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond);
-                            if (firstDirectRelationPawn != null && firstDirectRelationPawn.needs.mood != null)
-                            {
-                                pawn.relations.RemoveDirectRelation(PawnRelationDefOf.Bond, firstDirectRelationPawn);
-                                firstDirectRelationPawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SoldMyBondedAnimalMood);
-                            }
+                            Find.HistoryEventsManager.RecordEvent(new HistoryEvent(HistoryEventDefOf.SoldSlave, result.Named(HistoryEventArgsNames.Doer)));
+                        }
+                    }
+                    else if (pawn.RaceProps.Animal && pawn.relations != null)
+                    {
+                        Pawn firstDirectRelationPawn = pawn.relations.GetFirstDirectRelationPawn(PawnRelationDefOf.Bond);
+                        if (firstDirectRelationPawn != null && firstDirectRelationPawn.needs.mood != null)
+                        {
+                            pawn.relations.RemoveDirectRelation(PawnRelationDefOf.Bond, firstDirectRelationPawn);
+                            firstDirectRelationPawn.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SoldMyBondedAnimalMood);
                         }
                     }
                 }

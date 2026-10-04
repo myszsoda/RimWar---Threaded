@@ -589,22 +589,23 @@ namespace RimWar.Utility
                         wosHereList.Clear();
                         for (int k = 0; k < wosList.Count; k++)
                         {
-                            if (wosList[k].Tile == rws.parent.Tile)
+                            if (wosList[k].Tile != rws.parent.Tile)
                             {
-                                wosHere++;
-                                wosHereList.Add(wosList[k] as RimWorld.Planet.Settlement);
-                                if (wosList[k].Faction != rws.parent.Faction)
+                                continue;
+                            }
+                            wosHere++;
+                            wosHereList.Add(wosList[k] as RimWorld.Planet.Settlement);
+                            if (wosList[k].Faction != rws.parent.Faction)
+                            {
+                                factionMismatchCount++;
+                                if (generateReport) { Log.Warning(wosList[k].Label + " of Faction " + wosList[k].Faction + " different from RWS Faction " + rws.parent.Faction); }
+                                if (cleanupErrors)
                                 {
-                                    factionMismatchCount++;
-                                    if (generateReport) { Log.Warning(wosList[k].Label + " of Faction " + wosList[k].Faction + " different from RWS Faction " + rws.parent.Faction); }
-                                    if (cleanupErrors)
-                                    {
-                                        if (generateReport) { Log.Message("Removing RWS from " + rws.parent.Faction + "..."); }
-                                        //WorldUtility.GetRimWarDataForFaction(rws.parent.Faction)?.WorldSettlements?.Remove(rws);
-                                        if (generateReport) { Log.Message("Adding RWS to " + wosList[k].Faction + "..."); }
-                                        //rws.Faction = wosList[k].Faction;
-                                        //WorldUtility.GetRimWarDataForFaction(wosList[k].Faction)?.WorldSettlements?.Add(rws);
-                                    }
+                                    if (generateReport) { Log.Message("Removing RWS from " + rws.parent.Faction + "..."); }
+                                    //WorldUtility.GetRimWarDataForFaction(rws.parent.Faction)?.WorldSettlements?.Remove(rws);
+                                    if (generateReport) { Log.Message("Adding RWS to " + wosList[k].Faction + "..."); }
+                                    //rws.Faction = wosList[k].Faction;
+                                    //WorldUtility.GetRimWarDataForFaction(wosList[k].Faction)?.WorldSettlements?.Add(rws);
                                 }
                             }
                         }

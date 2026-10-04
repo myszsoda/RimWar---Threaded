@@ -586,28 +586,29 @@ namespace RimWar.Harmony
             List<CodeInstruction> list = instructions.ToList();
             for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].opcode == OpCodes.Call && list[i].operand.ToString().Contains("Military"))
+                if (list[i].opcode != OpCodes.Call || !list[i].operand.ToString().Contains("Military"))
                 {
-                    list.Remove(list[i]);
-                    list.InsertRange(i, new List<CodeInstruction>
-                    {
-                        new CodeInstruction(OpCodes.Call, (object)typeof(FactionDialogReMaker).GetMethod("RequestMilitaryAid_Scouts_Option"))
-                        //new CodeInstruction(OpCodes.Ldloc_1),
-                        //new CodeInstruction(OpCodes.Ldarg_1),
-                        //new CodeInstruction(OpCodes.Ldloc_0),
-                        //new CodeInstruction(OpCodes.Ldfld, (object)typeof(FactionDialogMaker).GetField("negotiator")),
-                        //new CodeInstruction(OpCodes.Ldc_I4_1),
-                        //new CodeInstruction(OpCodes.Ldloca_S),
-                        //new CodeInstruction(OpCodes.Call, (object)typeof(FactionDialogReMaker).GetMethod("RequestMilitaryAid_Warband_Option"))
-                    });
-
-                    //int num = 1;
-                    //list.InsertRange(i + num, new List<CodeInstruction>
-                    //{
-                    //    )
-                    //});
-                    //break;
+                    continue;
                 }
+                list.Remove(list[i]);
+                list.InsertRange(i, new List<CodeInstruction>
+                {
+                    new CodeInstruction(OpCodes.Call, (object)typeof(FactionDialogReMaker).GetMethod("RequestMilitaryAid_Scouts_Option"))
+                    //new CodeInstruction(OpCodes.Ldloc_1),
+                    //new CodeInstruction(OpCodes.Ldarg_1),
+                    //new CodeInstruction(OpCodes.Ldloc_0),
+                    //new CodeInstruction(OpCodes.Ldfld, (object)typeof(FactionDialogMaker).GetField("negotiator")),
+                    //new CodeInstruction(OpCodes.Ldc_I4_1),
+                    //new CodeInstruction(OpCodes.Ldloca_S),
+                    //new CodeInstruction(OpCodes.Call, (object)typeof(FactionDialogReMaker).GetMethod("RequestMilitaryAid_Warband_Option"))
+                });
+
+                //int num = 1;
+                //list.InsertRange(i + num, new List<CodeInstruction>
+                //{
+                //    )
+                //});
+                //break;
             }
             return list.AsEnumerable();
         }
@@ -789,24 +790,25 @@ namespace RimWar.Harmony
                 //Log.Message("found " + warObject.Count + " warObjects");
                 for (int i = 0; i < warObject.Count; i++)
                 {
-                    if (warObject[i].Faction != null)//&& warObject[i].Faction == attackers[0].Faction)
+                    if (warObject[i].Faction == null)//&& warObject[i].Faction == attackers[0].Faction)
                     {
-                        float marketValue = 0;
-                        for (int j = 0; j < demands.Count; j++)
-                        {
-                            marketValue += (demands[j].Thing.MarketValue * demands[j].Count);
-                        }
-                        //Log.Message("market value of caravan ransom is " + marketValue);
-                        int points = warObject[i].RimWarPoints + Mathf.RoundToInt(marketValue / 20);
-                        //if (warObject[i].ParentSettlement != null)
-                        //{
-                        //    ConsolidatePoints reconstitute = new ConsolidatePoints(points, Mathf.RoundToInt(Find.WorldGrid.TraversalDistanceBetween(caravan.Tile, warObject[i].ParentSettlement.Tile) * warObject[i].TicksPerMove) + Find.TickManager.TicksGame);
-                        //    warObject[i].WarSettlementComp.SettlementPointGains.Add(reconstitute);
-                        //    warObject[i].ImmediateAction(null);
-                        //}
-                        warObject[i].interactable = false;
-                        break;
+                        continue;
                     }
+                    float marketValue = 0;
+                    for (int j = 0; j < demands.Count; j++)
+                    {
+                        marketValue += (demands[j].Thing.MarketValue * demands[j].Count);
+                    }
+                    //Log.Message("market value of caravan ransom is " + marketValue);
+                    int points = warObject[i].RimWarPoints + Mathf.RoundToInt(marketValue / 20);
+                    //if (warObject[i].ParentSettlement != null)
+                    //{
+                    //    ConsolidatePoints reconstitute = new ConsolidatePoints(points, Mathf.RoundToInt(Find.WorldGrid.TraversalDistanceBetween(caravan.Tile, warObject[i].ParentSettlement.Tile) * warObject[i].TicksPerMove) + Find.TickManager.TicksGame);
+                    //    warObject[i].WarSettlementComp.SettlementPointGains.Add(reconstitute);
+                    //    warObject[i].ImmediateAction(null);
+                    //}
+                    warObject[i].interactable = false;
+                    break;
                 }
             }
 
