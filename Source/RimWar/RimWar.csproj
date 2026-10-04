@@ -191,7 +191,6 @@
     <Compile Include="RocketTools\RocketShip.cs" />
     <Compile Include="RocketTools\RocketStorage.cs" />
     <Compile Include="RocketTools\RocketTask.cs" />
-    <Compile Include="Harmony\HarmonyPatchesExtras.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
