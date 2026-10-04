@@ -535,7 +535,11 @@ namespace RimWar.Planet
                             pts = Mathf.RoundToInt(pts * 1.25f);
                         }
 
-                        WorldUtility.CreateLaunchedWarband(pts, rwd, rwdTown.parent as RimWorld.Planet.Settlement, rwdTown.parent.Tile, rwdPlayerSettlement, WorldObjectDefOf.Settlement);
+                        float maxCommitment = rwd.IsAtWarWith(Faction.OfPlayer) ? .8f : .6f;
+                        if (pts <= (maxCommitment * rwdTown.RimWarPoints))
+                        {
+                            WorldUtility.CreateLaunchedWarband(pts, rwd, rwdTown.parent as RimWorld.Planet.Settlement, rwdTown.parent.Tile, rwdPlayerSettlement, WorldObjectDefOf.Settlement);
+                        }
                     }
                 }
                 else if (newAction == RimWarAction.ScoutingParty)
