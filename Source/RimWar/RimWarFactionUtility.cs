@@ -465,26 +465,27 @@ namespace RimWar
         {
             get
             {
-                if (Find.TickManager.TicksGame % 60 == 0 || doOnce)
+                if (Find.TickManager.TicksGame % 60 != 0 && !doOnce)
                 {
-                    int totalSilver = 0;
-                    List<Thing> allZones = Find.AnyPlayerHomeMap.listerThings.AllThings;
-                    if (allZones != null && allZones.Count > 0)
-                    {
-                        for (int i = 0; i < allZones.Count; i++)
-                        {
-                            //foreach (Thing t in allZones[i].AllContainedThings)
-                            //{
-                            Thing t = allZones[i];
-                                if (t.def == ThingDefOf.Silver)
-                                {
-                                    totalSilver += t.stackCount;
-                                }
-                            //}
-                        }
-                    }
-                    hashSilver = totalSilver;
+                    return hashSilver;
                 }
+                int totalSilver = 0;
+                List<Thing> allZones = Find.AnyPlayerHomeMap.listerThings.AllThings;
+                if (allZones != null && allZones.Count > 0)
+                {
+                    for (int i = 0; i < allZones.Count; i++)
+                    {
+                        //foreach (Thing t in allZones[i].AllContainedThings)
+                        //{
+                        Thing t = allZones[i];
+                            if (t.def == ThingDefOf.Silver)
+                            {
+                                totalSilver += t.stackCount;
+                            }
+                        //}
+                    }
+                }
+                hashSilver = totalSilver;
                 return hashSilver;
             }
         }

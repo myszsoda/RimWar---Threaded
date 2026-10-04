@@ -25,17 +25,18 @@ namespace RimWar.Planet
 
         public static WorldComponent_PowerTracker Get_WCPT()
         {
-            if (wcpt == null)
+            if (wcpt != null)
             {
-                List<WorldComponent> components = Find.World.components;
-                for (int i = 0; i < components.Count; i++)
+                return wcpt;
+            }
+            List<WorldComponent> components = Find.World.components;
+            for (int i = 0; i < components.Count; i++)
+            {
+                WorldComponent_PowerTracker cp = components[i] as WorldComponent_PowerTracker;
+                if (cp != null)
                 {
-                    WorldComponent_PowerTracker cp = components[i] as WorldComponent_PowerTracker;
-                    if (cp != null)
-                    {
-                        return cp;
-                        //wcpt = cp; // why does the world component get initialized twice?  this is leading to an empty world component and many manay bugs... for now, return the first component
-                    }
+                    return cp;
+                    //wcpt = cp; // why does the world component get initialized twice?  this is leading to an empty world component and many manay bugs... for now, return the first component
                 }
             }
             return wcpt;
@@ -74,17 +75,18 @@ namespace RimWar.Planet
 
         public static RimWarData GetRimWarDataForFaction(Faction faction)
         {
-            if (faction != null)
+            if (faction == null)
             {
-                WorldComponent_PowerTracker wcpt = Get_WCPT();
-                if (wcpt != null)
+                return null;
+            }
+            WorldComponent_PowerTracker wcpt = Get_WCPT();
+            if (wcpt != null)
+            {
+                for (int j = 0; j < wcpt.RimWarData.Count; j++)
                 {
-                    for (int j = 0; j < wcpt.RimWarData.Count; j++)
+                    if (wcpt.RimWarData[j].RandomKey == faction.randomKey)
                     {
-                        if (wcpt.RimWarData[j].RandomKey == faction.randomKey)
-                        {
-                            return wcpt.RimWarData[j];
-                        }
+                        return wcpt.RimWarData[j];
                     }
                 }
             }
@@ -104,19 +106,20 @@ namespace RimWar.Planet
         private static List<Faction> rimwarFactions = new List<Faction>();
         public static List<Faction> GetRimWarFactions(bool forceRelearn = false)
         {
-            if ((rimwarFactions == null || rimwarFactions.Count == 0) || forceRelearn)
+            if ((rimwarFactions != null && rimwarFactions.Count != 0) && !forceRelearn)
             {
-                rimwarFactions = new List<Faction>();
-                rimwarFactions.Clear();
-                foreach(Faction f in Find.FactionManager.AllFactionsInViewOrder)
+                return rimwarFactions;
+            }
+            rimwarFactions = new List<Faction>();
+            rimwarFactions.Clear();
+            foreach(Faction f in Find.FactionManager.AllFactionsInViewOrder)
+            {
+                foreach(RimWarData rwd in GetRimWarData())
                 {
-                    foreach(RimWarData rwd in GetRimWarData())
+                    if(rwd.RimWarFaction == f)
                     {
-                        if(rwd.RimWarFaction == f)
-                        {
-                            rimwarFactions.Add(f);
-                            break;
-                        }
+                        rimwarFactions.Add(f);
+                        break;
                     }
                 }
             }
@@ -125,47 +128,49 @@ namespace RimWar.Planet
 
         public static void CreateRimWarSettlement(RimWarData rwd, WorldObject wo)
         {
-            if (rwd != null && Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) && !rwd.RimWarFaction.defeated)
+            if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
-                RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-                if (rwsc != null)
+                return;
+            }
+            RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
+            if (rwsc != null)
+            {
+                rwsc.RimWarPoints = Mathf.RoundToInt(WorldUtility.CalculateSettlementPoints(wo, wo.Faction) * Rand.Range(.5f, 1.5f));
+                if (Find.TickManager.TicksGame > 20)
                 {
-                    rwsc.RimWarPoints = Mathf.RoundToInt(WorldUtility.CalculateSettlementPoints(wo, wo.Faction) * Rand.Range(.5f, 1.5f));
-                    if (Find.TickManager.TicksGame > 20)
-                    {
-                        RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_SettlementEvent);
-                        let.Label = "RW_LetterSettlementEvent".Translate();
-                        let.Text = "RW_LetterSettlementEventText".Translate(rwd.RimWarFaction, rwsc.RimWarPoints);
-                        let.lookTargets = wo;
-                        let.relatedFaction = rwd.RimWarFaction;
-                        RW_LetterMaker.Archive_RWLetter(let);
-                    }
+                    RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_SettlementEvent);
+                    let.Label = "RW_LetterSettlementEvent".Translate();
+                    let.Text = "RW_LetterSettlementEventText".Translate(rwd.RimWarFaction, rwsc.RimWarPoints);
+                    let.lookTargets = wo;
+                    let.relatedFaction = rwd.RimWarFaction;
+                    RW_LetterMaker.Archive_RWLetter(let);
                 }
-                else
-                {
-                    Log.Message("no rwsc found for " + wo.def.defName);
-                }
+            }
+            else
+            {
+                Log.Message("no rwsc found for " + wo.def.defName);
             }
         }
 
         public static void CreateRimWarSettlementWithPoints(RimWarData rwd, WorldObject wo, int points, bool displayLetter = false, int pointDamage = 0)
         {
-            if (rwd != null && Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) && !rwd.RimWarFaction.defeated)
+            if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
-                RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-                if (rwsc != null)
+                return;
+            }
+            RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
+            if (rwsc != null)
+            {
+                rwsc.RimWarPoints = points;
+                rwsc.PointDamage = pointDamage;
+                if (Find.TickManager.TicksGame > 20 && displayLetter)
                 {
-                    rwsc.RimWarPoints = points;
-                    rwsc.PointDamage = pointDamage;
-                    if (Find.TickManager.TicksGame > 20 && displayLetter)
-                    {
-                        RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_SettlementEvent);
-                        let.Label = "RW_LetterSettlementEvent".Translate();
-                        let.Text = "RW_LetterSettlementEventText".Translate(rwd.RimWarFaction, rwsc.RimWarPoints);
-                        let.lookTargets = wo;
-                        let.relatedFaction = rwd.RimWarFaction;
-                        RW_LetterMaker.Archive_RWLetter(let);
-                    }
+                    RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_SettlementEvent);
+                    let.Label = "RW_LetterSettlementEvent".Translate();
+                    let.Text = "RW_LetterSettlementEventText".Translate(rwd.RimWarFaction, rwsc.RimWarPoints);
+                    let.lookTargets = wo;
+                    let.relatedFaction = rwd.RimWarFaction;
+                    RW_LetterMaker.Archive_RWLetter(let);
                 }
             }
         }
@@ -194,18 +199,18 @@ namespace RimWar.Planet
 
         public static bool ValidForSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd, PlanetTile tile, Faction faction)
         {
-            if (warObject != null && !warObject.Destroyed && objectsHere != null && rwd != null && faction != null && !faction.defeated)
+            if (warObject == null || warObject.Destroyed || objectsHere == null || rwd == null || faction == null || faction.defeated)
             {
-                for (int i = 0; i < objectsHere.Count; i++)
-                {
-                    if (objectsHere[i].Tile == tile && !(objectsHere[i] is WarObject))
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                return false;
             }
-            return false;
+            for (int i = 0; i < objectsHere.Count; i++)
+            {
+                if (objectsHere[i].Tile == tile && !(objectsHere[i] is WarObject))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static void ConvertSettlement(RimWorld.Planet.Settlement worldSettlement, RimWarData rwdFrom, RimWarData rwdTo, int points, int pointDamage = 0)
@@ -1697,18 +1702,20 @@ namespace RimWar.Planet
 
         public static bool IsValidSettlement(WorldObject wo)
         {
-            if (wo != null)
+            if (wo == null)
             {
-                if (wo is RimWorld.Planet.Settlement)
+                return false;
+            }
+            if (!(wo is RimWorld.Planet.Settlement))
+            {
+                return false;
+            }
+            RimWorld.Planet.Settlement wos = wo as RimWorld.Planet.Settlement;
+            if (!wos.Destroyed && wos.Faction != null)
+            {
+                if (wo.def.defName == "Settlement" || wo.def.defName == "City_Faction" || wo.def.defName == "City_Citadel" || wo.def.defName == "FactionBaseGenerator")
                 {
-                    RimWorld.Planet.Settlement wos = wo as RimWorld.Planet.Settlement;
-                    if (!wos.Destroyed && wos.Faction != null)
-                    {
-                        if (wo.def.defName == "Settlement" || wo.def.defName == "City_Faction" || wo.def.defName == "City_Citadel" || wo.def.defName == "FactionBaseGenerator")
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
             return false;

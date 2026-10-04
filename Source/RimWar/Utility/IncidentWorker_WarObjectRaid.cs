@@ -129,31 +129,32 @@ namespace RimWar.Utility
 
         public override void ResolveRaidStrategy(IncidentParms parms, PawnGroupKindDef groupKind)
         {
+            if (parms.raidStrategy != null)
+            {
+                return;
+            }
+            Map map = (Map)parms.target;
+            DefDatabase<RaidStrategyDef>.AllDefs.Where(delegate (RaidStrategyDef d)
+            {
+                if (d.Worker.CanUseWith(parms, groupKind))
+                {
+                    if (parms.raidArrivalMode == null)
+                    {
+                        if (d.arriveModes != null)
+                        {
+                            return d.arriveModes.Any((PawnsArrivalModeDef x) => x.Worker.CanUseWith(parms));
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            }).TryRandomElementByWeight((RaidStrategyDef d) => d.Worker.SelectionWeight(map, parms.points), out RaidStrategyDef result);
+            parms.raidStrategy = result;
             if (parms.raidStrategy == null)
             {
-                Map map = (Map)parms.target;
-                DefDatabase<RaidStrategyDef>.AllDefs.Where(delegate (RaidStrategyDef d)
-                {
-                    if (d.Worker.CanUseWith(parms, groupKind))
-                    {
-                        if (parms.raidArrivalMode == null)
-                        {
-                            if (d.arriveModes != null)
-                            {
-                                return d.arriveModes.Any((PawnsArrivalModeDef x) => x.Worker.CanUseWith(parms));
-                            }
-                            return false;
-                        }
-                        return true;
-                    }
-                    return false;
-                }).TryRandomElementByWeight((RaidStrategyDef d) => d.Worker.SelectionWeight(map, parms.points), out RaidStrategyDef result);
-                parms.raidStrategy = result;
-                if (parms.raidStrategy == null)
-                {
-                    Log.Error("No raid stategy found, defaulting to ImmediateAttack. Faction=" + parms.faction.def.defName + ", points=" + parms.points + ", groupKind=" + groupKind + ", parms=" + parms);
-                    parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
-                }
+                Log.Error("No raid stategy found, defaulting to ImmediateAttack. Faction=" + parms.faction.def.defName + ", points=" + parms.points + ", groupKind=" + groupKind + ", parms=" + parms);
+                parms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
             }
         }
 

@@ -110,20 +110,21 @@ namespace RimWar.Planet
             }
             set
             {
-                if (value != paused)
+                if (value == paused)
                 {
-                    if (!value)
-                    {
-                        paused = false;
-                    }
-                    else if (!Moving)
-                    {
-                        Log.Error("Tried to pause warObject movement of " + warObject.ToStringSafe() + " but it's not moving.");
-                    }
-                    else
-                    {
-                        paused = true;
-                    }
+                    return;
+                }
+                if (!value)
+                {
+                    paused = false;
+                }
+                else if (!Moving)
+                {
+                    Log.Error("Tried to pause warObject movement of " + warObject.ToStringSafe() + " but it's not moving.");
+                }
+                else
+                {
+                    paused = true;
                 }
             }
         }

@@ -114,13 +114,14 @@ namespace RimWar.Planet
 
         public void EngageCaravanTarget(ContextStorage context)
         {
-            if(context.shouldExecute && context.destinationTarget != null)
+            if (!context.shouldExecute || context.destinationTarget == null)
             {
-                WarObject wo = context.destinationTarget as WarObject;
-                if(wo != null)
-                {
-                    wo.EngageCaravan(this.parent as Caravan);
-                }
+                return;
+            }
+            WarObject wo = context.destinationTarget as WarObject;
+            if(wo != null)
+            {
+                wo.EngageCaravan(this.parent as Caravan);
             }
         }
     }

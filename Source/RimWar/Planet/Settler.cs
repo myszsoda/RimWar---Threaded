@@ -146,20 +146,21 @@ namespace RimWar.Planet
 
         public override void EngageNearbyCaravan(Caravan car)
         {
-            if (ShouldInteractWith(car, this))
+            if (!ShouldInteractWith(car, this))
             {
-                if (this.Faction.HostileTo(car.Faction))
-                {
-                    WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
-                    car.pather.StopDead();
-                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), PawnGroupKindDefOf.Trader);
-                }
-                else
-                {
-                    WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
-                    car.pather.StopDead();
-                    IncidentUtility.DoCaravanTradeWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
-                }
+                return;
+            }
+            if (this.Faction.HostileTo(car.Faction))
+            {
+                WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
+                car.pather.StopDead();
+                IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), PawnGroupKindDefOf.Trader);
+            }
+            else
+            {
+                WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
+                car.pather.StopDead();
+                IncidentUtility.DoCaravanTradeWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
             }
         }
 

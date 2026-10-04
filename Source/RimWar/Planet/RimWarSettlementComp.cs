@@ -103,14 +103,15 @@ namespace RimWar.Planet
         {
             get
             {
-                if(UnderAttack && !parent.Faction.HostileTo(Faction.OfPlayer))
-                {                    
-                    foreach(WarObject attacker in AttackingUnits)
+                if (!UnderAttack || parent.Faction.HostileTo(Faction.OfPlayer))
+                {
+                    return false;
+                }
+                foreach(WarObject attacker in AttackingUnits)
+                {
+                    if(attacker.Faction.HostileTo(Faction.OfPlayer))
                     {
-                        if(attacker.Faction.HostileTo(Faction.OfPlayer))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 return false;
@@ -441,18 +442,18 @@ namespace RimWar.Planet
         {
             get
             {
-                if(PlayerSettlementsInRange.Count > 0)
+                if (PlayerSettlementsInRange.Count <= 0)
                 {
-                    foreach (Settlement s in PlayerSettlementsInRange)
-                    {
-                        if (this.RimWarPoints < (2f * s.GetComponent<RimWarSettlementComp>().RimWarPoints))
-                        {
-                            return true;
-                        }
-                    }
-                    return true;
+                    return false;
                 }
-                return false;
+                foreach (Settlement s in PlayerSettlementsInRange)
+                {
+                    if (this.RimWarPoints < (2f * s.GetComponent<RimWarSettlementComp>().RimWarPoints))
+                    {
+                        return true;
+                    }
+                }
+                return true;
             }
         }
 
@@ -525,62 +526,66 @@ namespace RimWar.Planet
 
         public override void CompTick()
         {
-            if (RWD != null)
+            if (RWD == null)
             {
-                if (RWD.behavior != RimWarBehavior.Player)// && RWD.behavior != RimWarBehavior.Vassal)
+                return;
+            }
+            if (RWD.behavior == RimWarBehavior.Player)// && RWD.behavior != RimWarBehavior.Vassal)
+            {
+                return;
+            }
+            if (nextCombatTick >= Find.TickManager.TicksGame)
+            {
+                return;
+            }
+            nextCombatTick = Find.TickManager.TicksGame + 2500; //every game hour
+            if (!ParentHasMap)
+            {
+                if (AttackingUnits.Count > 0)
                 {
-                    if (nextCombatTick < Find.TickManager.TicksGame)
+                    for (int i = 0; i < AttackingUnits.Count; i++)
                     {
-                        nextCombatTick = Find.TickManager.TicksGame + 2500; //every game hour
-                        if (!ParentHasMap)
+                        WarObject waro = AttackingUnits[i];
+                        if (this.EffectivePoints > 0)
                         {
-                            if (AttackingUnits.Count > 0)
-                            {
-                                for (int i = 0; i < AttackingUnits.Count; i++)
-                                {
-                                    WarObject waro = AttackingUnits[i];
-                                    if (this.EffectivePoints > 0)
-                                    {
-                                        IncidentUtility.ResolveCombat_Settlement(this, waro);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            IncidentUtility.UpdateUnitCombatStatus(AttackingUnits);
-                            UpdateUnitCombatStatus();
+                            IncidentUtility.ResolveCombat_Settlement(this, waro);
                         }
                     }
                 }
+            }
+            else
+            {
+                IncidentUtility.UpdateUnitCombatStatus(AttackingUnits);
+                UpdateUnitCombatStatus();
             }
         }
 
         public void UpdateUnitCombatStatus()
         {
-            if (FactionPawnsOnMap != null && FactionPawnsOnMap.Count > 0)
+            if (FactionPawnsOnMap == null || FactionPawnsOnMap.Count <= 0)
             {
-                //Log.Message("updating settlement units " + FactionPawnsOnMap.Count);
-                float tmpPoints = 0f;
-                foreach (Pawn p in FactionPawnsOnMap)
+                return;
+            }
+            //Log.Message("updating settlement units " + FactionPawnsOnMap.Count);
+            float tmpPoints = 0f;
+            foreach (Pawn p in FactionPawnsOnMap)
+            {
+                if (!p.DestroyedOrNull())
                 {
-                    if (!p.DestroyedOrNull())
+                    if (p.Dead || p.Downed)
                     {
-                        if (p.Dead || p.Downed)
-                        {
-                            tmpPoints += this.PointsPerPawn;
-                        }
-                        else
-                        {
-                            //Log.Message("summary health for " + p.LabelShort + " is " + p.health.summaryHealth.SummaryHealthPercent);
-                            tmpPoints += (this.PointsPerPawn * (1f - p.health.summaryHealth.SummaryHealthPercent));
-                        }
+                        tmpPoints += this.PointsPerPawn;
+                    }
+                    else
+                    {
+                        //Log.Message("summary health for " + p.LabelShort + " is " + p.health.summaryHealth.SummaryHealthPercent);
+                        tmpPoints += (this.PointsPerPawn * (1f - p.health.summaryHealth.SummaryHealthPercent));
                     }
                 }
-
-                //Log.Message("setting point damage to " + tmpPoints + " for " + this.RimWarPoints);
-                this.PointDamage = Mathf.RoundToInt(tmpPoints);                
             }
+
+            //Log.Message("setting point damage to " + tmpPoints + " for " + this.RimWarPoints);
+            this.PointDamage = Mathf.RoundToInt(tmpPoints);                
         }
 
         WorldObjectDef sendTypeDef = null;

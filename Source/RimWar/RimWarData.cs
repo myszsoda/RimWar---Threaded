@@ -331,16 +331,17 @@ namespace RimWar
         {
             get
             {
-                if (pointsFromSettlementsTickHash < Find.TickManager.TicksGame)
+                if (pointsFromSettlementsTickHash >= Find.TickManager.TicksGame)
                 {
-                    pointsFromSettlementsTickHash = Find.TickManager.TicksGame + Rand.Range(300, 310);
-                    int sum = 0;
-                    for (int i = 0; i < WarSettlementComps.Count; i++)
-                    {
-                        sum += WarSettlementComps[i].RimWarPoints;
-                    }
-                    pointsFromSettlementsCache = sum;
+                    return pointsFromSettlementsCache;
                 }
+                pointsFromSettlementsTickHash = Find.TickManager.TicksGame + Rand.Range(300, 310);
+                int sum = 0;
+                for (int i = 0; i < WarSettlementComps.Count; i++)
+                {
+                    sum += WarSettlementComps[i].RimWarPoints;
+                }
+                pointsFromSettlementsCache = sum;
                 return pointsFromSettlementsCache;
             }
         }
@@ -351,14 +352,15 @@ namespace RimWar
         {
             get
             {
-                if (ptsFromUnitsTickHash < Find.TickManager.TicksGame)
+                if (ptsFromUnitsTickHash >= Find.TickManager.TicksGame)
                 {
-                    ptsFromUnitsTickHash = Find.TickManager.TicksGame + Rand.Range(300, 310);
-                    ptsFromUnitsCache = 0;
-                    foreach (WarObject wo in FactionUnits)
-                    {
-                        ptsFromUnitsCache += wo.RimWarPoints;
-                    }
+                    return ptsFromUnitsCache;
+                }
+                ptsFromUnitsTickHash = Find.TickManager.TicksGame + Rand.Range(300, 310);
+                ptsFromUnitsCache = 0;
+                foreach (WarObject wo in FactionUnits)
+                {
+                    ptsFromUnitsCache += wo.RimWarPoints;
                 }
                 return ptsFromUnitsCache;
             }
@@ -370,17 +372,18 @@ namespace RimWar
         {
             get
             {
-                if (ptsFromRWWOTickHash < Find.TickManager.TicksGame)
+                if (ptsFromRWWOTickHash >= Find.TickManager.TicksGame)
                 {
-                    ptsFromRWWOTickHash = Find.TickManager.TicksGame + Rand.Range(600, 610);
-                    ptsFromRWWOCache = 0;
-                    foreach (WorldObject wo in FactionObjects)
+                    return ptsFromRWWOCache;
+                }
+                ptsFromRWWOTickHash = Find.TickManager.TicksGame + Rand.Range(600, 610);
+                ptsFromRWWOCache = 0;
+                foreach (WorldObject wo in FactionObjects)
+                {
+                    RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
+                    if (rwsc != null)
                     {
-                        RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-                        if (rwsc != null)
-                        {
-                            ptsFromRWWOCache += rwsc.RimWarPoints;
-                        }
+                        ptsFromRWWOCache += rwsc.RimWarPoints;
                     }
                 }
                 return ptsFromRWWOCache;

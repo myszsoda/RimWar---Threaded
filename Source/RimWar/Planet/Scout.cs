@@ -115,23 +115,24 @@ namespace RimWar.Planet
 
         public override void EngageNearbyCaravan(Caravan car)
         {
-            if (car != null)
+            if (car == null)
             {
-                if (car.Faction != null && car.Faction == Faction.OfPlayer && this.Faction.HostileTo(car.Faction) && CaravanDetected(car))
+                return;
+            }
+            if (car.Faction != null && car.Faction == Faction.OfPlayer && this.Faction.HostileTo(car.Faction) && CaravanDetected(car))
+            {
+                if (ShouldInteractWith(car, this) || (car.PlayerWealthForStoryteller / 105) <= (int)(this.RimWarPoints))
                 {
-                    if (ShouldInteractWith(car, this) || (car.PlayerWealthForStoryteller / 105) <= (int)(this.RimWarPoints))
-                    {
-                        this.interactable = false;
-                        IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
-                    }
+                    this.interactable = false;
+                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                 }
-                else
+            }
+            else
+            {
+                if (ShouldInteractWith(car, this))
                 {
-                    if (ShouldInteractWith(car, this))
-                    {
-                        this.interactable = false;
-                        IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
-                    }
+                    this.interactable = false;
+                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                 }
             }
         }

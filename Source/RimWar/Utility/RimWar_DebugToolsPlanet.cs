@@ -853,38 +853,39 @@ namespace RimWar.Utility
 
         public static RimWarData AddRimWarFaction(Faction faction, List<RimWarData> rwdList)
         {
-            if (!CheckForRimWarFaction(faction, rwdList))
+            if (CheckForRimWarFaction(faction, rwdList))
             {
-                //Log.Message("adding rimwar faction " + faction.Name);
-                RimWarData newRimWarFaction = new RimWarData(faction);
-                if (faction != null)
-                {
-                    GenerateFactionBehavior(newRimWarFaction);
-                    AssignFactionSettlements(newRimWarFaction);
-                }
-                Settlement s = newRimWarFaction.GetCapitol;
-                return newRimWarFaction;                
+                return null;
             }
-            return null;
+            //Log.Message("adding rimwar faction " + faction.Name);
+            RimWarData newRimWarFaction = new RimWarData(faction);
+            if (faction != null)
+            {
+                GenerateFactionBehavior(newRimWarFaction);
+                AssignFactionSettlements(newRimWarFaction);
+            }
+            Settlement s = newRimWarFaction.GetCapitol;
+            return newRimWarFaction;                
         }
 
         public static bool CheckForRimWarFaction(Faction faction, List<RimWarData> rwdList)
         {
-            if (rwdList != null)
+            if (rwdList == null)
             {
-                for (int i = 0; i < rwdList.Count; i++)
+                return false;
+            }
+            for (int i = 0; i < rwdList.Count; i++)
+            {
+                //Log.Message("checking faction " + faction + " against rwd faction: " + this.RimWarData[i].RimWarFaction);
+                if (rwdList[i].RandomKey == faction.randomKey)
                 {
-                    //Log.Message("checking faction " + faction + " against rwd faction: " + this.RimWarData[i].RimWarFaction);
-                    if (rwdList[i].RandomKey == faction.randomKey)
-                    {
-                        return true;
-                    }
-                    else if (rwdList[i].RimWarFaction.HasName && rwdList[i].RimWarFactionKey == (faction.Name + faction.randomKey).ToString())
-                    {
-                        //Log.Message("faction names same, factiond different");
-                        rwdList[i].RimWarFaction = faction;
-                        return true;
-                    }
+                    return true;
+                }
+                else if (rwdList[i].RimWarFaction.HasName && rwdList[i].RimWarFactionKey == (faction.Name + faction.randomKey).ToString())
+                {
+                    //Log.Message("faction names same, factiond different");
+                    rwdList[i].RimWarFaction = faction;
+                    return true;
                 }
             }
             return false;

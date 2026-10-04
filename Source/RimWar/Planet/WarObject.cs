@@ -663,14 +663,15 @@ namespace RimWar.Planet
 
         public virtual void InteractWithSite(WorldObject wo)
         {
-            if(wo is BattleSite)
+            if (!(wo is BattleSite))
             {
-                BattleSite bs = wo as BattleSite;
-                if(bs != null)
-                {
-                    bs.Units.Add(this);
-                    this.ImmediateDestroy();
-                }
+                return;
+            }
+            BattleSite bs = wo as BattleSite;
+            if(bs != null)
+            {
+                bs.Units.Add(this);
+                this.ImmediateDestroy();
             }
         }
 
@@ -830,18 +831,19 @@ namespace RimWar.Planet
 
         public void ValidateParentSettlement()
         {
-            if (this.ParentSettlement != null)
+            if (this.ParentSettlement == null)
             {
-                RimWorld.Planet.Settlement settlement = Find.WorldObjects.SettlementAt(this.ParentSettlement.Tile);
-                if (settlement == null || settlement.Faction != this.Faction || settlement.Destroyed)
-                {
-                    ////RimWar.Planet.Settlement rws = null;
-                    ////if (WorldUtility.GetRimWarDataForFaction(this.Faction).HasFactionSettlementFor(settlement, out rws))
-                    ////{
-                    ////    WorldUtility.GetRimWarDataForFaction(this.Faction).FactionSettlements.Remove(rws);
-                    ////}
-                    this.ParentSettlement = null;
-                }
+                return;
+            }
+            RimWorld.Planet.Settlement settlement = Find.WorldObjects.SettlementAt(this.ParentSettlement.Tile);
+            if (settlement == null || settlement.Faction != this.Faction || settlement.Destroyed)
+            {
+                ////RimWar.Planet.Settlement rws = null;
+                ////if (WorldUtility.GetRimWarDataForFaction(this.Faction).HasFactionSettlementFor(settlement, out rws))
+                ////{
+                ////    WorldUtility.GetRimWarDataForFaction(this.Faction).FactionSettlements.Remove(rws);
+                ////}
+                this.ParentSettlement = null;
             }
         }
 
@@ -925,38 +927,38 @@ namespace RimWar.Planet
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            if (Prefs.DevMode)
+            if (!Prefs.DevMode)
             {
-                List<Gizmo> gizmoIE = base.GetGizmos().ToList();
-                Command_Action command_Action1 = new Command_Action();
-                command_Action1.defaultLabel = "Dev: Destroy";
-                command_Action1.defaultDesc = "Destroys the Rim War object.";
-                command_Action1.action = delegate
-                {
-                    Destroy();
-                };
-                gizmoIE.Add(command_Action1);
-
-                Command_Action command_Action2 = new Command_Action();
-                command_Action2.defaultLabel = "Dev: Damage 100";
-                command_Action2.defaultDesc = "Damages the war object by 100 combat points.";
-                command_Action2.action = delegate
-                {
-                    this.PointDamage += 100;
-                };
-                gizmoIE.Add(command_Action2);
-
-                Command_Action command_Action3 = new Command_Action();
-                command_Action3.defaultLabel = "Dev: Add 1k";
-                command_Action3.defaultDesc = "Adds 1000 combat points.";
-                command_Action3.action = delegate
-                {
-                    this.RimWarPoints += 1000;
-                };
-                gizmoIE.Add(command_Action3);
-                return gizmoIE;
+                return base.GetGizmos();
             }
-            return base.GetGizmos();
+            List<Gizmo> gizmoIE = base.GetGizmos().ToList();
+            Command_Action command_Action1 = new Command_Action();
+            command_Action1.defaultLabel = "Dev: Destroy";
+            command_Action1.defaultDesc = "Destroys the Rim War object.";
+            command_Action1.action = delegate
+            {
+                Destroy();
+            };
+            gizmoIE.Add(command_Action1);
+
+            Command_Action command_Action2 = new Command_Action();
+            command_Action2.defaultLabel = "Dev: Damage 100";
+            command_Action2.defaultDesc = "Damages the war object by 100 combat points.";
+            command_Action2.action = delegate
+            {
+                this.PointDamage += 100;
+            };
+            gizmoIE.Add(command_Action2);
+
+            Command_Action command_Action3 = new Command_Action();
+            command_Action3.defaultLabel = "Dev: Add 1k";
+            command_Action3.defaultDesc = "Adds 1000 combat points.";
+            command_Action3.action = delegate
+            {
+                this.RimWarPoints += 1000;
+            };
+            gizmoIE.Add(command_Action3);
+            return gizmoIE;
         }
     }
 }

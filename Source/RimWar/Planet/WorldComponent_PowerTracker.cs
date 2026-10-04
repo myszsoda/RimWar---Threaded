@@ -391,52 +391,54 @@ namespace RimWar.Planet
 
         public void RemoveCaravanTarget(WorldObject wo)
         {
-            if (this.caravanTargetData != null && this.caravanTargetData.Count > 0)
+            if (this.caravanTargetData == null || this.caravanTargetData.Count <= 0)
             {
-                for (int i = 0; i < this.caravanTargetData.Count; i++)
+                return;
+            }
+            for (int i = 0; i < this.caravanTargetData.Count; i++)
+            {
+                CaravanTargetData ctd = caravanTargetData[i];
+                if (ctd.IsValid())
                 {
-                    CaravanTargetData ctd = caravanTargetData[i];
-                    if (ctd.IsValid())
-                    {
-                        if (ctd.caravan == wo || ctd.caravanTarget == wo)
-                        {
-                            this.caravanTargetData.Remove(ctd);
-                            break;
-                        }
-                    }
-                    else
+                    if (ctd.caravan == wo || ctd.caravanTarget == wo)
                     {
                         this.caravanTargetData.Remove(ctd);
                         break;
                     }
+                }
+                else
+                {
+                    this.caravanTargetData.Remove(ctd);
+                    break;
                 }
             }
         }
 
         public void AdjustCaravanTargets()
         {
-            if (this.caravanTargetData != null && this.caravanTargetData.Count > 0)
+            if (this.caravanTargetData == null || this.caravanTargetData.Count <= 0)
             {
-                for (int i = 0; i < this.caravanTargetData.Count; i++)
+                return;
+            }
+            for (int i = 0; i < this.caravanTargetData.Count; i++)
+            {
+                CaravanTargetData ctd = caravanTargetData[i];
+                if (ctd.IsValid())
                 {
-                    CaravanTargetData ctd = caravanTargetData[i];
-                    if (ctd.IsValid())
+                    if (!ctd.caravanTarget.interactable)
                     {
-                        if (!ctd.caravanTarget.interactable)
-                        {
-                            //Messages.Message("No longer able to interact with " + ctd.caravanTarget.Name + " - clearing target.", MessageTypeDefOf.RejectInput);
-                            this.caravanTargetData.Remove(ctd);
-                        }
-                        if (ctd.CaravanTargetTile.Valid && ctd.CaravanDestination != ctd.CaravanTargetTile)
-                        {
-                            ctd.caravan.pather.StartPath(ctd.CaravanTargetTile, ctd.caravan.pather.ArrivalAction, true);
-                        }
-                    }
-                    else
-                    {
+                        //Messages.Message("No longer able to interact with " + ctd.caravanTarget.Name + " - clearing target.", MessageTypeDefOf.RejectInput);
                         this.caravanTargetData.Remove(ctd);
-                        break;
                     }
+                    if (ctd.CaravanTargetTile.Valid && ctd.CaravanDestination != ctd.CaravanTargetTile)
+                    {
+                        ctd.caravan.pather.StartPath(ctd.CaravanTargetTile, ctd.caravan.pather.ArrivalAction, true);
+                    }
+                }
+                else
+                {
+                    this.caravanTargetData.Remove(ctd);
+                    break;
                 }
             }
         }
@@ -677,53 +679,55 @@ namespace RimWar.Planet
 
         private void GetFactionForVictoryChallenge()
         {
-            if (this.victoryFaction == null)
+            if (this.victoryFaction != null)
             {
-                if (Active_RWD != null && Active_RWD.Count > 0)
+                return;
+            }
+            if (Active_RWD == null || Active_RWD.Count <= 0)
+            {
+                return;
+            }
+            List<Faction> potentialFactions = new List<Faction>();
+            potentialFactions.Clear();
+            for (int i = 0; i < Active_RWD.Count; i++)
+            {
+                if (Settings.Instance.factionDefForRival == null)
                 {
-                    List<Faction> potentialFactions = new List<Faction>();
-                    potentialFactions.Clear();
-                    for (int i = 0; i < Active_RWD.Count; i++)
+                    if (!Active_RWD[i].RimWarFaction.def.hidden && Active_RWD[i].RimWarFaction.def.humanlikeFaction && Active_RWD[i].RimWarFaction != Faction.OfPlayer && !WorldUtility.IsVassalFaction(Active_RWD[i].RimWarFaction))
                     {
-                        if (Settings.Instance.factionDefForRival == null)
-                        {
-                            if (!Active_RWD[i].RimWarFaction.def.hidden && Active_RWD[i].RimWarFaction.def.humanlikeFaction && Active_RWD[i].RimWarFaction != Faction.OfPlayer && !WorldUtility.IsVassalFaction(Active_RWD[i].RimWarFaction))
-                            {
-                                potentialFactions.Add(Active_RWD[i].RimWarFaction);
-                            }
-                        }
-                        else
-                        {
-                            if(Active_RWD[i].RimWarFaction.def.defName == Settings.Instance.factionDefForRival.defName)
-                            {
-                                potentialFactions.Add(Active_RWD[i].RimWarFaction);
-                            }
-                        }
+                        potentialFactions.Add(Active_RWD[i].RimWarFaction);
                     }
-                    if (potentialFactions.Count > 0)
+                }
+                else
+                {
+                    if(Active_RWD[i].RimWarFaction.def.defName == Settings.Instance.factionDefForRival.defName)
                     {
-                        this.victoryFaction = potentialFactions.RandomElement();
-                        //this.victoryFaction.def.naturalColonyGoodwill = new IntRange(-100, -100);
-                        List<RimWorld.Planet.Settlement> wosList = WorldUtility.GetRimWarDataForFaction(this.victoryFaction).WorldSettlements;
-                        if (wosList != null)
-                        {
-                            for (int j = 0; j < wosList.Count; j++)
-                            {
-                                RimWarSettlementComp rwsc = wosList[j].GetComponent<RimWarSettlementComp>();
-                                if (rwsc != null)
-                                {
-                                    rwsc.RimWarPoints = Mathf.RoundToInt(rwsc.RimWarPoints * Rand.Range(1.3f, 1.8f));
-                                }
-                            }
-                        }
+                        potentialFactions.Add(Active_RWD[i].RimWarFaction);
                     }
-                    else
-                    {
-                        this.victoryFaction = Active_RWD.RandomElement().RimWarFaction;
-                    }
-                    Find.LetterStack.ReceiveLetter("RW_VictoryChallengeLabel".Translate(), "RW_VictoryChallengeMessage".Translate(this.victoryFaction.Name), LetterDefOf.ThreatBig);
                 }
             }
+            if (potentialFactions.Count > 0)
+            {
+                this.victoryFaction = potentialFactions.RandomElement();
+                //this.victoryFaction.def.naturalColonyGoodwill = new IntRange(-100, -100);
+                List<RimWorld.Planet.Settlement> wosList = WorldUtility.GetRimWarDataForFaction(this.victoryFaction).WorldSettlements;
+                if (wosList != null)
+                {
+                    for (int j = 0; j < wosList.Count; j++)
+                    {
+                        RimWarSettlementComp rwsc = wosList[j].GetComponent<RimWarSettlementComp>();
+                        if (rwsc != null)
+                        {
+                            rwsc.RimWarPoints = Mathf.RoundToInt(rwsc.RimWarPoints * Rand.Range(1.3f, 1.8f));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this.victoryFaction = Active_RWD.RandomElement().RimWarFaction;
+            }
+            Find.LetterStack.ReceiveLetter("RW_VictoryChallengeLabel".Translate(), "RW_VictoryChallengeMessage".Translate(this.victoryFaction.Name), LetterDefOf.ThreatBig);
         }
 
         public void UpdatePlayerAggression()
@@ -908,36 +912,38 @@ namespace RimWar.Planet
 
         public void AddRimWarFaction(Faction faction)
         {
-            if (!CheckForRimWarFaction(faction))
+            if (CheckForRimWarFaction(faction))
             {
-                RimWarData newRimWarFaction = new RimWarData(faction);
-                if (faction != null)
-                {
-                    GenerateFactionBehavior(newRimWarFaction);
-                    AssignFactionSettlements(newRimWarFaction);
-                }
-                Settlement s = newRimWarFaction.GetCapitol;
-                this.RimWarData.Add(newRimWarFaction);
+                return;
             }
+            RimWarData newRimWarFaction = new RimWarData(faction);
+            if (faction != null)
+            {
+                GenerateFactionBehavior(newRimWarFaction);
+                AssignFactionSettlements(newRimWarFaction);
+            }
+            Settlement s = newRimWarFaction.GetCapitol;
+            this.RimWarData.Add(newRimWarFaction);
         }
 
         private bool CheckForRimWarFaction(Faction faction)
         {
-            if (this.RimWarData != null)
+            if (this.RimWarData == null)
             {
-                for (int i = 0; i < this.RimWarData.Count; i++)
+                return false;
+            }
+            for (int i = 0; i < this.RimWarData.Count; i++)
+            {
+                //Log.Message("checking faction " + faction + " against rwd faction: " + this.RimWarData[i].RimWarFaction);
+                if (RimWarData[i].RandomKey == faction.randomKey)
                 {
-                    //Log.Message("checking faction " + faction + " against rwd faction: " + this.RimWarData[i].RimWarFaction);
-                    if (RimWarData[i].RandomKey == faction.randomKey)
-                    {
-                        return true;
-                    }
-                    else if (RimWarData[i].RimWarFaction.HasName && RimWarData[i].RimWarFactionKey == (faction.Name + faction.randomKey).ToString())
-                    {
-                        //Log.Message("faction names same, factiond different");
-                        RimWarData[i].RimWarFaction = faction;
-                        return true;
-                    }
+                    return true;
+                }
+                else if (RimWarData[i].RimWarFaction.HasName && RimWarData[i].RimWarFactionKey == (faction.Name + faction.randomKey).ToString())
+                {
+                    //Log.Message("faction names same, factiond different");
+                    RimWarData[i].RimWarFaction = faction;
+                    return true;
                 }
             }
             return false;

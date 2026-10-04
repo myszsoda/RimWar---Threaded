@@ -319,34 +319,35 @@ namespace RimWar.Harmony
 
         public static void ShuttleArrived_SettlementHasAttackers_Postfix(List<ActiveTransporterInfo> pods, PlanetTile tile, MapParent ___mapParent)
         {
-            if (___mapParent != null && ___mapParent.HasMap)
+            if (___mapParent == null || !___mapParent.HasMap)
             {
-                Map map = ___mapParent.Map;
-                RimWarSettlementComp rwsc = ___mapParent.GetComponent<RimWarSettlementComp>();
-                if (rwsc != null)
+                return;
+            }
+            Map map = ___mapParent.Map;
+            RimWarSettlementComp rwsc = ___mapParent.GetComponent<RimWarSettlementComp>();
+            if (rwsc != null)
+            {
+                if (rwsc.PointDamage > 0)
                 {
-                    if (rwsc.PointDamage > 0)
+                    int sdmg = rwsc.PointDamage;
+                    IEnumerable<Pawn> list = from p in map.mapPawns.AllPawnsSpawned
+                                             where (p.Faction != null && p.Faction == rwsc.parent.Faction)
+                                             select p;
+                    if (list != null)
                     {
-                        int sdmg = rwsc.PointDamage;
-                        IEnumerable<Pawn> list = from p in map.mapPawns.AllPawnsSpawned
-                                                 where (p.Faction != null && p.Faction == rwsc.parent.Faction)
-                                                 select p;
-                        if (list != null)
+                        while (sdmg > 0)
                         {
-                            while (sdmg > 0)
-                            {
-                                float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, sdmg);
-                                sdmg -= Mathf.RoundToInt(ptDam * 2f);
-                                DamageInfo dinfo = new DamageInfo(RimWarDefOf.RW_CombatInjury, ptDam);
-                                try { list.RandomElement().TakeDamage(dinfo); } catch { }
-                            }
+                            float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, sdmg);
+                            sdmg -= Mathf.RoundToInt(ptDam * 2f);
+                            DamageInfo dinfo = new DamageInfo(RimWarDefOf.RW_CombatInjury, ptDam);
+                            try { list.RandomElement().TakeDamage(dinfo); } catch { }
                         }
                     }
-                    if (rwsc.UnderAttack)
-                    {
-                        //Log.Message("generate settlement attackers");
-                        IncidentUtility.GenerateSettlementAttackers(rwsc, map);
-                    }
+                }
+                if (rwsc.UnderAttack)
+                {
+                    //Log.Message("generate settlement attackers");
+                    IncidentUtility.GenerateSettlementAttackers(rwsc, map);
                 }
             }
             //else
@@ -423,34 +424,35 @@ namespace RimWar.Harmony
 
         public static void PodsArrived_SettlementHasAttackers_Postfix(List<ActiveTransporterInfo> transporters, PlanetTile tile, Settlement ___settlement)
         {
-            if(___settlement != null && ___settlement.HasMap)
+            if (___settlement == null || !___settlement.HasMap)
             {
-                Map map = ___settlement.Map;
-                RimWarSettlementComp rwsc = ___settlement.GetComponent<RimWarSettlementComp>();
-                if(rwsc != null)
+                return;
+            }
+            Map map = ___settlement.Map;
+            RimWarSettlementComp rwsc = ___settlement.GetComponent<RimWarSettlementComp>();
+            if(rwsc != null)
+            {
+                if (rwsc.PointDamage > 0)
                 {
-                    if (rwsc.PointDamage > 0)
+                    int sdmg = rwsc.PointDamage;
+                    IEnumerable<Pawn> list = from p in map.mapPawns.AllPawnsSpawned
+                                             where (p.Faction != null && p.Faction == rwsc.parent.Faction)
+                                             select p;
+                    if (list != null)
                     {
-                        int sdmg = rwsc.PointDamage;
-                        IEnumerable<Pawn> list = from p in map.mapPawns.AllPawnsSpawned
-                                                 where (p.Faction != null && p.Faction == rwsc.parent.Faction)
-                                                 select p;
-                        if (list != null)
+                        while (sdmg > 0)
                         {
-                            while (sdmg > 0)
-                            {
-                                float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, sdmg);
-                                sdmg -= Mathf.RoundToInt(ptDam * 2f);
-                                DamageInfo dinfo = new DamageInfo(RimWarDefOf.RW_CombatInjury, ptDam);
-                                try { list.RandomElement().TakeDamage(dinfo); } catch { }
-                            }
+                            float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, sdmg);
+                            sdmg -= Mathf.RoundToInt(ptDam * 2f);
+                            DamageInfo dinfo = new DamageInfo(RimWarDefOf.RW_CombatInjury, ptDam);
+                            try { list.RandomElement().TakeDamage(dinfo); } catch { }
                         }
                     }
-                    if (rwsc.UnderAttack)
-                    {
-                        //Log.Message("generate settlement attackers");
-                        IncidentUtility.GenerateSettlementAttackers(rwsc, map);
-                    }
+                }
+                if (rwsc.UnderAttack)
+                {
+                    //Log.Message("generate settlement attackers");
+                    IncidentUtility.GenerateSettlementAttackers(rwsc, map);
                 }
             }
             //else
@@ -496,31 +498,34 @@ namespace RimWar.Harmony
         private static int settlementGenPoints = 0;
         public static bool GenStep_Map_ID_Prefix(IntVec3 c, Map map, GenStepParams parms)
         {
-            if(map != null)
+            if (map == null)
             {
-                WorldObject wo = Find.WorldObjects.WorldObjectAt(map.Tile, WorldObjectDefOf.Settlement);
-                if (wo != null)
-                {
-                    RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-                    if(rwsc != null)
-                    {
-                        settlementGenPoints = rwsc.RimWarPoints;
-                    }
-                }
-
+                return true;
             }
+            WorldObject wo = Find.WorldObjects.WorldObjectAt(map.Tile, WorldObjectDefOf.Settlement);
+            if (wo != null)
+            {
+                RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
+                if(rwsc != null)
+                {
+                    settlementGenPoints = rwsc.RimWarPoints;
+                }
+            }
+
             return true;
         }
 
         public static bool GenStep_Map_Params_Prefix(string symbol, ref ResolveParams resolveParams, string customNameForPath)
         {
-            if(resolveParams.pawnGroupMakerParams != null)
+            if (resolveParams.pawnGroupMakerParams == null)
             {
-                if (settlementGenPoints != 0)
-                {
-                    resolveParams.pawnGroupMakerParams.points = Mathf.Clamp(settlementGenPoints, 0, 20000);
-                }
+                return true;
             }
+            if (settlementGenPoints == 0)
+            {
+                return true;
+            }
+            resolveParams.pawnGroupMakerParams.points = Mathf.Clamp(settlementGenPoints, 0, 20000);
             return true;            
         }
 
@@ -672,26 +677,27 @@ namespace RimWar.Harmony
 
         public static void Pather_StartPath_WarObjects_Postfix(Caravan_PathFollower __instance, Caravan ___caravan, PlanetTile destTile, CaravanArrivalAction arrivalAction, ref bool __result, bool repathImmediately = false, bool resetPauseStatus = true)
         {
-            if (__result == true)
+            if (__result != true)
             {
-                if (arrivalAction is RimWar.Planet.CaravanArrivalAction_AttackWarObject)
-                {
-                    //Log.Message("assigning war object action: attack");
-                    CaravanArrivalAction_AttackWarObject woAction = arrivalAction as CaravanArrivalAction_AttackWarObject;
-                    woAction.wo.interactable = true;
-                    RimWar.Planet.WorldUtility.Get_WCPT().AssignCaravanTargets(___caravan, woAction.wo);
-                }
-                else if (arrivalAction is RimWar.Planet.CaravanArrivalAction_EngageWarObject)
-                {
-                    //Log.Message("assigning war object action: engage");
-                    CaravanArrivalAction_EngageWarObject woAction = arrivalAction as CaravanArrivalAction_EngageWarObject;
-                    woAction.wo.interactable = true;
-                    RimWar.Planet.WorldUtility.Get_WCPT().AssignCaravanTargets(___caravan, woAction.wo);
-                }
-                else
-                {
-                    WorldUtility.Get_WCPT().RemoveCaravanTarget(___caravan);
-                }
+                return;
+            }
+            if (arrivalAction is RimWar.Planet.CaravanArrivalAction_AttackWarObject)
+            {
+                //Log.Message("assigning war object action: attack");
+                CaravanArrivalAction_AttackWarObject woAction = arrivalAction as CaravanArrivalAction_AttackWarObject;
+                woAction.wo.interactable = true;
+                RimWar.Planet.WorldUtility.Get_WCPT().AssignCaravanTargets(___caravan, woAction.wo);
+            }
+            else if (arrivalAction is RimWar.Planet.CaravanArrivalAction_EngageWarObject)
+            {
+                //Log.Message("assigning war object action: engage");
+                CaravanArrivalAction_EngageWarObject woAction = arrivalAction as CaravanArrivalAction_EngageWarObject;
+                woAction.wo.interactable = true;
+                RimWar.Planet.WorldUtility.Get_WCPT().AssignCaravanTargets(___caravan, woAction.wo);
+            }
+            else
+            {
+                WorldUtility.Get_WCPT().RemoveCaravanTarget(___caravan);
             }
         }
 
@@ -738,15 +744,16 @@ namespace RimWar.Harmony
 
         public static bool IncidentQueueAdd_Replacement_Prefix(IncidentQueue __instance, IncidentDef def, int fireTick, IncidentParms parms = null, int retryDurationTicks = 0)
         {
-            if (def == IncidentDefOf.TraderCaravanArrival && fireTick == (Find.TickManager.TicksGame + 120000))
+            if (def != IncidentDefOf.TraderCaravanArrival || fireTick != (Find.TickManager.TicksGame + 120000))
             {
-                RimWarSettlementComp rwdTown = WorldUtility.GetClosestSettlementOfFaction(parms.faction, parms.target.Tile, 100);
-                if (rwdTown != null)
-                {
-                    WorldUtility.CreateTrader(Mathf.RoundToInt(rwdTown.RimWarPoints / 2), WorldUtility.GetRimWarDataForFaction(rwdTown.parent.Faction), rwdTown.parent as RimWorld.Planet.Settlement, rwdTown.parent.Tile, Find.WorldObjects.SettlementAt(parms.target.Tile), WorldObjectDefOf.Settlement);
-                    rwdTown.RimWarPoints = Mathf.RoundToInt(rwdTown.RimWarPoints / 2);
-                    return false;
-                }
+                return true;
+            }
+            RimWarSettlementComp rwdTown = WorldUtility.GetClosestSettlementOfFaction(parms.faction, parms.target.Tile, 100);
+            if (rwdTown != null)
+            {
+                WorldUtility.CreateTrader(Mathf.RoundToInt(rwdTown.RimWarPoints / 2), WorldUtility.GetRimWarDataForFaction(rwdTown.parent.Faction), rwdTown.parent as RimWorld.Planet.Settlement, rwdTown.parent.Tile, Find.WorldObjects.SettlementAt(parms.target.Tile), WorldObjectDefOf.Settlement);
+                rwdTown.RimWarPoints = Mathf.RoundToInt(rwdTown.RimWarPoints / 2);
+                return false;
             }
             return true;
         }
@@ -829,11 +836,12 @@ namespace RimWar.Harmony
         public static bool IncidentWorker_Prefix(IncidentWorker __instance, IncidentParms parms, ref bool __result)
         {
             //Log.Message("def " + __instance.def);
-            if (__instance.def == null)
+            if (__instance.def != null)
             {
-                Traverse.Create(root: __instance).Field(name: "def").SetValue(IncidentDefOf.RaidEnemy);
-                __instance.def = IncidentDefOf.RaidEnemy;
+                return true;
             }
+            Traverse.Create(root: __instance).Field(name: "def").SetValue(IncidentDefOf.RaidEnemy);
+            __instance.def = IncidentDefOf.RaidEnemy;
             //Log.Message("def tale " + __instance.def.tale);
             //Log.Message("def category tale " + __instance.def.category.tale);
             return true;
@@ -871,52 +879,53 @@ namespace RimWar.Harmony
 
         private static void Settlement_InspectString_WithPoints_Postfix(Settlement __instance, ref string __result)
         {
-            if (__instance != null && !__instance.Faction.def.hidden)
+            if (__instance == null || __instance.Faction.def.hidden)
             {
-                RimWarSettlementComp rwsc = __instance.GetComponent<RimWarSettlementComp>();
-                RimWarData rwd = WorldUtility.GetRimWarDataForFaction(__instance.Faction);
-                if (rwsc != null && rwd != null)
+                return;
+            }
+            RimWarSettlementComp rwsc = __instance.GetComponent<RimWarSettlementComp>();
+            RimWarData rwd = WorldUtility.GetRimWarDataForFaction(__instance.Faction);
+            if (rwsc != null && rwd != null)
+            {
+                string text = "";
+                if (!__result.NullOrEmpty())
                 {
-                    string text = "";
-                    if (!__result.NullOrEmpty())
-                    {
-                        text += "\n";
-                    }
-                    if (rwsc.PointDamage > 0)
-                    {
-                        text += "RW_SettlementPointsDamaged".Translate(rwsc.RimWarPoints, rwsc.PointDamage) + "\n" + "RW_FactionBehavior".Translate(rwd.behavior.ToString());
-                    }
-                    else
-                    {
-                        text += "RW_SettlementPoints".Translate(rwsc.RimWarPoints) + "\n" + "RW_FactionBehavior".Translate(rwd.behavior.ToString());
-                    }
-                    if (rwd.GetCapitol != null && rwd.GetCapitol == __instance)
-                    {
-                        text += "\n" + "RW_Capitol".Translate();
-                    }
-                    if(rwsc.UnderAttack)
-                    {
-                        string attackers = "";
-                        foreach(WarObject waro in rwsc.AttackingUnits)
-                        {
-                            attackers += "\n" + waro.Faction.Name + " " + waro.RimWarPoints + " (" + waro.PointDamage + ")";
-                        }
-                        text += "\n" + "RW_SettlementUnderAttackText".Translate(attackers);
-                    }
-                    if (rwsc.RWD.behavior == RimWarBehavior.Player)
-                    {
-                        text += "\n"+"RW_AggressionDefense".Translate(WorldUtility.Get_WCPT().minimumHeatForPlayerAction);
-                    }
-                    else if(rwsc.RWD.behavior == RimWarBehavior.Vassal)
-                    {
-                        text += "\n" + "RW_AggressionDefense".Translate(rwsc.vassalHeat);
-                    }
-                    else
-                    {
-                        text += "\n"+"RW_AggressionPoints".Translate(rwsc.PlayerHeat);
-                    }
-                    __result += text;
+                    text += "\n";
                 }
+                if (rwsc.PointDamage > 0)
+                {
+                    text += "RW_SettlementPointsDamaged".Translate(rwsc.RimWarPoints, rwsc.PointDamage) + "\n" + "RW_FactionBehavior".Translate(rwd.behavior.ToString());
+                }
+                else
+                {
+                    text += "RW_SettlementPoints".Translate(rwsc.RimWarPoints) + "\n" + "RW_FactionBehavior".Translate(rwd.behavior.ToString());
+                }
+                if (rwd.GetCapitol != null && rwd.GetCapitol == __instance)
+                {
+                    text += "\n" + "RW_Capitol".Translate();
+                }
+                if(rwsc.UnderAttack)
+                {
+                    string attackers = "";
+                    foreach(WarObject waro in rwsc.AttackingUnits)
+                    {
+                        attackers += "\n" + waro.Faction.Name + " " + waro.RimWarPoints + " (" + waro.PointDamage + ")";
+                    }
+                    text += "\n" + "RW_SettlementUnderAttackText".Translate(attackers);
+                }
+                if (rwsc.RWD.behavior == RimWarBehavior.Player)
+                {
+                    text += "\n"+"RW_AggressionDefense".Translate(WorldUtility.Get_WCPT().minimumHeatForPlayerAction);
+                }
+                else if(rwsc.RWD.behavior == RimWarBehavior.Vassal)
+                {
+                    text += "\n" + "RW_AggressionDefense".Translate(rwsc.vassalHeat);
+                }
+                else
+                {
+                    text += "\n"+"RW_AggressionPoints".Translate(rwsc.PlayerHeat);
+                }
+                __result += text;
             }
         }
 

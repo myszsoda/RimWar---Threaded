@@ -93,34 +93,37 @@ namespace RimWar.Planet
 
         public override void EngageNearbyCaravan(Caravan car)
         {
-            if (ShouldInteractWith(car, this))
+            if (!ShouldInteractWith(car, this))
             {
-                if (this.Faction.HostileTo(car.Faction))
-                {
-                    WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
-                    car.pather.StopDead();                    
-                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), PawnGroupKindDefOf.Trader);
-                }
-                else
-                {
-                    WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
-                    car.pather.StopDead();
-                    IncidentUtility.DoCaravanTradeWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
-                }
+                return;
+            }
+            if (this.Faction.HostileTo(car.Faction))
+            {
+                WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
+                car.pather.StopDead();                    
+                IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), PawnGroupKindDefOf.Trader);
+            }
+            else
+            {
+                WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
+                car.pather.StopDead();
+                IncidentUtility.DoCaravanTradeWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
             }
         }
 
         public override void EngageNearbyWarObject(WarObject rwo)
         {
-            if (rwo is Trader && !this.tradedWithTrader)
+            if (!(rwo is Trader) || this.tradedWithTrader)
             {
-                if (rwo.Faction != null && !rwo.Faction.HostileTo(this.Faction))
-                {
-                    //trade with another AI faction
-                    this.tradedWithTrader = true;
-                    IncidentUtility.ResolveRimWarTrade(this, rwo as Trader);
-                }
+                return;
             }
+            if (rwo.Faction == null || rwo.Faction.HostileTo(this.Faction))
+            {
+                return;
+            }
+            //trade with another AI faction
+            this.tradedWithTrader = true;
+            IncidentUtility.ResolveRimWarTrade(this, rwo as Trader);
         }        
 
         public override void ImmediateAction(WorldObject wo)
