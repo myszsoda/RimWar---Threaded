@@ -733,7 +733,6 @@ namespace RimWar.Harmony
             Faction ofPlayer = Faction.OfPlayer;
             int goodwillChange = -25;
             bool canSendMessage = false;
-            string reason = "GoodwillChangedReason_RequestedMilitaryAid".Translate();
             faction.TryAffectGoodwillWith(ofPlayer, goodwillChange, canSendMessage, true, HistoryEventDefOf.RequestedMilitaryAid);
             IncidentParms incidentParms = new IncidentParms();
             incidentParms.target = map;
@@ -815,19 +814,6 @@ namespace RimWar.Harmony
                     {
                         continue;
                     }
-                    float marketValue = 0;
-                    for (int j = 0; j < demands.Count; j++)
-                    {
-                        marketValue += (demands[j].Thing.MarketValue * demands[j].Count);
-                    }
-                    //Log.Message("market value of caravan ransom is " + marketValue);
-                    int points = warObject[i].RimWarPoints + Mathf.RoundToInt(marketValue / 20);
-                    //if (warObject[i].ParentSettlement != null)
-                    //{
-                    //    ConsolidatePoints reconstitute = new ConsolidatePoints(points, Mathf.RoundToInt(Find.WorldGrid.TraversalDistanceBetween(caravan.Tile, warObject[i].ParentSettlement.Tile) * warObject[i].TicksPerMove) + Find.TickManager.TicksGame);
-                    //    warObject[i].WarSettlementComp.SettlementPointGains.Add(reconstitute);
-                    //    warObject[i].ImmediateAction(null);
-                    //}
                     warObject[i].interactable = false;
                     break;
                 }

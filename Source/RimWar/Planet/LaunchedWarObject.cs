@@ -20,7 +20,6 @@ namespace RimWar.Planet
         private bool arrived;
         private PlanetTile initialTile = PlanetTile.Invalid;
         private float traveledPct;
-        private const float TravelSpeed = 0.00025f;
 
         public Faction FactionOwner => base.Faction;
         public bool IsPlayerControlled => base.Faction == Faction.OfPlayer;
@@ -53,8 +52,6 @@ namespace RimWar.Planet
                 return Vector3.zero;
             }
         }
-
-        private static readonly Color WarObjectDefaultColor = new Color(1f, 1f, 1f);
 
         public override void ExposeData()
         {

@@ -21,7 +21,7 @@ namespace RimWar.Utility
         {
             get
             {
-                List<WarObject> tmpWO = WONearbyResult;
+                _ = WONearbyResult;
                 return woGTIList;
             }
         }

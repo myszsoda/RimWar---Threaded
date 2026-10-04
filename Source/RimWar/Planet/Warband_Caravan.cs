@@ -12,8 +12,6 @@ namespace RimWar.Planet
     [StaticConstructorOnStartup]
     public class Warband_Caravan : Caravan
     {
-        private int warbandPowerint;
-
         public Faction WarBandFaction => base.Faction;
 
         public IncidentParms parms;

@@ -29,7 +29,6 @@ namespace RimWar.Planet
 
         private bool movesAtNight = false;
         public bool launched = false;
-        private const int ImmobilizedCacheDuration = 60;
         public bool interactable = true;
 
         private RimWorld.Planet.Settlement parentSettlement = null;
@@ -76,13 +75,6 @@ namespace RimWar.Planet
                 }
                 return 0f;
             }
-        }
-
-        public class ContextStorage
-        {
-            internal bool shouldExecute;
-            internal WorldObject destinationTarget;
-            internal PlanetTile destinationTile;
         }
 
         public virtual WorldObjectDef GetDef
@@ -503,7 +495,7 @@ namespace RimWar.Planet
                         {
                             ArrivalAction();
                         }
-                        catch (NullReferenceException ex)
+                        catch (NullReferenceException)
                         {
                             Log.Message(this.Name + " threw an error during arrival - rwd(" + this.rimwarData + ") dest(" + this.DestinationTarget + ") parent(" + this.ParentSettlement + ")");
                             this.Destroy();

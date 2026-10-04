@@ -157,7 +157,6 @@ namespace RimWar.Utility
 
         protected override bool TryResolveRaidFaction(IncidentParms parms)
         {
-            Map map = (Map)parms.target;
             if (parms.faction != null)
             {
                 return true;

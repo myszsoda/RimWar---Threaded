@@ -21,10 +21,6 @@ namespace RimWar.Planet
 
         public static readonly Material FeedbackGoto = MaterialPool.MatFrom("Things/Mote/FeedbackGoto", ShaderDatabase.WorldOverlayTransparent, WorldMaterials.DynamicObjectRenderQueue);
 
-        private const float Duration = 0.5f;
-
-        private const float BaseSize = 0.8f;
-
         public void RenderMote()
         {
             float num = (Time.time - lastOrderedToTileTime) / 0.5f;

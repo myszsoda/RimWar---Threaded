@@ -14,7 +14,6 @@ namespace RimWar.Planet
     {
         private int lastEventTick = 0;
         private int ticksPerMove = 2500;
-        private int searchTick = 60;
         public bool tradedWithSettlement = false;
         public bool tradedWithTrader = false;
         public bool tradedWithPlayer = false;

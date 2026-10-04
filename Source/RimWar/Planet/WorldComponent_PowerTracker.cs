@@ -26,10 +26,7 @@ namespace RimWar.Planet
 
         //Do Once per load
         private bool factionsLoaded = false;
-        private int factionCount = 0;
         private int nextEvaluationTick = 20;
-        private int targetRangeDivider = 100;
-        private int totalTowns = 10;
         public Faction victoryFaction = null;
         private bool victoryDeclared = false;
         private bool rwdInitialized = false;
@@ -46,9 +43,7 @@ namespace RimWar.Planet
             public Dictionary<string, object> rwd = new Dictionary<string, object>();
             internal int targetRange;
             internal SettingsRef settingsRef;
-            internal List<WorldObject> woList;
             internal List<Settlement> tmpSettlements;
-            internal object warSettlement;
             internal bool shouldExecute;
             internal WorldObject destinationTarget;
             internal PlanetTile destinationTile;
@@ -105,7 +100,6 @@ namespace RimWar.Planet
             }
         }
 
-        private List<RimWarSettlementComp> allRimWarSettlements;
         public List<RimWarSettlementComp> AllRimWarSettlements
         {
             get
@@ -138,7 +132,6 @@ namespace RimWar.Planet
                 this.worldObjects = value;
             }
         }
-        List<WorldObject> worldObjectsOfPlayer = new List<WorldObject>();
 
         private List<RimWarData> rimwarData;
         public List<RimWarData> RimWarData
@@ -787,7 +780,6 @@ namespace RimWar.Planet
 
         public void IncrementSettlementGrowth()
         {
-            this.totalTowns = 0;
             Options.SettingsRef settingsref = new Options.SettingsRef();
             for (int i = 0; i < this.RimWarData.Count; i++)
             {
@@ -801,7 +793,6 @@ namespace RimWar.Planet
                     }
                     for (int j = 0; j < rwd.WorldSettlements.Count; j++)
                     {
-                        totalTowns++;
                         RimWarSettlementComp rwdTown = rwd.WorldSettlements[j].GetComponent<RimWarSettlementComp>();
                         if (rwdTown != null)
                         {
@@ -875,8 +866,7 @@ namespace RimWar.Planet
                         if (frPlayer != null && frPlayer.kind != frVassalKind)
                         {
                             rwd.RimWarFaction.SetRelation(frPlayer);
-                            bool letterSent;
-                            rwd.RimWarFaction.Notify_RelationKindChanged(f, frVassalKind, false, "Vassal Alignment", rwd.GetCapitol, out letterSent);
+                            rwd.RimWarFaction.Notify_RelationKindChanged(f, frVassalKind, false, "Vassal Alignment", rwd.GetCapitol, out _);
                         }
                     }
                 }
@@ -922,7 +912,7 @@ namespace RimWar.Planet
                 GenerateFactionBehavior(newRimWarFaction);
                 AssignFactionSettlements(newRimWarFaction);
             }
-            Settlement s = newRimWarFaction.GetCapitol;
+            _ = newRimWarFaction.GetCapitol;
             this.RimWarData.Add(newRimWarFaction);
         }
 
@@ -1155,7 +1145,6 @@ namespace RimWar.Planet
                                                                  bool ignoreRestrictions = false,
                                                                  ContextStorage context = null)
         {
-            var settingsRef = context.settingsRef;
             var tmpSettlements = context.tmpSettlements;
             var targetRange = context.targetRange;
 
@@ -1430,7 +1419,6 @@ namespace RimWar.Planet
                                                                   bool ignoreRestrictions = false,
                                                                   ContextStorage context = null)
         {
-            var settingsRef = context.settingsRef;
             var tmpSettlements = context.tmpSettlements;
             var targetRange = context.targetRange;
 
@@ -2266,7 +2254,7 @@ namespace RimWar.Planet
                     int maxPts = Mathf.RoundToInt(rwsComp.RimWarPoints * .5f);
                     if (maxPts >= pts || ignoreRestrictions)
                     {
-                        Trader tdr = WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
+                        WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
                         rwsComp.RimWarPoints -= pts;
                         if (targetTown.Faction == Faction.OfPlayer)
                         {
@@ -2335,7 +2323,7 @@ namespace RimWar.Planet
                     int maxPts = Mathf.RoundToInt(rwsComp.RimWarPoints * .5f);
                     if (maxPts >= pts || ignoreRestrictions)
                     {
-                        Trader tdr = WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
+                        WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
                         rwsComp.RimWarPoints -= pts;
                         if (targetTown.Faction == Faction.OfPlayer)
                         {
@@ -2359,7 +2347,6 @@ namespace RimWar.Planet
             {
                 if (rwd != null && rwsComp != null && parentSettlement != null)
                 {
-                    Options.SettingsRef settingsRef = new Options.SettingsRef();
                     if (rwsComp.RimWarPoints > 200 || ignoreRestrictions)
                     {
                         tasker.Register((Func<ContextStorage>)(() =>
@@ -2396,7 +2383,6 @@ namespace RimWar.Planet
             {
                 if (rwd != null && rwsComp != null && parentSettlement != null)
                 {
-                    Options.SettingsRef settingsRef = new Options.SettingsRef();
                     //if (rwsComp.RimWarPoints > 200 || ignoreRestrictions)
                     //{
                     this.AttemptTradeMission_UnThreaded(rwd, parentSettlement, rwsComp, forcePlayer, ignoreRestrictions);
@@ -2529,7 +2515,6 @@ namespace RimWar.Planet
             {
                 if (rwd != null && rwsComp != null)
                 {
-                    Options.SettingsRef settingsRef = new Options.SettingsRef();
                     if (rwsComp.RimWarPoints > 1000)
                     {
                         tasker.Register((Func<ContextStorage>)(() =>
@@ -2566,7 +2551,6 @@ namespace RimWar.Planet
             {
                 if (rwd != null && rwsComp != null)
                 {
-                    Options.SettingsRef settingsRef = new Options.SettingsRef();
                     if (rwsComp.RimWarPoints > 1000)
                     {
                         this.AttemptDiplomatMission_UnThreaded(rwd, parentSettlement, rwsComp);
@@ -2585,14 +2569,13 @@ namespace RimWar.Planet
         {
             if (rwd != null && rwsComp != null && parentSettlement != null)
             {
-                Options.SettingsRef settingsRef = new Options.SettingsRef();
                 if (rwsComp.RimWarPoints > 1000 || ignoreRestrictions)
                 {
                     RimWorld.Planet.Settlement targetTown = targetSettlement;
                     if (targetTown != null)
                     {
                         int pts = Mathf.RoundToInt(.4f * rwsComp.RimWarPoints);
-                        Trader tdr = WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
+                        WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
                         rwsComp.RimWarPoints -= pts;
                         rwsComp.bonusGrowthCount += Mathf.RoundToInt((float)pts / 10f);
                     }

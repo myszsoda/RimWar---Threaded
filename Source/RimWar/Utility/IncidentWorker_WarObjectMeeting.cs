@@ -15,7 +15,6 @@ namespace RimWar.Utility
 {
     public class IncidentWorker_WarObjectMeeting : IncidentWorker
     {
-        private const int MapSize = 100;
         WarObject wo = null;
         int pointDamage = 0;
 
@@ -33,10 +32,9 @@ namespace RimWar.Utility
             {
                 return true;
             }
-            Faction faction;
             if (CaravanIncidentUtility.CanFireIncidentWhichWantsToGenerateMapAt(parms.target.Tile))
             {
-                return TryFindFaction(out faction);
+                return TryFindFaction(out _);
             }
             return false;
         }

@@ -157,7 +157,6 @@ namespace RimWar.Planet
             }
             if (Prefs.DevMode)
             {
-                List<Gizmo> gizmoIE = base.GetGizmos().ToList();
                 Command_Action command_Action1 = new Command_Action();
                 command_Action1.defaultLabel = "Dev: Destroy";
                 command_Action1.defaultDesc = "Destroys the site and all contained objects.";

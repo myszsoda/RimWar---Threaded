@@ -576,7 +576,6 @@ namespace RimWar
             }
         }
 
-        private List<WarObject> factionUnits;
         public List<WarObject> FactionUnits
         {
             get
@@ -585,7 +584,6 @@ namespace RimWar
             }
         }
 
-        private List<WorldObject> factionObjects;
         public List<WorldObject> FactionObjects
         {
             get

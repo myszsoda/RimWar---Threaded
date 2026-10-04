@@ -28,8 +28,6 @@ namespace RimWar.Utility
         public static DiaNode FactionDialogFor(Pawn negotiator, Faction faction)
         {
             MethodBase RequestRoyalHeirChangeOption = AccessTools.Method(typeof(FactionDialogMaker), "RequestRoyalHeirChangeOption", null, null);
-            MethodBase RoyalHeirChangeConfirm = AccessTools.Method(typeof(FactionDialogMaker), "RoyalHeirChangeConfirm", null, null);
-            MethodBase RoyalHeirChangeCandidates = AccessTools.Method(typeof(FactionDialogMaker), "RoyalHeirChangeCandidates", null, null);
             MethodBase RequestAICoreQuest = AccessTools.Method(typeof(FactionDialogMaker), "RequestAICoreQuest", null, null);
             MethodBase DebugOptions = AccessTools.Method(typeof(FactionDialogMaker), "DebugOptions", null, null);
 
@@ -410,7 +408,6 @@ namespace RimWar.Utility
                 {
                     Faction ofPlayer = Faction.OfPlayer;
                     bool canSendMessage = false;
-                    string reason = "GoodwillChangedReason_RequestedMilitaryAid".Translate();
                     faction.TryAffectGoodwillWith(ofPlayer, -requestCost, canSendMessage, true, HistoryEventDefOf.RequestedMilitaryAid);
                     wos.GetComponent<RimWarSettlementComp>().RimWarPoints -= minPoints;
                     WorldUtility.CreateLaunchedWarband(minPoints, rwd, wos, wos.Tile, Find.WorldObjects.SettlementAt(map.Tile), WorldObjectDefOf.Settlement);
@@ -428,7 +425,6 @@ namespace RimWar.Utility
                 {
                     Faction ofPlayer = Faction.OfPlayer;
                     bool canSendMessage = false;
-                    string reason = "GoodwillChangedReason_RequestedMilitaryAid".Translate();
                     faction.TryAffectGoodwillWith(ofPlayer, -requestCost, canSendMessage, true, HistoryEventDefOf.RequestedMilitaryAid);
                     wos.GetComponent<RimWarSettlementComp>().RimWarPoints -= minPoints;
                     WorldUtility.CreateLaunchedWarband(minPoints, rwd, wos, wos.Tile, Find.WorldObjects.SettlementAt(map.Tile), WorldObjectDefOf.Settlement);
@@ -542,7 +538,6 @@ namespace RimWar.Utility
         {
             Faction ofPlayer = Faction.OfPlayer;
             bool canSendMessage = false;
-            string reason = "GoodwillChangedReason_RequestedMilitaryAid".Translate();
             faction.TryAffectGoodwillWith(ofPlayer, -callRelationsCost, canSendMessage, true, HistoryEventDefOf.RequestedMilitaryAid);
             sendingSettlement.GetComponent<RimWarSettlementComp>().RimWarPoints -= pts;
             WorldUtility.CreateWarObjectOfType(rwo, pts, rwd, sendingSettlement, sendingSettlement.Tile, Find.WorldObjects.SettlementAt(map.Tile), WorldObjectDefOf.Settlement, PlanetTile.Invalid);

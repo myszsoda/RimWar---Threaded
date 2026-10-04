@@ -14,8 +14,6 @@ namespace RimWar.Planet
     {
         private int lastEventTick = 0;
         private int ticksPerMove = 2000;
-        private int searchTick = 60;
-        private int scanRange = 2;
 
         public override void ExposeData()
         {

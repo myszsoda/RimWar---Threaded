@@ -1643,7 +1643,7 @@ namespace RimWar.Planet
                     bool hasRelation = false;
                     for (int k = 0; k < rwdList.Count; k++)
                     {
-                        Settlement capitol = rwdList[k].GetCapitol;
+                        _ = rwdList[k].GetCapitol;
                         for (int i = 0; i < factions.Count; i++)
                         {
                             List<FactionRelation> fr = Traverse.Create(root: factions[i]).Field(name: "relations").GetValue<List<FactionRelation>>();
@@ -1719,8 +1719,7 @@ namespace RimWar.Planet
                 _fr.other = otherFaction;
                 _fr.baseGoodwill = Rand.Range(-100, 100);
                 _fr.kind = FactionRelationKind.Neutral;
-                bool sentLetter = false;
-                _fr.CheckKindThresholds(thisFaction, false, "", GlobalTargetInfo.Invalid, out sentLetter);
+                _fr.CheckKindThresholds(thisFaction, false, "", GlobalTargetInfo.Invalid, out _);
                 fr.Add(_fr);
                 Traverse.Create(root: thisFaction).Field(name: "relations").SetValue(fr);
             }

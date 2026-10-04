@@ -11,22 +11,6 @@ namespace RimWar
 {
     public static class RimWarFactionUtility
     {
-        private const float FactionColorRectSize = 15f;
-
-        private const float FactionColorRectGap = 10f;
-
-        private const float RowMinHeight = 80f;
-
-        private const float LabelRowHeight = 50f;
-
-        private const float TypeColumnWidth = 100f;
-
-        private const float NameColumnWidth = 250f;
-
-        private const float RelationsColumnWidth = 90f;
-
-        private const float NameLeftMargin = 15f;
-
         public static void DoWindowContents(Rect fillRect, ref Vector2 scrollPosition, ref float scrollViewHeight)
         {
             Rect position = new Rect(0f, 0f, fillRect.width, fillRect.height);

@@ -12,10 +12,6 @@ namespace RimWar.Utility
 {
     public static class TweenerUtility
     {
-        private const float BaseRadius = 0.15f;
-
-        private const float BaseDistToCollide = 0.2f;
-
         public static Vector3 PatherTweenedPosRoot(WarObject warObject)
         {
             WorldGrid worldGrid = Verse.Find.WorldGrid;

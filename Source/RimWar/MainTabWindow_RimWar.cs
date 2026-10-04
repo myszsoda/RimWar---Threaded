@@ -38,20 +38,7 @@ namespace RimWar
 
         private static RimWarTab curTab = RimWarTab.Relations;
 
-        private static bool showLetters = true; //only this is needed
-        private static bool showMessages = false;
-
-        private const float MessagesRowHeight = 30f;
-
-        private const float PinColumnSize = 30f;
-
-        private const float PinSize = 22f;
-
-        private const float IconColumnSize = 30f;
-
-        private const float DateSize = 200f;
-
-        private const float SpaceBetweenColumns = 10f;
+        private static bool showLetters = true;
 
         private static readonly Texture2D PinTex = ContentFinder<Texture2D>.Get("UI/Icons/Pin");
 
@@ -60,13 +47,6 @@ namespace RimWar
         public override Vector2 RequestedTabSize => new Vector2(1010f, 640f);
         Vector2 scrollPosition = Vector2.zero;
         float scrollViewHeight;
-
-        public static RocketTasker<ContextStorage> tasker = new RocketTasker<ContextStorage>();
-        public static int MainthreadID = -1;
-
-        public class ContextStorage
-        {
-        }
 
         public override void PreOpen()
         {
@@ -157,7 +137,6 @@ namespace RimWar
         {
             rect.yMin += 10f;
             //Widgets.CheckboxLabeled(new Rect(rect.x, rect.y, 200f, 30f), "ShowLetters".Translate(), ref showLetters, false, null, null, placeCheckboxNearText: true);
-            //Widgets.CheckboxLabeled(new Rect(rect.x + 200f, rect.y, 200f, 30f), "ShowMessages".Translate(), ref showMessages, false, null, null, placeCheckboxNearText: true);
             rect.yMin += 40f;
             bool flag = false;
             Rect outRect = rect;

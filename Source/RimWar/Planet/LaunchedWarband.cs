@@ -14,7 +14,6 @@ namespace RimWar.Planet
         private int lastEventTick = 0;
         private bool movesAtNight = false;
         private int ticksPerMove = 3300;
-        private int searchTick = 60;
 
         public override void ExposeData()
         {

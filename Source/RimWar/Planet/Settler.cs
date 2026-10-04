@@ -13,7 +13,6 @@ namespace RimWar.Planet
     {
         private int lastEventTick = 0;
         private int ticksPerMove = 2500;
-        private int searchTick = 60;
 
         public override bool UseDestinationTile => true;
 

@@ -25,7 +25,7 @@ namespace RimWar.Utility
             // LaunchedWarObjects fly directly, so simple distance calculation
             float distance = Find.WorldGrid.ApproxDistanceInTiles(from, to);
 
-            // Use the LaunchedWarObject's travel speed (from LaunchedWarObject.TravelSpeed)
+            // Use the LaunchedWarObject's travel speed
             // LaunchedWarObjects travel at 0.00025f tiles per tick
             float travelTimePerTile = 1f / 0.00025f; // 4000 ticks per tile
 

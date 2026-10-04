@@ -29,10 +29,6 @@ namespace RimWar.Planet
         public PlanetTile lastPathedTargetTile;
         public const int MaxMoveTicks = 60000;
 
-        private const int MaxCheckAheadNodes = 20;
-        private const int MinCostWalk = 50;
-        private const int MinCostAmble = 60;
-
         public const float DefaultPathCostToPayPerTick = 1f;
         public const int FinalNoRestPushMaxDurationTicks = 10000;
 

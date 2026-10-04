@@ -493,7 +493,6 @@ namespace RimWar.Planet
             {
                 return;
             }
-            float combinedPoints = attacker.RimWarPoints + defender.RimWarPoints;
             float attackerRoll = Rand.Value;
             float defenderRoll = Rand.Value;
             float attackerResult = attackerRoll * attacker.RimWarPoints * attacker.rimwarData.combatAttribute;
@@ -538,7 +537,6 @@ namespace RimWar.Planet
         {
             if (ValidateRimWarAction(attacker, defenderTown, WorldUtility.GetAllWorldObjectsAtExcept(attacker.Tile, attacker)))
             {
-                float combinedPoints = attacker.RimWarPoints + defenderTown.RimWarPoints;
                 float attackerRoll = Rand.Value;
                 float defenderRoll = Rand.Value;
                 float attackerResult = attackerRoll * attacker.RimWarPoints * attacker.rimwarData.combatAttribute;
@@ -867,7 +865,6 @@ namespace RimWar.Planet
                                                     PawnsArrivalModeDef arrivalMode)
         {
             IncidentParms parms = new IncidentParms();
-            PawnGroupKindDef kindDef = PawnGroupKindDefOf.Trader;
             parms.faction = rwd.RimWarFaction;
             parms.raidArrivalMode = arrivalMode;
             parms.points = warObject.RimWarPoints;
@@ -895,7 +892,6 @@ namespace RimWar.Planet
                 return;
             }
             IncidentParms parms = new IncidentParms();
-            PawnGroupKindDef kindDef = PawnGroupKindDefOf.Trader;
             parms.faction = rwd.RimWarFaction;
             parms.raidArrivalMode = arrivalMode;
             parms.points = warObject.RimWarPoints;
@@ -921,7 +917,6 @@ namespace RimWar.Planet
                                                 PawnsArrivalModeDef arrivalMode)
         {
             IncidentParms parms = new IncidentParms();
-            PawnGroupKindDef kindDef = PawnGroupKindDefOf.Peaceful;
             parms.faction = rwd.RimWarFaction;
             parms.raidArrivalMode = arrivalMode;
             parms.points = warObject.RimWarPoints;
@@ -1215,7 +1210,6 @@ namespace RimWar.Planet
 
             float defenderPoints = Mathf.Clamp(defender.EffectivePoints, 0, pointClamp);
             float attackerPoints = Mathf.Clamp(attacker.EffectivePoints, 0, pointClamp);
-            float combinedPoints = attackerPoints + defenderPoints;
             float attackerRoll = Rand.Value;
             float defenderRoll = Rand.Value;
             float attackerResult = attackerRoll * attackerPoints * attacker.rimwarData.combatAttribute;
@@ -1236,11 +1230,6 @@ namespace RimWar.Planet
 
             float atkMod = Rand.Range(.5f, .7f);
             float defMod = Rand.Range(.5f, .7f);
-
-            //endPointsAttacker = (attacker.RimWarPoints * (1 - ((Rand.Range(.3f, .5f) * defender.RimWarPoints) / combinedPoints))); //always lose points in relation to warband sizes
-            //int attackerPointDamage = Mathf.RoundToInt(endPointsAttacker);
-            //endPointsDefender = (defender.RimWarPoints * (1 - ((Rand.Range(.3f, .5f) * attacker.RimWarPoints) / combinedPoints))); //always lose points in relation to warband sizes
-            //int defenderPointDamage = Mathf.RoundToInt(endPointsDefender);
 
             if (attackerResult > defenderResult)
             {
@@ -1431,7 +1420,6 @@ namespace RimWar.Planet
 
             float defenderPoints = Mathf.Clamp(defender.EffectivePoints, 0, pointClamp);
             float attackerPoints = Mathf.Clamp(attacker.EffectivePoints, 0, pointClamp);
-            float combinedPoints = attackerPoints + defenderPoints;
             float attackerRoll = Rand.Value;
             float defenderRoll = Rand.Value;
             float attackerResult = attackerRoll * attackerPoints * attacker.rimwarData.combatAttribute;
@@ -1637,8 +1625,7 @@ namespace RimWar.Planet
             spawnedList.AddRange(list);
             foreach (WarObject rwo in rwsc.AttackingUnits)
             {
-                IntVec3 defPoint = default(IntVec3);
-                IEnumerable<Pawn> rwoPawns = GeneratePawnGroup(rwo, map, HostileThingsFromList(spawnedList, rwo.Faction), out defPoint);
+                IEnumerable<Pawn> rwoPawns = GeneratePawnGroup(rwo, map, HostileThingsFromList(spawnedList, rwo.Faction), out _);
                 InflictPointDamageToPawnGroup(rwo.Pawns, rwo.PointDamage);
                 spawnedList.AddRange(rwoPawns);
             }
@@ -1650,20 +1637,9 @@ namespace RimWar.Planet
             spawnedList.Clear();
             foreach (WarObject rwo in rws.Units)
             {
-                IntVec3 defPoint = default(IntVec3);
-                //RCellFinder.TryFindRandomCellNearTheCenterOfTheMapWith(delegate (IntVec3 x)
-                //{
-                //    if (x.Standable(orGenerateMap) && !x.Fogged(orGenerateMap))
-                //    {
-                //        return x.GetRoom(orGenerateMap).CellCount >= 40;
-                //    }
-                //    return false;
-                //}, orGenerateMap, out defPoint);
-                IEnumerable<Pawn> rwoPawns = GeneratePawnGroup(rwo, map, HostileThingsFromList(spawnedList, rwo.Faction), out defPoint);
+                IEnumerable<Pawn> rwoPawns = GeneratePawnGroup(rwo, map, HostileThingsFromList(spawnedList, rwo.Faction), out _);
                 InflictPointDamageToPawnGroup(rwo.Pawns, rwo.PointDamage);
                 spawnedList.AddRange(rwoPawns);
-                //LordJob_DefendPoint ljd = new LordJob_DefendPoint(defPoint);
-                //LordMaker.MakeNewLord(rwo.Faction, ljd, orGenerateMap, rwoPawns);
             }
         }
 

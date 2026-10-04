@@ -26,7 +26,6 @@ namespace RimWar.Planet
         {
             internal bool shouldExecute;
             internal WorldObject destinationTarget;
-            internal int destinationTile;
         }
 
         public static RocketTasker<ContextStorage> tasker = new RocketTasker<ContextStorage>();

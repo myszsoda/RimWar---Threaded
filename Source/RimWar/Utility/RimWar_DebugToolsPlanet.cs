@@ -462,7 +462,6 @@ namespace RimWar.Utility
         [DebugAction("Rim War - Debug Log", "Settlements in Range", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         private static void LogRimWarSettlementsInRange()
         {
-            List<Settlement> settlementsInRange = new List<Settlement>();
             int tile = GenWorld.MouseTile();
             WorldObject wo = Find.WorldObjects.SettlementAt(tile);
             RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
@@ -810,7 +809,6 @@ namespace RimWar.Utility
                 rwdList.Clear();
             }
 
-            List<Faction> factionList = Find.FactionManager.AllFactions.ToList();
             List<Faction> rimwarFactions = new List<Faction>();
             rimwarFactions.Clear();
             if (rwdList != null && rwdList.Count > 0)
@@ -862,7 +860,7 @@ namespace RimWar.Utility
                 GenerateFactionBehavior(newRimWarFaction);
                 AssignFactionSettlements(newRimWarFaction);
             }
-            Settlement s = newRimWarFaction.GetCapitol;
+            _ = newRimWarFaction.GetCapitol;
             return newRimWarFaction;
         }
 

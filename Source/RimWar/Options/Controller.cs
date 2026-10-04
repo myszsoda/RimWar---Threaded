@@ -62,13 +62,11 @@ namespace RimWar.Options
                 bool hasSettlement = false;
                 bool hasPeaceful = false;
                 bool hasTrader = false;
-                int factionDefGroupCount = 0;
                 List<PawnGenOption> pgoListOptions = new List<PawnGenOption>();
                 pgoListOptions.Clear();
                 float totalCommonality = 0;
                 if (fd.pawnGroupMakers != null && fd.pawnGroupMakers.Count > 0)
                 {
-                    factionDefGroupCount = fd.pawnGroupMakers.Count;
                     for (int i = 0; i < fd.pawnGroupMakers.Count; i++)
                     {
                         PawnGroupMaker pgm = fd.pawnGroupMakers[i];
@@ -241,7 +239,6 @@ namespace RimWar.Options
             scrollPosition = GUI.BeginScrollView(canvas, scrollPosition, sRect, false, true);
             //Widgets.BeginScrollView(canvas, ref scrollPosition, canvas, true);
 
-            SettingsRef settingsRef = new SettingsRef();
             Rect rect1 = new Rect(canvas);
             rect1.width *= .4f;
             num++;

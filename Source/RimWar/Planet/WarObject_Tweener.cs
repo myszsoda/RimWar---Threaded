@@ -15,7 +15,6 @@ namespace RimWar.Planet
 
         private Vector3 tweenedPos = Vector3.zero;
         private Vector3 lastTickSpringPos;
-        private const float SpringTightness = 0.09f;
         public Vector3 TweenedPos => tweenedPos;
         public Vector3 LastTickTweenedVelocity => TweenedPos - lastTickSpringPos;
         public Vector3 TweenedPosRoot => Utility.TweenerUtility.PatherTweenedPosRoot(warObject) + Utility.TweenerUtility.WarObjectCollisionPosOffsetFor(warObject);

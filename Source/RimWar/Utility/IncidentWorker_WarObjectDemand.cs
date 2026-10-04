@@ -15,27 +15,17 @@ namespace RimWar.Utility
 {
     public class IncidentWorker_WarObjectDemand : IncidentWorker
     {
-        private const int MapSize = 100;
         WarObject wo = null;
         int pointDamage = 0;
 
         private static readonly FloatRange DemandAsPercentageOfCaravan = new FloatRange(0.05f, 0.2f);
         private static readonly FloatRange IncidentPointsFactorRange = new FloatRange(1f, 1.7f);
-        private const float DemandAnimalsWeight = 0.15f;
-        private const float DemandColonistOrPrisonerWeight = 0.15f;
-        private const float DemandItemsWeight = 1.5f;
-        private const float MaxDemandedAnimalsPct = 0.6f;
-        private const float MinDemandedMarketValue = 300f;
-        private const float MaxDemandedMarketValue = 3500f;
-        private const float TrashMarketValueThreshold = 50f;
-        private const float IgnoreApparelMarketValueThreshold = 500f;
 
         protected override bool CanFireNowSub(IncidentParms parms)
         {
-            Faction faction;
             if (CaravanIncidentUtility.CanFireIncidentWhichWantsToGenerateMapAt(parms.target.Tile))
             {
-                return PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(parms.points, out faction);
+                return PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(parms.points, out _);
             }
             return false;
         }
@@ -56,7 +46,6 @@ namespace RimWar.Utility
             {
                 rwcc.currentTarget = null;
             }
-            bool factionCanFight = WorldUtility.FactionCanFight((int)parms.points, parms.faction);
             List<ThingCount> demands = GenerateDemands(caravan);
             int silverAvailable = IncidentUtility.TryGetAvailableSilver(caravan);
             RimWarSettlementComp rwsc = WorldUtility.GetClosestSettlementOfFaction(caravan.Faction, caravan.Tile, 40);
