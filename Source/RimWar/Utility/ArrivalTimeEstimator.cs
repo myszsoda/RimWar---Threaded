@@ -14,7 +14,7 @@ namespace RimWar.Utility
         public static int EstimatedTicksToArrive(PlanetTile from, PlanetTile to, WarObject warObject)
         {
             float distance = Find.WorldGrid.ApproxDistanceInTiles(from, to);
-            float travelTimePerTile = 2500f/warObject.MovementModifier;
+            float travelTimePerTile = 2500f / warObject.MovementModifier;
             int travelTime = Mathf.RoundToInt(distance * travelTimePerTile);
             return travelTime;
         }

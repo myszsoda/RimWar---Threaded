@@ -120,7 +120,7 @@ namespace RimWar.Planet
             transportShip.ArriveAt(cell, mapParent);
             //foreach (ActiveDropPodInfo pod in pods)
             //{
-                
+
             //    pod.missionShuttleHome = missionShuttleHome;
             //    pod.missionShuttleTarget = missionShuttleTarget;
             //    pod.sendAwayIfQuestFinished = sendAwayIfQuestFinished;

@@ -17,9 +17,9 @@ namespace RimWar.Utility
             List<WorldObject> worldObjects = Verse.Find.WorldObjects.AllWorldObjects;
             List<WarObject> warObjects = new List<WarObject>();
             warObjects.Clear();
-            for(int i = 0; i < worldObjects.Count; i++)
+            for (int i = 0; i < worldObjects.Count; i++)
             {
-                if(worldObjects[i].def == RimWarDefOf.RW_WarObject)
+                if (worldObjects[i].def == RimWarDefOf.RW_WarObject)
                 {
                     warObjects.Add((WarObject)worldObjects[i]);
                 }

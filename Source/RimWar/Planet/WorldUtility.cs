@@ -112,18 +112,18 @@ namespace RimWar.Planet
             }
             rimwarFactions = new List<Faction>();
             rimwarFactions.Clear();
-            foreach(Faction f in Find.FactionManager.AllFactionsInViewOrder)
+            foreach (Faction f in Find.FactionManager.AllFactionsInViewOrder)
             {
-                foreach(RimWarData rwd in GetRimWarData())
+                foreach (RimWarData rwd in GetRimWarData())
                 {
-                    if(rwd.RimWarFaction == f)
+                    if (rwd.RimWarFaction == f)
                     {
                         rimwarFactions.Add(f);
                         break;
                     }
                 }
             }
-            return rimwarFactions;         
+            return rimwarFactions;
         }
 
         public static void CreateRimWarSettlement(RimWarData rwd, WorldObject wo)
@@ -152,7 +152,8 @@ namespace RimWar.Planet
             }
         }
 
-        public static void CreateRimWarSettlementWithPoints(RimWarData rwd, WorldObject wo, int points, bool displayLetter = false, int pointDamage = 0)
+        public static void CreateRimWarSettlementWithPoints(RimWarData rwd, WorldObject wo, int points,
+                                                            bool displayLetter = false, int pointDamage = 0)
         {
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
@@ -175,9 +176,10 @@ namespace RimWar.Planet
             }
         }
 
-        public static void CreateSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd, PlanetTile tile, Faction faction)
+        public static void CreateSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd,
+                                            PlanetTile tile, Faction faction)
         {
-            //Log.Message("creating settlement");     
+            //Log.Message("creating settlement");
             if (ValidForSettlement(warObject, objectsHere, rwd, tile, faction))
             {
                 RimWorld.Planet.Settlement worldSettlement = SettleUtility.AddNewHome(tile, faction);
@@ -197,7 +199,8 @@ namespace RimWar.Planet
             }
         }
 
-        public static bool ValidForSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd, PlanetTile tile, Faction faction)
+        public static bool ValidForSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd,
+                                              PlanetTile tile, Faction faction)
         {
             if (warObject == null || warObject.Destroyed || objectsHere == null || rwd == null || faction == null || faction.defeated)
             {
@@ -213,7 +216,8 @@ namespace RimWar.Planet
             return true;
         }
 
-        public static void ConvertSettlement(RimWorld.Planet.Settlement worldSettlement, RimWarData rwdFrom, RimWarData rwdTo, int points, int pointDamage = 0)
+        public static void ConvertSettlement(RimWorld.Planet.Settlement worldSettlement, RimWarData rwdFrom,
+                                             RimWarData rwdTo, int points, int pointDamage = 0)
         {
             PlanetTile tile = worldSettlement.Tile;
             if (worldSettlement != null && rwdFrom != null && rwdTo != null)
@@ -240,11 +244,12 @@ namespace RimWar.Planet
                 {
                     Find.WorldObjects.Remove(wo);
                 }
-            }            
+            }
             WorldUtility.GetRimWarData().Remove(rwdFrom);
         }
 
-        public static void CreateWarObject(int points, Faction faction, PlanetTile startingTile, PlanetTile destinationTile, WorldObjectDef type)
+        public static void CreateWarObject(int points, Faction faction, PlanetTile startingTile,
+                                           PlanetTile destinationTile, WorldObjectDef type)
         {
             //Log.Message("creating war object");
             WarObject warObject = new WarObject();
@@ -255,10 +260,11 @@ namespace RimWar.Planet
                 warObject.pather.nextTileCostLeft /= 2f;
                 warObject.tweener.ResetTweenedPosToRoot();
             }
-
         }
 
-        private static WarObject MakeWarObject(int points, Faction faction, PlanetTile startingTile, PlanetTile destinationTile, WorldObjectDef type, bool addToWorldPawnsIfNotAlready)
+        private static WarObject MakeWarObject(int points, Faction faction, PlanetTile startingTile,
+                                               PlanetTile destinationTile, WorldObjectDef type,
+                                               bool addToWorldPawnsIfNotAlready)
         {
             //Log.Message("making world object");
             WarObject warObject = (WarObject)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_WarObject);
@@ -277,7 +283,11 @@ namespace RimWar.Planet
             return warObject;
         }
 
-        public static void CreateWarObjectOfType(WarObject warObject, int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef, PlanetTile destinationTile, bool _launched = false, bool _interactable = true, int _pointDamage = 0)
+        public static void CreateWarObjectOfType(WarObject warObject, int power, RimWarData rwd,
+                                                 RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile,
+                                                 WorldObject destination, WorldObjectDef worldDef,
+                                                 PlanetTile destinationTile, bool _launched = false,
+                                                 bool _interactable = true, int _pointDamage = 0)
         {
             if (warObject is Warband)
             {
@@ -310,7 +320,8 @@ namespace RimWar.Planet
             }
         }
 
-        private static void CreateWarband_Caravan(int power, Faction faction, PlanetTile startingTile, PlanetTile destinationTile, IIncidentTarget target)
+        private static void CreateWarband_Caravan(int power, Faction faction, PlanetTile startingTile,
+                                                  PlanetTile destinationTile, IIncidentTarget target)
         {
             //Log.Message("generating warband");
             //Log.Message("storyteller threat points of target is " + StorytellerUtility.DefaultThreatPointsNow(target));
@@ -332,9 +343,9 @@ namespace RimWar.Planet
                 return;
             }
             //for(int i = 0; i < warbandPawnList.Count; i++)
-            //{                
+            //{
             //    warband.AddPawn(warbandPawnList[i], true);
-            //    warbandPawnList[i].Notify_PassedToWorld();                
+            //    warbandPawnList[i].Notify_PassedToWorld();
             //}
             warband = MakeWarband_Caravan(warbandPawnList, faction, startingTile, true);
             warband.parms = parms;
@@ -347,7 +358,8 @@ namespace RimWar.Planet
             //Log.Message("end create warband");
         }
 
-        private static Warband_Caravan MakeWarband_Caravan(List<Pawn> pawns, Faction faction, PlanetTile startingTile, bool addToWorldPawnsIfNotAlready)
+        private static Warband_Caravan MakeWarband_Caravan(List<Pawn> pawns, Faction faction, PlanetTile startingTile,
+                                                           bool addToWorldPawnsIfNotAlready)
         {
             //Log.Message("making world object warband");
             tmpPawns.Clear();
@@ -387,7 +399,9 @@ namespace RimWar.Planet
             return warband;
         }
 
-        public static Warband CreateWarband(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef, bool _launched = false, bool _interactable = true, int pointDamage = 0)
+        public static Warband CreateWarband(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                            PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef,
+                                            bool _launched = false, bool _interactable = true, int pointDamage = 0)
         {
             //Log.Message("generating warband for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile);
             try
@@ -449,7 +463,9 @@ namespace RimWar.Planet
             return warband;
         }
 
-        public static void CreateLaunchedWarband(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef)
+        public static void CreateLaunchedWarband(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                 PlanetTile startingTile, WorldObject destination,
+                                                 WorldObjectDef worldDef)
         {
             //Log.Message("generating warband for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile);
             try
@@ -464,8 +480,6 @@ namespace RimWar.Planet
                     warband.DestinationTarget = destination;
                     warband.destinationTile = destination.Tile;
                 }
-
-
             }
             catch (NullReferenceException ex)
             {
@@ -491,7 +505,9 @@ namespace RimWar.Planet
             return warband;
         }
 
-        public static void CreateScout(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef, bool _interactable = true, int pointDamage  = 0)
+        public static void CreateScout(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                       PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef,
+                                       bool _interactable = true, int pointDamage = 0)
         {
             //Log.Message("generating scout for " + rwd.RimWarFaction.Name);
             //Log.Message(" from " + startingTile + " to " + destination.Label);
@@ -550,7 +566,9 @@ namespace RimWar.Planet
             return scout;
         }
 
-        public static Trader CreateTrader(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef, bool _interactable = true, int pointDamage = 0)
+        public static Trader CreateTrader(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                          PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef,
+                                          bool _interactable = true, int pointDamage = 0)
         {
             //Log.Message("generating trader for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile);
             try
@@ -610,7 +628,9 @@ namespace RimWar.Planet
             return trader;
         }
 
-        public static void CreateDiplomat(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef, bool _interactable = true)
+        public static void CreateDiplomat(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                          PlanetTile startingTile, WorldObject destination, WorldObjectDef worldDef,
+                                          bool _interactable = true)
         {
             //Log.Message("generating diplomat for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile);
             Options.SettingsRef settingsRef = new Options.SettingsRef();
@@ -660,9 +680,11 @@ namespace RimWar.Planet
             return diplomat;
         }
 
-        public static void CreateSettler(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, PlanetTile startingTile, PlanetTile destinationTile, WorldObjectDef worldDef, bool _interactable = true, int pointDamage = 0)
+        public static void CreateSettler(int power, RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                         PlanetTile startingTile, PlanetTile destinationTile, WorldObjectDef worldDef,
+                                         bool _interactable = true, int pointDamage = 0)
         {
-            //Log.Message("generating Settler for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile); 
+            //Log.Message("generating Settler for " + rwd.RimWarFaction.Name + " from " + startingTile + " to " + destinationTile);
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             Settler settler = new Settler();
             settler = MakeSettler(rwd.RimWarFaction, startingTile);
@@ -690,7 +712,6 @@ namespace RimWar.Planet
                 settler.pather.StartPath(destinationTile, true);
                 settler.pather.nextTileCostLeft /= 2f;
                 settler.tweener.ResetTweenedPosToRoot();
-
             }
             //Log.Message("end create settler");
         }
@@ -869,7 +890,7 @@ namespace RimWar.Planet
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             if (settingsRef.storytellerBasedDifficulty)
             {
-                return Mathf.Clamp(.5f + (.5f *Find.Storyteller.difficulty.threatScale), .75f, 1.25f);
+                return Mathf.Clamp(.5f + (.5f * Find.Storyteller.difficulty.threatScale), .75f, 1.25f);
             }
             return settingsRef.rimwarDifficulty;
         }
@@ -879,23 +900,23 @@ namespace RimWar.Planet
             get
             {
                 int rnd = Rand.RangeInclusive(0, 5);
-                if(rnd == 0)
+                if (rnd == 0)
                 {
                     return RimWarBehavior.Expansionist;
                 }
-                else if(rnd == 1)
+                else if (rnd == 1)
                 {
                     return RimWarBehavior.Cautious;
                 }
-                else if(rnd == 2)
+                else if (rnd == 2)
                 {
                     return RimWarBehavior.Merchant;
                 }
-                else if(rnd == 3)
+                else if (rnd == 3)
                 {
                     return RimWarBehavior.Aggressive;
                 }
-                else if(rnd == 4)
+                else if (rnd == 4)
                 {
                     return RimWarBehavior.Warmonger;
                 }
@@ -1158,7 +1179,8 @@ namespace RimWar.Planet
             return tmpSettlements;
         }
 
-        public static List<RimWarSettlementComp> GetRimWarSettlementsInRange(PlanetTile from, int range, List<RimWarData> rwdList, RimWarData rwd)
+        public static List<RimWarSettlementComp> GetRimWarSettlementsInRange(PlanetTile from, int range,
+                                                                             List<RimWarData> rwdList, RimWarData rwd)
         {
             List<RimWarSettlementComp> tmpSettlements = new List<RimWarSettlementComp>();
             tmpSettlements.Clear();
@@ -1228,7 +1250,6 @@ namespace RimWar.Planet
                             closestDist = otherDist;
                             closestSettlement = settlementsInRange[i];
                         }
-
                     }
                     else
                     {
@@ -1240,7 +1261,8 @@ namespace RimWar.Planet
             return closestSettlement;
         }
 
-        public static RimWorld.Planet.Settlement GetClosestSettlementInRWDTo(RimWarData rwd, PlanetTile tile, int maxEvalRange = 100)
+        public static RimWorld.Planet.Settlement GetClosestSettlementInRWDTo(RimWarData rwd, PlanetTile tile,
+                                                                             int maxEvalRange = 100)
         {
             WorldUtility.Get_WCPT().UpdateFactionSettlements(rwd);
             if (rwd != null && rwd.WorldSettlements != null && rwd.WorldSettlements.Count > 0)
@@ -1279,7 +1301,8 @@ namespace RimWar.Planet
             return null;
         }
 
-        public static List<RimWorld.Planet.Settlement> GetHostileSettlementsInRange(PlanetTile from, int range, Faction faction)
+        public static List<RimWorld.Planet.Settlement> GetHostileSettlementsInRange(
+            PlanetTile from, int range, Faction faction)
         {
             List<RimWorld.Planet.Settlement> settlementsInRange = GetRimWorldSettlementsInRange(from, range);
             List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
@@ -1294,14 +1317,16 @@ namespace RimWar.Planet
             return tmpSettlements;
         }
 
-        public static List<RimWorld.Planet.Settlement> GetNonHostileRimWarSettlementsInRange(PlanetTile from, int range, Faction faction, List<RimWarData> rwdList, RimWarData rwd)
+        public static List<RimWorld.Planet.Settlement> GetNonHostileRimWarSettlementsInRange(
+            PlanetTile from, int range, Faction faction, List<RimWarData> rwdList, RimWarData rwd)
         {
             List<RimWorld.Planet.Settlement> settlementsInRange = GetRimWorldSettlementsInRange(from, range);
             List<RimWorld.Planet.Settlement> tmpSettlements = settlementsInRange.Except(GetHostileSettlementsInRange(from, range, faction)).ToList();
             return tmpSettlements;
         }
 
-        public static List<RimWorld.Planet.Settlement> GetFriendlySettlementsInRange(PlanetTile from, int range, Faction thisFaction, List<RimWarData> rwdList, RimWarData rwd)
+        public static List<RimWorld.Planet.Settlement> GetFriendlySettlementsInRange(
+            PlanetTile from, int range, Faction thisFaction, List<RimWarData> rwdList, RimWarData rwd)
         {
             List<RimWorld.Planet.Settlement> settlementsInRange = GetRimWorldSettlementsInRange(from, range);
             List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
@@ -1347,7 +1372,6 @@ namespace RimWar.Planet
             ////        }
             ////    }
             ////}
-
         }
 
         public static List<RimWorld.Planet.Settlement> GetHostileSettlementsToRWD(RimWarData rwd)
@@ -1415,11 +1439,11 @@ namespace RimWar.Planet
             {
                 List<WorldObject> worldObjects = tmpObjects.InRandomOrder().ToList();
                 if (worldObjects != null)
-                {                    
+                {
                     for (int i = 0; i < worldObjects.Count; i++)
                     {
                         PlanetTile to = worldObjects[i].Tile;
-                        
+
                         if (objectsInRange.Count >= maxObjectsPerScan)
                             break;
 
@@ -1583,7 +1607,7 @@ namespace RimWar.Planet
         public static bool IsValidRWWO(WorldObject wo)
         {
             RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-            if(rwsc != null)
+            if (rwsc != null)
             {
                 return true;
             }
@@ -1758,7 +1782,7 @@ namespace RimWar.Planet
 
         public static bool IsVassalFaction(Faction f)
         {
-            if(f.def.defName == "PColony")
+            if (f.def.defName == "PColony")
             {
                 return true;
             }

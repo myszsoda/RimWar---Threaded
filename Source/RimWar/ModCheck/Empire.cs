@@ -11,7 +11,6 @@ namespace RimWar.ModCheck
 {
     public class Empire
     {
-
         public static bool EmpireFaction_ColonyCheck(int tile)
         {
             if (!Validate.EmpireIsActive)
@@ -43,10 +42,10 @@ namespace RimWar.ModCheck
         //        SettlementFC sfc = component.returnSettlementByLocation(tile, Find.World.info.name);
         //        if (sfc != null)
         //        {
-        //            return true;                        
+        //            return true;
         //        }
         //    }
-        //    return false;            
+        //    return false;
         //}
 
         //public static int FactionFC_SettlementLevel(int tile)

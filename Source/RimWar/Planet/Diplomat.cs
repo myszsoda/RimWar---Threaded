@@ -13,19 +13,19 @@ namespace RimWar.Planet
     {
         private int lastEventTick = 0;
         private int ticksPerMove = 2500;
-        private int searchTick = 60;               
+        private int searchTick = 60;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look<int>(ref this.lastEventTick, "lastEventTick", 0, false);
-            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2500, false);                       
+            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2500, false);
         }
 
         protected override void Tick()
         {
             base.Tick();
-            if(Find.TickManager.TicksGame % this.searchTick == 0)
+            if (Find.TickManager.TicksGame % this.searchTick == 0)
             {
                 //scan for nearby engagements
                 this.searchTick = Rand.Range(2000, 3000);
@@ -38,13 +38,12 @@ namespace RimWar.Planet
                 {
                     EngageNearby();
                 }
-                
             }
-            if(true) // no delay, was 60ticks
+            if (true) // no delay, was 60ticks
             {
                 if (this.ParentSettlement == null)
                 {
-                    FindParentSettlement();                    
+                    FindParentSettlement();
                 }
                 //target is gone; return home
                 if (this.DestinationTarget == null)
@@ -59,7 +58,7 @@ namespace RimWar.Planet
                         //not heading in the right direction; pause then attempt to reroute
                         pather.StopDead();
                     }
-                }                
+                }
             }
         }
 
@@ -77,7 +76,7 @@ namespace RimWar.Planet
                         if (wo is Caravan && wo.Faction.HostileTo(this.Faction)) //or rimwar caravan, or diplomat, or merchant; ignore scouts and settlements
                         {
                             //Log.Message(this.Label + " engaging nearby warband " + wo.Label);
-                            this.DestinationTarget = worldObjects[i];                            
+                            this.DestinationTarget = worldObjects[i];
                             break;
                         }
                     }
@@ -87,7 +86,7 @@ namespace RimWar.Planet
 
         public void EngageNearby()
         {
-            if(this.DestinationTarget != null && (this.DestinationTarget.Tile == this.Tile || Find.WorldGrid.TraversalDistanceBetween(this.Tile, this.DestinationTarget.Tile) <= 1))
+            if (this.DestinationTarget != null && (this.DestinationTarget.Tile == this.Tile || Find.WorldGrid.TraversalDistanceBetween(this.Tile, this.DestinationTarget.Tile) <= 1))
             {
                 ImmediateAction(this.DestinationTarget);
             }
@@ -95,12 +94,10 @@ namespace RimWar.Planet
             {
                 this.DestinationTarget = null;
             }
-                   
         }
 
         public Diplomat()
         {
-
         }
 
         public override int RimWarPoints { get => base.RimWarPoints; set => base.RimWarPoints = value; }
@@ -136,12 +133,12 @@ namespace RimWar.Planet
             {
                 this.ticksPerMove = value;
             }
-        }       
+        }
 
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            //stringBuilder.Append(base.GetInspectString());            
+            //stringBuilder.Append(base.GetInspectString());
 
             if (Find.World.worldObjects.AnySettlementAt(pather.Destination))
             {
@@ -149,7 +146,7 @@ namespace RimWar.Planet
                 if (wo != null)
                 {
                     if (wo.Faction != this.Faction)
-                    { 
+                    {
                         stringBuilder.Append("RW_WarObjectInspectString".Translate(this.Name, "RW_Diplomacy".Translate(), wo.Label));
                     }
                     else
@@ -176,29 +173,27 @@ namespace RimWar.Planet
             stringBuilder.Append("RW_CombatPower".Translate(this.RimWarPoints));
             if (!pather.MovingNow)
             {
-
             }
             return stringBuilder.ToString();
         }
 
         public override void ImmediateAction(WorldObject wo)
         {
-            if(wo != null)
+            if (wo != null)
             {
-                if(wo.Faction != null)
+                if (wo.Faction != null)
                 {
-                    if(wo is Caravan)
+                    if (wo is Caravan)
                     {
                         IncidentUtility.DoPeaceTalks_Caravan(this, wo as Caravan, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                         base.ImmediateAction(null);
                     }
-                }                
+                }
             }
             else
             {
                 base.ImmediateAction(wo);
             }
-            
         }
 
         public override void ArrivalAction()
@@ -262,15 +257,14 @@ namespace RimWar.Planet
                             //Log.Message("parent settlement points: " + this.ParentSettlement.RimWarPoints);
                             if (wo.Faction != this.Faction) //could happen if parent town is taken over while army is away, in which case - perform another raid
                             {
-
                             }
                             WorldUtility.GetRimWarSettlementAtTile(this.Tile).RimWarPoints += this.RimWarPoints;
                         }
                         base.ArrivalAction();
-                    }                    
+                    }
                 }
             }
-            //Log.Message("ending arrival actions");            
-        }       
+            //Log.Message("ending arrival actions");
+        }
     }
 }

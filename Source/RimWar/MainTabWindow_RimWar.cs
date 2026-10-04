@@ -66,7 +66,6 @@ namespace RimWar
 
         public class ContextStorage
         {
-
         }
 
         public override void PreOpen()
@@ -82,7 +81,7 @@ namespace RimWar
             {
                 curTab = RimWarTab.Events;
             }, () => curTab == RimWarTab.Events));
-            tabs.Add(new TabRecord("RW_Performance".Translate(), delegate 
+            tabs.Add(new TabRecord("RW_Performance".Translate(), delegate
             {
                 curTab = RimWarTab.Performance;
             }, () => curTab == RimWarTab.Performance));
@@ -146,8 +145,6 @@ namespace RimWar
 
         public static void DoRelationsContent()
         {
-            
-            
         }
 
         private void DoRelationsPage(Rect fillRect)
@@ -180,7 +177,6 @@ namespace RimWar
                     DoArchivableRow(new Rect(0f, num, viewRect.width, 30f), archivablesListForReading[num2], num2);
                 }
                 num += 30f;
-                
             }
             messagesLastHeight = num;
             Widgets.EndScrollView();
@@ -332,6 +328,5 @@ namespace RimWar
             }
             GUI.EndGroup();
         }
-
     }
 }

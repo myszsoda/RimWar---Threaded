@@ -26,17 +26,17 @@ namespace RimWar.Options
         //limit controls
         public int maxFactionSettlements = 40;
         public float maxSettlementScanRange = 75f;
-        public float settlementScanRangeDivider = 70f;        
+        public float settlementScanRangeDivider = 70f;
         public float objectMovementMultiplier = 1f;
 
         //performance controls
         public bool threadingEnabled = false;
-        public int averageEventFrequency = 150;        
+        public int averageEventFrequency = 150;
         public int settlementEventDelay = 50000;
-        public int settlementScanDelay = 60000;               
+        public int settlementScanDelay = 60000;
         public int woEventFrequency = 200;
         public int rwdUpdateFrequency = 2500;
-        public bool forceRandomObject = false;        
+        public bool forceRandomObject = false;
 
         //alerts
         public int alertRange = 6;

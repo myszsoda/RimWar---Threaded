@@ -95,7 +95,9 @@ namespace RimWar.Planet
             return settlement != null && settlement.Spawned && settlement.Faction != null && settlement.Faction != Faction.OfPlayer && !settlement.Faction.def.permanentEnemy && !settlement.HasMap;
         }
 
-        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods, Settlement settlement)
+        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(
+            Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods,
+            Settlement settlement)
         {
             if (settlement.Faction == Faction.OfPlayer)
             {

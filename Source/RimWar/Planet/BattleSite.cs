@@ -11,8 +11,7 @@ namespace RimWar.Planet
 {
     [StaticConstructorOnStartup]
     public class BattleSite : RimWarSite
-    {        
-
+    {
         public bool Attackable
         {
             get
@@ -30,7 +29,7 @@ namespace RimWar.Planet
                 //Log.Message("cycling battle site " + this.Tile);
                 if (!base.HasMap)
                 {
-                    //Log.Message("evaluating battle site combat with " + Units.Count + " units");   
+                    //Log.Message("evaluating battle site combat with " + Units.Count + " units");
                     CheckAndCleanDuplicates();
                     bool anyCombatRemaining = false;
                     if (Units.Count > 1)
@@ -41,7 +40,7 @@ namespace RimWar.Planet
                             if (waro.EffectivePoints > 0)
                             {
                                 for (int j = i + 1; j < Units.Count; j++)
-                                { 
+                                {
                                     WarObject ward = Units[j];
                                     if (ward.EffectivePoints > 0 && waro.EffectivePoints > 0 && ward.Faction.HostileTo(waro.Faction))
                                     {
@@ -77,14 +76,14 @@ namespace RimWar.Planet
         private void CheckAndCleanDuplicates()
         {
             Restart:;
-            for(int i = 0; i < this.Units.Count; i++)
+            for (int i = 0; i < this.Units.Count; i++)
             {
                 WarObject first = this.Units[i];
-                if(i < this.Units.Count  - 1)
+                if (i < this.Units.Count - 1)
                 {
-                    for(int j = i + 1; j < this.Units.Count; j++)
+                    for (int j = i + 1; j < this.Units.Count; j++)
                     {
-                        if(first.Faction == this.Units[j].Faction && first.RimWarPoints == this.Units[j].RimWarPoints)
+                        if (first.Faction == this.Units[j].Faction && first.RimWarPoints == this.Units[j].RimWarPoints)
                         {
                             //Log.Message("removing " + this.Units[j].Name);
                             this.Units.Remove(this.Units[j]);
@@ -102,7 +101,7 @@ namespace RimWar.Planet
                 string str = "";
                 for (int i = 0; i < Units.Count; i++)
                 {
-                    if(str != "")
+                    if (str != "")
                     {
                         str += "\n";
                     }
@@ -125,7 +124,6 @@ namespace RimWar.Planet
                     }
                     str += Units[i].Label;
                     str += " " + Units[i].RimWarPoints + " (" + Units[i].PointDamage + ")";
-
                 }
                 return str;
             }
@@ -141,23 +139,23 @@ namespace RimWar.Planet
 
         public override IEnumerable<Gizmo> GetCaravanGizmos(Caravan caravan)
         {
-            foreach(Gizmo g in base.GetCaravanGizmos(caravan))
+            foreach (Gizmo g in base.GetCaravanGizmos(caravan))
             {
                 yield return g;
             }
             if (!this.HasMap)
             {
-				Command_Action command_Action = new Command_Action
-				{
-					icon = AttackCommand,
-					defaultLabel = "RW_CommandAttackBattleSite".Translate(),
-					defaultDesc = "RW_CommandAttackBattleSiteDesc".Translate(),
-					action = delegate
-						{
-							IncidentUtility.AttackBattleSite(caravan, this);
-						}
-				};
-				yield return (Gizmo)command_Action;
+                Command_Action command_Action = new Command_Action
+                {
+                    icon = AttackCommand,
+                    defaultLabel = "RW_CommandAttackBattleSite".Translate(),
+                    defaultDesc = "RW_CommandAttackBattleSiteDesc".Translate(),
+                    action = delegate
+                    {
+                        IncidentUtility.AttackBattleSite(caravan, this);
+                    }
+                };
+                yield return (Gizmo)command_Action;
             }
         }
 
@@ -176,7 +174,8 @@ namespace RimWar.Planet
             }
         }
 
-        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> representative)
+        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(
+            IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> representative)
         {
             foreach (FloatMenuOption transportPodsFloatMenuOption in base.GetTransportersFloatMenuOptions(pods, representative))
             {
@@ -191,7 +190,8 @@ namespace RimWar.Planet
             }
         }
 
-        public override IEnumerable<FloatMenuOption> GetShuttleFloatMenuOptions(IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
+        public override IEnumerable<FloatMenuOption> GetShuttleFloatMenuOptions(
+            IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
         {
             foreach (FloatMenuOption shuttleFloatMenuOption in base.GetShuttleFloatMenuOptions(pods, launchAction))
             {

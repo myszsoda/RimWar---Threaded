@@ -35,7 +35,6 @@ namespace RimWar.Planet
 
         public Trader()
         {
-
         }
 
         public override int RimWarPoints { get => base.RimWarPoints; set => base.RimWarPoints = value; }
@@ -100,7 +99,7 @@ namespace RimWar.Planet
             if (this.Faction.HostileTo(car.Faction))
             {
                 WorldUtility.Get_WCPT().RemoveCaravanTarget(car);
-                car.pather.StopDead();                    
+                car.pather.StopDead();
                 IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), PawnGroupKindDefOf.Trader);
             }
             else
@@ -124,13 +123,13 @@ namespace RimWar.Planet
             //trade with another AI faction
             this.tradedWithTrader = true;
             IncidentUtility.ResolveRimWarTrade(this, rwo as Trader);
-        }        
+        }
 
         public override void ImmediateAction(WorldObject wo)
-        {            
-            base.ImmediateAction(wo);            
+        {
+            base.ImmediateAction(wo);
         }
-        
+
         public override void ArrivalAction()
         {
             //Log.Message("trader arrival action with destiantion " + this.DestinationTarget);
@@ -153,7 +152,7 @@ namespace RimWar.Planet
                             {
                                 IncidentUtility.DoRaidWithPoints(this, playerSettlement, this.rimwarData, PawnsArrivalModeDefOf.EdgeWalkIn, PawnGroupKindDefOf.Combat);
                             }
-                            else if(playerCaravan != null)
+                            else if (playerCaravan != null)
                             {
                                 IncidentUtility.DoCaravanAttackWithPoints(this, playerCaravan, this.rimwarData, PawnsArrivalModeDefOf.EdgeWalkIn, PawnGroupKindDefOf.Trader);
                             }
@@ -177,7 +176,7 @@ namespace RimWar.Planet
                     }
                     else
                     {
-                       // Log.Message("Trader AA 6");
+                        // Log.Message("Trader AA 6");
                         if (wo.Faction == Faction.OfPlayer)
                         {
                             //Log.Message("Trader AA 7");
@@ -195,16 +194,16 @@ namespace RimWar.Planet
                                 TaggedString threats = new TaggedString();
                                 bool delayTrader = true;
                                 Action permit = new Action(delegate
+                                {
+                                    delayTrader = false;
+                                    IncidentUtility.DoSettlementTradeWithPoints(this, playerSettlement, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), traderKind);
+                                    if (this.WarSettlementComp != null)
                                     {
-                                        delayTrader = false;
-                                        IncidentUtility.DoSettlementTradeWithPoints(this, playerSettlement, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), traderKind);
-                                        if (this.WarSettlementComp != null)
-                                        {
-                                            this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt((this.RimWarPoints) * (Rand.Range(1.05f, 1.25f)));
-                                            this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage);
-                                        }
-                                        base.ArrivalAction();
-                                    });
+                                        this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt((this.RimWarPoints) * (Rand.Range(1.05f, 1.25f)));
+                                        this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage);
+                                    }
+                                    base.ArrivalAction();
+                                });
                                 Action delay4 = new Action(delegate
                                 {
                                     //Log.Message("delaying trader 4 hours");
@@ -215,7 +214,7 @@ namespace RimWar.Planet
                                     }
                                     this.Tile = tile;
                                     this.tweener.ResetTweenedPosToRoot();
-                                    this.pather.PatherTick(1);                                    
+                                    this.pather.PatherTick(1);
                                     this.tweener.TweenerTick();
                                     this.pather.StopDead();
                                     this.pauseFor = 10000;
@@ -253,8 +252,8 @@ namespace RimWar.Planet
                                     this.DestinationTarget = ParentSettlement;
                                     PathToTarget(DestinationTarget);
                                 });
-                                
-                                if(WorldUtility.AnyThreatsOnMap(playerSettlement.Map, this.Faction, out threats))
+
+                                if (WorldUtility.AnyThreatsOnMap(playerSettlement.Map, this.Faction, out threats))
                                 {
                                     FactionDialogReMaker.RequestTradePermissionDialog(this.Faction, this, playerSettlement, playerSettlement.Map, threats, permit, delay4, delay12, reject);
                                 }
@@ -263,7 +262,7 @@ namespace RimWar.Planet
                                     delayTrader = false;
                                     permit();
                                 }
-                                
+
                                 //if (GenHostility.AnyHostileActiveThreatTo(playerSettlement.Map, this.Faction))
                                 //{
                                 //    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("RW_ConfirmTradersEnterDangerous".Translate(this.Label), delegate
@@ -288,7 +287,7 @@ namespace RimWar.Planet
                                 //    }
                                 //}
 
-                                if(delayTrader)
+                                if (delayTrader)
                                 {
                                     //Log.Message("exiting");
                                     goto ExitArrivalAction;
@@ -349,7 +348,7 @@ namespace RimWar.Planet
                                     rwsc.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                                     rwsc.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
                                 }
-                            }                            
+                            }
                         }
                     }
                 }
@@ -358,6 +357,6 @@ namespace RimWar.Planet
             //Log.Message("ending arrival actions");
             base.ArrivalAction();
             ExitArrivalAction:;
-        }       
+        }
     }
 }

@@ -64,7 +64,9 @@ namespace RimWar.Utility
             return Vector3.zero;
         }
 
-        private static void GetWarObjectsStandingAtOrAboutToStandAt(PlanetTile tile, out int warObjectsCount, out int warObjectsWithLowerIdCount, WarObject forWarObject)
+        private static void GetWarObjectsStandingAtOrAboutToStandAt(PlanetTile tile, out int warObjectsCount,
+                                                                    out int warObjectsWithLowerIdCount,
+                                                                    WarObject forWarObject)
         {
             warObjectsCount = 0;
             warObjectsWithLowerIdCount = 0;

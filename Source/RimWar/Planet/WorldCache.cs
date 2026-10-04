@@ -12,8 +12,5 @@ namespace RimWar.Planet
 {
     public static class WorldCache
     {
-
-
-
     }
 }

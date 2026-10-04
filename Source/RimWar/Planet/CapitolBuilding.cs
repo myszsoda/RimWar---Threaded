@@ -34,7 +34,7 @@ namespace RimWar.Planet
     //    private int rimwarPointsCached = 0;
     //    public int nextEventTick = 0;
     //    public int nextSettlementScan = 0;
-    //    private int uniqueID = -1;        
+    //    private int uniqueID = -1;
     //    List<ConsolidatePoints> consolidatePoints;
 
     //    public void ExposeData()
@@ -46,7 +46,7 @@ namespace RimWar.Planet
     //        //    {
     //        //        Log.Message("saving rimwar points from cache " + rimwarPointsCached + " to " + rimwarPointsInt);
     //        //        rimwarPointsInt = rimwarPointsCached;
-    //        //    }                
+    //        //    }
     //        //}
 
     //        //Scribe_Values.Look<int>(ref this.rimwarPointsInt, "rimwarPointsInt", 0, false);
@@ -219,7 +219,6 @@ namespace RimWar.Planet
     //    //    }
     //    //}
 
-
     //    //public RimWorld.Planet.Settlement RimWorld_Settlement
     //    //{
     //    //    get
@@ -230,7 +229,7 @@ namespace RimWar.Planet
     //    //        }
     //    //        return null;
     //    //    }
-    //    //}        
+    //    //}
 
     //    //public Settlement()
     //    //{

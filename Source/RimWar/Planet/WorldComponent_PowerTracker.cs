@@ -114,7 +114,6 @@ namespace RimWar.Planet
             }
         }
 
-
         private List<WorldObject> worldObjects;
         public List<WorldObject> WorldObjects
         {
@@ -156,7 +155,7 @@ namespace RimWar.Planet
             set
             {
                 this.rimwarData.Clear();
-                foreach(RimWarData rwd in value)
+                foreach (RimWarData rwd in value)
                 {
                     rimwarData.Add(rwd);
                 }
@@ -173,7 +172,6 @@ namespace RimWar.Planet
 
         public WorldComponent_PowerTracker(World world) : base(world)
         {
-
         }
 
         private bool doOnce = false;
@@ -184,11 +182,11 @@ namespace RimWar.Planet
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             //if (Options.Settings.Instance.threadingEnabled)
             //{
-                WorldUtility.CopyData();
+            WorldUtility.CopyData();
             //}
             if (!doOnce)
             {
-                if(this.victoryFaction != null)
+                if (this.victoryFaction != null)
                 {
                     this.victoryFaction.allowGoodwillRewards = false;
                     //this.victoryFaction.def.naturalColonyGoodwill = new IntRange(-100, -100);
@@ -205,7 +203,7 @@ namespace RimWar.Planet
             {
                 AdjustCaravanTargets();
             }
-            if(currentTick % (int)settingsRef.heatFrequency == 0)
+            if (currentTick % (int)settingsRef.heatFrequency == 0)
             {
                 UpdatePlayerAggression();
             }
@@ -363,7 +361,7 @@ namespace RimWar.Planet
                                     {
                                         this.creationAttempts++;
                                     }
-                                }                                
+                                }
                             }
                         }
                     }
@@ -606,9 +604,9 @@ namespace RimWar.Planet
                     for (int i = 0; i < allFactionsVisible.Count; i++)
                     {
                         bool duplicate = false;
-                        for(int k = 0; k < rimwarFactions.Count; k++)
+                        for (int k = 0; k < rimwarFactions.Count; k++)
                         {
-                            if(allFactionsVisible[i].randomKey == rimwarFactions[k].randomKey)
+                            if (allFactionsVisible[i].randomKey == rimwarFactions[k].randomKey)
                             {
                                 duplicate = true;
                             }
@@ -701,7 +699,7 @@ namespace RimWar.Planet
                 }
                 else
                 {
-                    if(Active_RWD[i].RimWarFaction.def.defName == Settings.Instance.factionDefForRival.defName)
+                    if (Active_RWD[i].RimWarFaction.def.defName == Settings.Instance.factionDefForRival.defName)
                     {
                         potentialFactions.Add(Active_RWD[i].RimWarFaction);
                     }
@@ -771,8 +769,8 @@ namespace RimWar.Planet
 
                     Find.LetterStack.ReceiveLetter(
                         // TODO add translation
-                        "Faction destroyed", 
-                        string.Format("All settlements of {0} have been destroyed.", factionList[i].Name), 
+                        "Faction destroyed",
+                        string.Format("All settlements of {0} have been destroyed.", factionList[i].Name),
                         LetterDefOf.PositiveEvent
                     );
                 }
@@ -780,7 +778,7 @@ namespace RimWar.Planet
         }
 
         public void UpdateFactions()
-        {            
+        {
             CheckFactionDefeated();
             IncrementSettlementGrowth();
             ReconstituteSettlements();
@@ -808,7 +806,7 @@ namespace RimWar.Planet
                         if (rwdTown != null)
                         {
                             int maxPts = 50000;
-                            
+
                             if (rwdTown.parent.def.defName == "City_Citadel")
                             {
                                 maxPts += 5000;
@@ -840,7 +838,7 @@ namespace RimWar.Planet
                                     float pts = (Rand.Range(2f, 3f)) + WorldUtility.GetBiomeMultiplier(Find.WorldGrid[rwdTown.parent.Tile].PrimaryBiome); //.1f - 3.5f
                                     pts = pts * mult * WorldUtility.GetFactionTechLevelMultiplier(rwd.RimWarFaction) * rwd.growthAttribute * settingsref.settlementGrowthRate;
                                     rwdTown.RimWarPoints += Mathf.RoundToInt(Mathf.Clamp(pts, 1f, 100f));
-                                    if(rwdTown.bonusGrowthCount > 0)
+                                    if (rwdTown.bonusGrowthCount > 0)
                                     {
                                         rwdTown.RimWarPoints += 10;
                                         rwdTown.bonusGrowthCount--;
@@ -855,7 +853,7 @@ namespace RimWar.Planet
                                     rwdTown.PlayerHeat += Rand.Range(1, 3);
                                 }
                             }
-                            if(rwd.behavior == RimWarBehavior.Vassal)
+                            if (rwd.behavior == RimWarBehavior.Vassal)
                             {
                                 rwdTown.vassalHeat = Mathf.Clamp(rwdTown.vassalHeat - Rand.RangeInclusive(1, 3), 0, 10000);
                             }
@@ -863,7 +861,7 @@ namespace RimWar.Planet
                     }
                 }
 
-                if(rwd.behavior == RimWarBehavior.Vassal)
+                if (rwd.behavior == RimWarBehavior.Vassal)
                 {
                     foreach (Faction f in Find.FactionManager.AllFactionsVisible)
                     {
@@ -874,7 +872,7 @@ namespace RimWar.Planet
                         FactionRelation frPlayer = Faction.OfPlayer.RelationWith(f);
                         FactionRelation frVassal = rwd.RimWarFaction.RelationWith(f);
                         FactionRelationKind frVassalKind = frVassal.kind;
-                        if (frPlayer !=null && frPlayer.kind != frVassalKind)
+                        if (frPlayer != null && frPlayer.kind != frVassalKind)
                         {
                             rwd.RimWarFaction.SetRelation(frPlayer);
                             bool letterSent;
@@ -970,7 +968,7 @@ namespace RimWar.Planet
                     for (int j = 0; j < rwd[i].defDatas.Count; j++)
                     {
                         RimWarDefData defData = rwd[i].defDatas[j];
-                        //Log.Message("checking faction " + defData.factionDefname);                        
+                        //Log.Message("checking faction " + defData.factionDefname);
                         if (defData.factionDefname.ToString() == rimwarObject.RimWarFaction.def.ToString())
                         {
                             if (!settingsRef.randomizeFactionBehavior || defData.forceBehavior)
@@ -1003,7 +1001,6 @@ namespace RimWar.Planet
             }
             //Log.Message("generating faction behavior for " + rimwarObject.RimWarFaction);
             WorldUtility.CalculateFactionBehaviorWeights(rimwarObject);
-
         }
 
         private void RandomizeFactionBehavior(RimWarData rimwarObject)
@@ -1114,7 +1111,12 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptWarbandActionAgainstTownOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        private void AttemptWarbandActionAgainstTownOffMainThread(RimWarData rwd,
+                                                                  RimWorld.Planet.Settlement parentSettlement,
+                                                                  RimWarSettlementComp rwsComp,
+                                                                  bool forcePlayer = false,
+                                                                  bool ignoreRestrictions = false,
+                                                                  ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -1147,7 +1149,11 @@ namespace RimWar.Planet
             context.targetRange = targetRange;
         }
 
-        private void AttemptWarbandActionAgainstTownOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        private void AttemptWarbandActionAgainstTownOnMainThread(RimWarData rwd,
+                                                                 RimWorld.Planet.Settlement parentSettlement,
+                                                                 RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                                 bool ignoreRestrictions = false,
+                                                                 ContextStorage context = null)
         {
             var settingsRef = context.settingsRef;
             var tmpSettlements = context.tmpSettlements;
@@ -1213,7 +1219,7 @@ namespace RimWar.Planet
                                 rwsComp.PlayerHeat = 0;
                                 minimumHeatForPlayerAction += GetHeatForAction(RimWarAction.Warband);
                             }
-                            else if(WorldUtility.IsVassalFaction(targetTown.Faction))
+                            else if (WorldUtility.IsVassalFaction(targetTown.Faction))
                             {
                                 rwsComp.PlayerHeat = 0;
                                 rwscVassal.vassalHeat += (2 * GetHeatForAction(RimWarAction.Warband));
@@ -1227,7 +1233,10 @@ namespace RimWar.Planet
                 Log.Warning("Found null when attempting to generate a warband: rwd " + rwd + " rwsComp " + rwsComp);
             }
         }
-        public void AttemptWarbandActionAgainstTown_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptWarbandActionAgainstTown_UnThreaded(RimWarData rwd,
+                                                               RimWorld.Planet.Settlement parentSettlement,
+                                                               RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                               bool ignoreRestrictions = false)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -1245,7 +1254,7 @@ namespace RimWar.Planet
             {
                 tmpSettlements = rwsComp.NearbyHostileSettlements;
             }
-            
+
             if (rwd != null && rwsComp != null)
             {
                 if (tmpSettlements != null && tmpSettlements.Count > 0)
@@ -1317,7 +1326,6 @@ namespace RimWar.Planet
                                 rwscVassal.vassalHeat += (2 * GetHeatForAction(RimWarAction.Warband));
                             }
                         }
-
                     }
                 }
             }
@@ -1327,7 +1335,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptWarbandActionAgainstTown(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptWarbandActionAgainstTown(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                    RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                    bool ignoreRestrictions = false)
         {
             if (false)  //Options.Settings.Instance.threadingEnabled)
             {
@@ -1375,7 +1385,12 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptLaunchedWarbandAgainstTownOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        public void AttemptLaunchedWarbandAgainstTownOffMainThread(RimWarData rwd,
+                                                                   RimWorld.Planet.Settlement parentSettlement,
+                                                                   RimWarSettlementComp rwsComp,
+                                                                   bool forcePlayer = false,
+                                                                   bool ignoreRestrictions = false,
+                                                                   ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange * 2;
@@ -1408,7 +1423,12 @@ namespace RimWar.Planet
             context.targetRange = targetRange;
         }
 
-        public void AttemptLaunchedWarbandAgainstTownOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        public void AttemptLaunchedWarbandAgainstTownOnMainThread(RimWarData rwd,
+                                                                  RimWorld.Planet.Settlement parentSettlement,
+                                                                  RimWarSettlementComp rwsComp,
+                                                                  bool forcePlayer = false,
+                                                                  bool ignoreRestrictions = false,
+                                                                  ContextStorage context = null)
         {
             var settingsRef = context.settingsRef;
             var tmpSettlements = context.tmpSettlements;
@@ -1461,7 +1481,7 @@ namespace RimWar.Planet
                                 rwsComp.PlayerHeat = 0;
                                 minimumHeatForPlayerAction += GetHeatForAction(RimWarAction.LaunchedWarband);
                             }
-                            else if(WorldUtility.IsVassalFaction(targetTown.Faction))
+                            else if (WorldUtility.IsVassalFaction(targetTown.Faction))
                             {
                                 rwsComp.PlayerHeat = 0;
                                 rwscVassal.vassalHeat += (2 * GetHeatForAction(RimWarAction.LaunchedWarband));
@@ -1488,7 +1508,10 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptLaunchedWarbandAgainstTown_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptLaunchedWarbandAgainstTown_UnThreaded(RimWarData rwd,
+                                                                 RimWorld.Planet.Settlement parentSettlement,
+                                                                 RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                                 bool ignoreRestrictions = false)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange * 2;
@@ -1581,9 +1604,11 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptLaunchedWarbandAgainstTown(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptLaunchedWarbandAgainstTown(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                      RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                      bool ignoreRestrictions = false)
         {
-            if (false)	//Options.Settings.Instance.threadingEnabled)
+            if (false) //Options.Settings.Instance.threadingEnabled)
             {
                 if (rwsComp.RimWarPoints >= 1000 || ignoreRestrictions)
                 {
@@ -1635,7 +1660,10 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptScoutOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayerTown = false, bool forcePlayerCaravan = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        private void AttemptScoutOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                              RimWarSettlementComp rwsComp, bool forcePlayerTown = false,
+                                              bool forcePlayerCaravan = false, bool ignoreRestrictions = false,
+                                              ContextStorage context = null)
         {
             var wo = context.destinationTarget;
             var shouldExecute = context.shouldExecute;
@@ -1681,7 +1709,7 @@ namespace RimWar.Planet
                         rwsComp.PlayerHeat = 0;
                         minimumHeatForPlayerAction += GetHeatForAction(RimWarAction.ScoutingParty);
                     }
-                    else if(WorldUtility.IsVassalFaction(wo.Faction))
+                    else if (WorldUtility.IsVassalFaction(wo.Faction))
                     {
                         rwsComp.PlayerHeat = 0;
                         RimWarSettlementComp rwscVassal = wo.GetComponent<RimWarSettlementComp>();
@@ -1691,7 +1719,10 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptScoutOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayerTown = false, bool forcePlayerCaravan = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        private void AttemptScoutOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                               RimWarSettlementComp rwsComp, bool forcePlayerTown = false,
+                                               bool forcePlayerCaravan = false, bool ignoreRestrictions = false,
+                                               ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -1785,7 +1816,9 @@ namespace RimWar.Planet
             context.shouldExecute = shouldExecute;
         }
 
-        public void AttemptScoutMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayerTown = false, bool forcePlayerCaravan = false, bool ignoreRestrictions = false)
+        public void AttemptScoutMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                   RimWarSettlementComp rwsComp, bool forcePlayerTown = false,
+                                                   bool forcePlayerCaravan = false, bool ignoreRestrictions = false)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -1927,7 +1960,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptScoutMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayerTown = false, bool forcePlayerCaravan = false, bool ignoreRestrictions = false)
+        public void AttemptScoutMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                        RimWarSettlementComp rwsComp, bool forcePlayerTown = false,
+                                        bool forcePlayerCaravan = false, bool ignoreRestrictions = false)
         {
             if (false) //Options.Settings.Instance.threadingEnabled)
             {
@@ -1974,7 +2009,9 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptSettlerOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool ignoreRestrictions = false, bool ignoreNearbyTown = false, ContextStorage context = null)
+        private void AttemptSettlerOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                 RimWarSettlementComp rwsComp, bool ignoreRestrictions = false,
+                                                 bool ignoreNearbyTown = false, ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             bool shouldExecute = false;
@@ -2021,7 +2058,7 @@ namespace RimWar.Planet
                                 }
                             }
                             if (!nearbySettlement || ignoreRestrictions)
-                            {                                 
+                            {
                                 shouldExecute = true;
                                 context.destinationTile = destinationTile;
                                 break;
@@ -2033,19 +2070,23 @@ namespace RimWar.Planet
             context.shouldExecute = shouldExecute;
         }
 
-        private void AttemptSettlerOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayerTown = false, bool ignoreNearbyTown = false, ContextStorage context = null)
+        private void AttemptSettlerOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                RimWarSettlementComp rwsComp, bool forcePlayerTown = false,
+                                                bool ignoreNearbyTown = false, ContextStorage context = null)
         {
             var shouldExecute = context.shouldExecute;
             var destinationTile = context.destinationTile;
-            if(shouldExecute)
+            if (shouldExecute)
             {
                 int pts = Mathf.RoundToInt(Rand.Range(.4f, .6f) * 500);
-                WorldUtility.CreateSettler(pts, rwd, parentSettlement, parentSettlement.Tile, destinationTile, null); 
+                WorldUtility.CreateSettler(pts, rwd, parentSettlement, parentSettlement.Tile, destinationTile, null);
                 rwsComp.RimWarPoints -= pts;
             }
         }
 
-        public void AttemptSettler_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool ignoreRestrictions = false, bool ignoreNearbyTown = false)
+        public void AttemptSettler_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                              RimWarSettlementComp rwsComp, bool ignoreRestrictions = false,
+                                              bool ignoreNearbyTown = false)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             bool shouldExecute = false;
@@ -2071,7 +2112,7 @@ namespace RimWar.Planet
                     {
                         Tile t = Find.WorldGrid[tile];
                         if (t.PrimaryBiome != null && !t.PrimaryBiome.isExtremeBiome && t.PrimaryBiome.canBuildBase)
-                        {                            
+                        {
                             tmpTiles.Add(tile);
                         }
                     }
@@ -2110,7 +2151,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptSettlerMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool ignoreRestrictions = false, bool ignoreNearbyTown = false)
+        public void AttemptSettlerMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                          RimWarSettlementComp rwsComp, bool ignoreRestrictions = false,
+                                          bool ignoreNearbyTown = false)
         {
             if (Options.Settings.Instance.threadingEnabled)
             {
@@ -2158,7 +2201,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptTradeMissionOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        public void AttemptTradeMissionOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                     RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                     bool ignoreRestrictions = false, ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -2182,7 +2227,9 @@ namespace RimWar.Planet
             context.tmpSettlements = tmpSettlements;
         }
 
-        public void AttemptTradeMissionOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false, ContextStorage context = null)
+        public void AttemptTradeMissionOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                    RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                    bool ignoreRestrictions = false, ContextStorage context = null)
         {
             var targetRange = context.targetRange;
             var tmpSettlements = context.tmpSettlements;
@@ -2235,7 +2282,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptTradeMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptTradeMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                   RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                                   bool ignoreRestrictions = false)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -2302,7 +2351,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptTradeMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptTradeMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                        RimWarSettlementComp rwsComp, bool forcePlayer = false,
+                                        bool ignoreRestrictions = false)
         {
             if (false) //Options.Settings.Instance.threadingEnabled)
             {
@@ -2348,7 +2399,7 @@ namespace RimWar.Planet
                     Options.SettingsRef settingsRef = new Options.SettingsRef();
                     //if (rwsComp.RimWarPoints > 200 || ignoreRestrictions)
                     //{
-                        this.AttemptTradeMission_UnThreaded(rwd, parentSettlement, rwsComp, forcePlayer, ignoreRestrictions);
+                    this.AttemptTradeMission_UnThreaded(rwd, parentSettlement, rwsComp, forcePlayer, ignoreRestrictions);
                     //}
                 }
                 else
@@ -2358,7 +2409,8 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptDiplomatMissionOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, ContextStorage context = null)
+        private void AttemptDiplomatMissionOffMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                         RimWarSettlementComp rwsComp, ContextStorage context = null)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -2379,7 +2431,8 @@ namespace RimWar.Planet
             context.tmpSettlements = tmpSettlements;
         }
 
-        private void AttemptDiplomatMissionOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, ContextStorage context = null)
+        private void AttemptDiplomatMissionOnMainThread(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                        RimWarSettlementComp rwsComp, ContextStorage context = null)
         {
             var targetRange = context.targetRange;
             var tmpSettlements = context.tmpSettlements;
@@ -2418,7 +2471,8 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptDiplomatMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp)
+        public void AttemptDiplomatMission_UnThreaded(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                                      RimWarSettlementComp rwsComp)
         {
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = rwsComp.SettlementScanRange;
@@ -2468,7 +2522,8 @@ namespace RimWar.Planet
             }
         }
 
-        private void AttemptDiplomatMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp)
+        private void AttemptDiplomatMission(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                            RimWarSettlementComp rwsComp)
         {
             if (Options.Settings.Instance.threadingEnabled)
             {
@@ -2524,7 +2579,9 @@ namespace RimWar.Planet
             }
         }
 
-        public void AttemptReinforcement(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement, RimWarSettlementComp rwsComp, Settlement targetSettlement, bool forcePlayer = false, bool ignoreRestrictions = false)
+        public void AttemptReinforcement(RimWarData rwd, RimWorld.Planet.Settlement parentSettlement,
+                                         RimWarSettlementComp rwsComp, Settlement targetSettlement,
+                                         bool forcePlayer = false, bool ignoreRestrictions = false)
         {
             if (rwd != null && rwsComp != null && parentSettlement != null)
             {
@@ -2538,13 +2595,13 @@ namespace RimWar.Planet
                         Trader tdr = WorldUtility.CreateTrader(pts, rwd, parentSettlement, parentSettlement.Tile, targetTown, WorldObjectDefOf.Settlement);
                         rwsComp.RimWarPoints -= pts;
                         rwsComp.bonusGrowthCount += Mathf.RoundToInt((float)pts / 10f);
-                    }                    
+                    }
                 }
             }
             else
             {
                 Log.Warning("Found null when attempting to generate a trader: rwd " + rwd + " rwsComp " + rwsComp);
-            }            
+            }
         }
 
         public int GetHeatForAction(RimWarAction action)

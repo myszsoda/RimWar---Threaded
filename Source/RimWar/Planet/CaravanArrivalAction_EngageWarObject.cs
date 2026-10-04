@@ -53,14 +53,14 @@ namespace RimWar.Planet
             {
                 return false;
             }
-            if(wo.Faction != null && wo.Faction.HostileTo(caravan.Faction))
+            if (wo.Faction != null && wo.Faction.HostileTo(caravan.Faction))
             {
                 return false;
             }
-            if(wo is Trader)
+            if (wo is Trader)
             {
                 Trader trader = wo as Trader;
-                if(trader.tradedWithPlayer) //trader.TradedWith.Contains(caravan))
+                if (trader.tradedWithPlayer) //trader.TradedWith.Contains(caravan))
                 {
                     return FloatMenuAcceptanceReport.WithFailMessage("Already Traded");
                 }

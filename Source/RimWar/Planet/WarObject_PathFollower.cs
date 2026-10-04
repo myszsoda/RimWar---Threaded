@@ -271,12 +271,15 @@ namespace RimWar.Planet
             return CostToMove(warObject, start, end);
         }
 
-        public static int CostToMove(WarObject warObject, PlanetTile start, PlanetTile end, int? ticksAbs = default(int?))
+        public static int CostToMove(WarObject warObject, PlanetTile start, PlanetTile end,
+                                     int? ticksAbs = default(int?))
         {
             return CostToMove(warObject.TicksPerMove, start, end, ticksAbs);
         }
 
-        public static int CostToMove(int warObjectTicksPerMove, PlanetTile start, PlanetTile end, int? ticksAbs = default(int?), bool perceivedStatic = false, StringBuilder explanation = null, string warObjectTicksPerMoveExplanation = null)
+        public static int CostToMove(int warObjectTicksPerMove, PlanetTile start, PlanetTile end,
+                                     int? ticksAbs = default(int?), bool perceivedStatic = false,
+                                     StringBuilder explanation = null, string warObjectTicksPerMoveExplanation = null)
         {
             if (start == end)
             {
@@ -384,10 +387,9 @@ namespace RimWar.Planet
             //}
             //catch
             //{
-                warObject.pauseFor = 10;
-                return new WorldPath();
+            warObject.pauseFor = 10;
+            return new WorldPath();
             //}
-            
         }
 
         private bool AtDestinationPosition()
@@ -422,6 +424,5 @@ namespace RimWar.Planet
             }
             return false;
         }
-
     }
 }

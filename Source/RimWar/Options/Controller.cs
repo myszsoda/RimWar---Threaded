@@ -43,12 +43,12 @@ namespace RimWar.Options
         private static void AddGroupPawnMakers()
         {
             IEnumerable<TraderKindDef> tKinds = from def in DefDatabase<TraderKindDef>.AllDefs
-                                                 where (def.permitRequiredForTrading == null && !def.orbital)
-                                                 select def;
+                                                where (def.permitRequiredForTrading == null && !def.orbital)
+                                                select def;
 
             IEnumerable<FactionDef> enumerable = from def in DefDatabase<FactionDef>.AllDefs
-                                               where (!def.hidden && !def.isPlayer)
-                                               select def;
+                                                 where (!def.hidden && !def.isPlayer)
+                                                 select def;
 
             List<PawnGenOption> pgoListTraderOptions = new List<PawnGenOption>();
             pgoListTraderOptions.Clear();
@@ -69,29 +69,29 @@ namespace RimWar.Options
                 if (fd.pawnGroupMakers != null && fd.pawnGroupMakers.Count > 0)
                 {
                     factionDefGroupCount = fd.pawnGroupMakers.Count;
-                    for(int i = 0; i < fd.pawnGroupMakers.Count; i++)
+                    for (int i = 0; i < fd.pawnGroupMakers.Count; i++)
                     {
                         PawnGroupMaker pgm = fd.pawnGroupMakers[i];
-                        foreach(PawnGenOption pgo in pgm.options)
+                        foreach (PawnGenOption pgo in pgm.options)
                         {
                             pgoListOptions.Add(pgo);
                         }
-                        if(pgm.kindDef == PawnGroupKindDefOf.Combat)
+                        if (pgm.kindDef == PawnGroupKindDefOf.Combat)
                         {
                             hasCombat = true;
                             totalCommonality += pgm.commonality;
                         }
-                        else if(pgm.kindDef == PawnGroupKindDefOf.Peaceful)
+                        else if (pgm.kindDef == PawnGroupKindDefOf.Peaceful)
                         {
                             hasPeaceful = true;
                             totalCommonality += pgm.commonality;
                         }
-                        else if(pgm.kindDef == PawnGroupKindDefOf.Settlement)
+                        else if (pgm.kindDef == PawnGroupKindDefOf.Settlement)
                         {
                             hasSettlement = true;
                             totalCommonality += pgm.commonality;
                         }
-                        else if(pgm.kindDef == PawnGroupKindDefOf.Trader)
+                        else if (pgm.kindDef == PawnGroupKindDefOf.Trader)
                         {
                             hasTrader = true;
                             totalCommonality += pgm.commonality;
@@ -101,7 +101,7 @@ namespace RimWar.Options
                                 pgm.carriers = new List<PawnGenOption>();
                                 pgm.carriers.Clear();
                             }
-                            if(pgm.carriers != null)
+                            if (pgm.carriers != null)
                             {
                                 foreach (PawnGenOption pg in pgm.carriers)
                                 {
@@ -125,18 +125,18 @@ namespace RimWar.Options
                                 PawnGenOption pgo4 = new PawnGenOption();
                                 pgo4.kind = PawnKindDef.Named("Elephant");
                                 pgo4.selectionWeight = 1;
-                                pgm.carriers.AddDistinct(pgo4);                                
+                                pgm.carriers.AddDistinct(pgo4);
                             }
                         }
                     }
                 }
-                if(!hasCombat)
+                if (!hasCombat)
                 {
                     //Make a combat group
                     Log.Message("Rim War: adding combat pawngroupmaker to FactionDef " + fd.defName);
                     PawnGroupMaker pgmCombat = new PawnGroupMaker();
                     pgmCombat.kindDef = PawnGroupKindDefOf.Combat;
-                    pgmCombat.commonality = (totalCommonality/pgoListOptions.Count);
+                    pgmCombat.commonality = (totalCommonality / pgoListOptions.Count);
                     int ct = Rand.Range(2, 7);
                     for (int i = 0; i < ct; i++)
                     {
@@ -144,7 +144,7 @@ namespace RimWar.Options
                     }
                     fd.pawnGroupMakers.Add(pgmCombat);
                 }
-                if(!hasPeaceful)
+                if (!hasPeaceful)
                 {
                     Log.Message("Rim War: adding peaceful pawngroupmaker to FactionDef " + fd.defName);
                     PawnGroupMaker pgmPeaceful = new PawnGroupMaker();
@@ -174,12 +174,12 @@ namespace RimWar.Options
                     }
                     fd.pawnGroupMakers.Add(pgmPeaceful);
                 }
-                if(!hasTrader)
+                if (!hasTrader)
                 {
                     Log.Message("Rim War: adding trader pawngroupmaker to FactionDef " + fd.defName);
                     PawnGroupMaker pgmTrader = new PawnGroupMaker();
                     pgmTrader.kindDef = PawnGroupKindDefOf.Trader;
-                    pgmTrader.commonality = 1;                    
+                    pgmTrader.commonality = 1;
                     int ct = Rand.Range(2, 7);
                     for (int i = 0; i < ct; i++)
                     {
@@ -192,14 +192,14 @@ namespace RimWar.Options
                     else
                     {
                         pgmTrader.traders.Add(pgoListOptions.RandomElement());
-                    }                    
-                    foreach(PawnGenOption pgoc in pgoListCarrierOptions)
+                    }
+                    foreach (PawnGenOption pgoc in pgoListCarrierOptions)
                     {
                         pgmTrader.carriers.Add(pgoc);
                     }
                     fd.pawnGroupMakers.Add(pgmTrader);
                 }
-                if(!hasSettlement)
+                if (!hasSettlement)
                 {
                     Log.Message("Rim War: adding settlement pawngroupmaker to FactionDef " + fd.defName);
                     PawnGroupMaker pgmSettlement = new PawnGroupMaker();
@@ -258,7 +258,7 @@ namespace RimWar.Options
             num++;
             Rect rowRect12 = UIHelper.GetRowRect(rect1, rowHeight, num);
             Widgets.CheckboxLabeled(rowRect12, "RW_useRimWarVictory".Translate(), ref Settings.Instance.useRimWarVictory, false);
-            TooltipHandler.TipRegion(rowRect12, "RW_useRimWarVictoryInfo".Translate());            
+            TooltipHandler.TipRegion(rowRect12, "RW_useRimWarVictoryInfo".Translate());
             Rect rowRect12ShiftRight = UIHelper.GetRowRect(rowRect12, rowHeight, num);
             rowRect12ShiftRight.x += rowRect12.width + 56f;
             Settings.Instance.heatMultiplier = Widgets.HorizontalSlider(rowRect12ShiftRight, Settings.Instance.heatMultiplier, 0f, 2f, false, "RW_heatOffset".Translate() + " " + Settings.Instance.heatMultiplier.ToString("P0"), "0%", "200%", .1f);
@@ -269,7 +269,7 @@ namespace RimWar.Options
             TooltipHandler.TipRegion(rowRect, "RW_randomizeFactionBehaviorInfo".Translate());
             Rect rowRectShiftRight = UIHelper.GetRowRect(rowRect, rowHeight, num);
             rowRectShiftRight.x += rowRect.width + 56f;
-            Settings.Instance.heatFrequency = Widgets.HorizontalSlider(rowRectShiftRight, Settings.Instance.heatFrequency, 800f, 10000f, false, "RW_heatFrequency".Translate(((Settings.Instance.heatFrequency/2500f)).ToString("#.#")), "1/4", "4", 10f);
+            Settings.Instance.heatFrequency = Widgets.HorizontalSlider(rowRectShiftRight, Settings.Instance.heatFrequency, 800f, 10000f, false, "RW_heatFrequency".Translate(((Settings.Instance.heatFrequency / 2500f)).ToString("#.#")), "1/4", "4", 10f);
             TooltipHandler.TipRegion(rowRectShiftRight, "RW_heatFrequencyInfo".Translate());
             num++;
             Rect rowRect11 = UIHelper.GetRowRect(rowRect1, rowHeight, num);
@@ -297,7 +297,7 @@ namespace RimWar.Options
             Rect rowRect6 = UIHelper.GetRowRect(rowRect13, rowHeight, num);
             rowRect6.width = canvas.width * .8f;
             Settings.Instance.averageEventFrequency = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect6, Settings.Instance.averageEventFrequency, 10, 1000, false, "RW_eventFrequency".Translate() + " " + Settings.Instance.averageEventFrequency, "Fast", "Slow", 1f));
-            TooltipHandler.TipRegion(rowRect6, "RW_eventFrequencyInfo".Translate());            
+            TooltipHandler.TipRegion(rowRect6, "RW_eventFrequencyInfo".Translate());
             num++;
             Rect rowRect4 = UIHelper.GetRowRect(rowRect6, rowHeight, num);
             Settings.Instance.settlementScanRangeDivider = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect4, Settings.Instance.settlementScanRangeDivider, 20, 200, false, "RW_scanRange".Translate() + " " + Mathf.RoundToInt(1000 / Settings.Instance.settlementScanRangeDivider), "Far", "Close", 1f));
@@ -309,22 +309,22 @@ namespace RimWar.Options
             num++;
             Rect rowRect91 = UIHelper.GetRowRect(rowRect3, rowHeight, num);
             Settings.Instance.rwdUpdateFrequency = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect91, Settings.Instance.rwdUpdateFrequency, 2500, 60000, false, "RW_rwdUpdateFrequency".Translate() + " " + Mathf.RoundToInt(Settings.Instance.rwdUpdateFrequency / 2500), "1", "24", 1f));
-            TooltipHandler.TipRegion(rowRect91, "RW_rwdUpdateFrequencyInfo".Translate());            
+            TooltipHandler.TipRegion(rowRect91, "RW_rwdUpdateFrequencyInfo".Translate());
             num++;
             Rect rowRect2 = UIHelper.GetRowRect(rowRect91, rowHeight, num);
             Settings.Instance.maxFactionSettlements = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect2, Settings.Instance.maxFactionSettlements, 1, 100, false, "RW_maxFactionSettlements".Translate() + " " + Settings.Instance.maxFactionSettlements, "1", "100", 1f));
             TooltipHandler.TipRegion(rowRect2, "RW_maxFactionSettlementsInfo".Translate());
             num++;
             Rect rowRect7 = UIHelper.GetRowRect(rowRect2, rowHeight, num);
-            Settings.Instance.settlementEventDelay = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect7, Settings.Instance.settlementEventDelay, 2500, 240000, false, "RW_settlementEventFrequency".Translate() + " " + Mathf.RoundToInt(Settings.Instance.settlementEventDelay/2500f), "1", "96", 10f));
+            Settings.Instance.settlementEventDelay = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect7, Settings.Instance.settlementEventDelay, 2500, 240000, false, "RW_settlementEventFrequency".Translate() + " " + Mathf.RoundToInt(Settings.Instance.settlementEventDelay / 2500f), "1", "96", 10f));
             TooltipHandler.TipRegion(rowRect7, "RW_settlementEventFrequencyInfo".Translate());
             num++;
             Rect rowRect8 = UIHelper.GetRowRect(rowRect7, rowHeight, num);
-            Settings.Instance.settlementScanDelay = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect8, Settings.Instance.settlementScanDelay, 2500, 240000, false, "RW_settlementScanFrequency".Translate() + " " + Mathf.RoundToInt(Settings.Instance.settlementScanDelay/2500f), "1", "96", 10f));
+            Settings.Instance.settlementScanDelay = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect8, Settings.Instance.settlementScanDelay, 2500, 240000, false, "RW_settlementScanFrequency".Translate() + " " + Mathf.RoundToInt(Settings.Instance.settlementScanDelay / 2500f), "1", "96", 10f));
             TooltipHandler.TipRegion(rowRect8, "RW_settlementScanFrequencyInfo".Translate());
             num++;
             Rect rowRect9 = UIHelper.GetRowRect(rowRect8, rowHeight, num);
-            Settings.Instance.woEventFrequency = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect9, Settings.Instance.woEventFrequency, 10, 1000, false, "RW_warobjectActionFrequency".Translate() + " " + ((float)(Settings.Instance.woEventFrequency/60f)).ToString("#.0"), "Fast", "Slow", .1f));
+            Settings.Instance.woEventFrequency = Mathf.RoundToInt(Widgets.HorizontalSlider(rowRect9, Settings.Instance.woEventFrequency, 10, 1000, false, "RW_warobjectActionFrequency".Translate() + " " + ((float)(Settings.Instance.woEventFrequency / 60f)).ToString("#.0"), "Fast", "Slow", .1f));
             TooltipHandler.TipRegion(rowRect9, "RW_warobjectActionFrequencyInfo".Translate());
             num++;
             Rect rowRect5 = UIHelper.GetRowRect(rowRect4, rowHeight, num);
@@ -352,14 +352,14 @@ namespace RimWar.Options
             if (resetDefault)
             {
                 Settings.Instance.storytellerBasedDifficulty = true;
-                Settings.Instance.rimwarDifficulty = 1f;                
+                Settings.Instance.rimwarDifficulty = 1f;
                 Settings.Instance.heatMultiplier = 1f;
                 Settings.Instance.heatFrequency = 3000f;
-                Settings.Instance.randomizeFactionBehavior = false;              
+                Settings.Instance.randomizeFactionBehavior = false;
                 Settings.Instance.createDiplomats = false;
                 Settings.Instance.forceRandomObject = false;
                 Settings.Instance.settlementGrowthRate = 1f;
-                
+
                 Settings.Instance.averageEventFrequency = 150;
 
                 Settings.Instance.settlementScanRangeDivider = 70f;
@@ -372,7 +372,7 @@ namespace RimWar.Options
                 Settings.Instance.woEventFrequency = 200;
                 Settings.Instance.objectMovementMultiplier = 1f;
 
-                Settings.Instance.letterNotificationRange = 7;                
+                Settings.Instance.letterNotificationRange = 7;
                 Settings.Instance.alertRange = 6;
                 Settings.Instance.vassalNotification = false;
                 Settings.Instance.allowDropPodRaids = true;
@@ -498,7 +498,6 @@ namespace RimWar.Options
 
             //Widgets.EndScrollView();
             GUI.EndScrollView();
-
         }
 
         public static class UIHelper
@@ -510,6 +509,5 @@ namespace RimWar.Options
                 return result;
             }
         }
-
     }
 }

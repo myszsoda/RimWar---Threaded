@@ -15,21 +15,22 @@ namespace RimWar.Planet
 {
     public class SettlementUtility
     {
-        public static RimWorld.Planet.Settlement AddNewHome(PlanetTile tile, Faction faction, WorldObjectDef cityDef = null)
+        public static RimWorld.Planet.Settlement AddNewHome(PlanetTile tile, Faction faction,
+                                                            WorldObjectDef cityDef = null)
         {
-            if(cityDef == null)
+            if (cityDef == null)
             {
                 cityDef = WorldObjectDefOf.Settlement;
             }
-            if(ModsConfig.IsActive("Cabbage.RimCities"))
+            if (ModsConfig.IsActive("Cabbage.RimCities"))
             {
-                if(cityDef.worldObjectClass.ToString() == "Cities.City")
+                if (cityDef.worldObjectClass.ToString() == "Cities.City")
                 {
                     return GenerateCity(tile, faction, cityDef);
                 }
                 else
                 {
-                    return SettleUtility.AddNewHome(tile, faction);                     
+                    return SettleUtility.AddNewHome(tile, faction);
                 }
             }
             else
@@ -42,12 +43,11 @@ namespace RimWar.Planet
         {
             City city = (City)WorldObjectMaker.MakeWorldObject(def);
             city.SetFaction(faction);
-            city.inhabitantFaction = city.Faction;            
+            city.inhabitantFaction = city.Faction;
             city.Tile = tile;
             city.Name = city.ChooseName();
             Find.WorldObjects.Add(city);
             return city;
         }
-
     }
 }

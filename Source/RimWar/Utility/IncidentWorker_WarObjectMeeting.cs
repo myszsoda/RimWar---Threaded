@@ -39,7 +39,7 @@ namespace RimWar.Utility
                 return TryFindFaction(out faction);
             }
             return false;
-        }        
+        }
 
         private bool TryFindFaction(out Faction faction)
         {
@@ -72,11 +72,11 @@ namespace RimWar.Utility
             int silverAvailable = IncidentUtility.TryGetAvailableSilver(caravan);
             RimWarSettlementComp rwsc = WorldUtility.GetClosestSettlementOfFaction(caravan.Faction, caravan.Tile, 40);
             Settlement colonySettlement = null;
-            if(rwsc != null)
+            if (rwsc != null)
             {
                 colonySettlement = rwsc.parent as Settlement;
             }
-            
+
             List<Pawn> list = GenerateCaravanPawns(faction, wo.RimWarPoints);
             if (!list.Any())
             {
@@ -118,7 +118,7 @@ namespace RimWar.Utility
                         });
                         diaOption.Disable("CaravanMeeting_NoPermit".Translate(royalTitleDef.GetLabelForBothGenders(), faction).Resolve());
                     }
-                    else if(hostileToPlayer)
+                    else if (hostileToPlayer)
                     {
                         diaOption.Disable("RW_CaravanMeeting_TradeUnwilling".Translate(faction.Name));
                     }
@@ -127,7 +127,7 @@ namespace RimWar.Utility
                         diaOption.Disable("CaravanMeeting_TradeIncapable".Translate());
                     }
                 }
-                else if(!factionCanTrade)
+                else if (!factionCanTrade)
                 {
                     diaOption.Disable("RW_CaravanMeeting_FactionIncapableOfTrade".Translate());
                 }
@@ -135,11 +135,11 @@ namespace RimWar.Utility
             }
             DiaOption diaOption2 = new DiaOption("CaravanMeeting_Attack".Translate());
             diaOption2.action = delegate
-            {                
+            {
                 LongEventHandler.QueueLongEvent(delegate
                 {
                     Pawn t2 = caravan.PawnsListForReading[0];
-                    
+
                     //faction.TrySetRelationKind(Faction.OfPlayer, FactionRelationKind.Hostile, true, "GoodwillChangedReason_AttackedCaravan".Translate(), t2);
                     Map map = CaravanIncidentUtility.GetOrGenerateMapForIncident(caravan, new IntVec3(100, 1, 100), WorldObjectDefOf.AttackedNonPlayerCaravan);
                     if (map != null && map.Parent != null && map.Parent.Faction == null)
@@ -156,7 +156,7 @@ namespace RimWar.Utility
                     Find.TickManager.Notify_GeneratedPotentiallyHostileMap();
                     CameraJumper.TryJumpAndSelect(t2);
                     PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter_Send(list2, "LetterRelatedPawnsGroupGeneric".Translate(Faction.OfPlayer.def.pawnsPlural), LetterDefOf.NeutralEvent, informEvenIfSeenBefore: true);
-                    while(pointDamage > 0)
+                    while (pointDamage > 0)
                     {
                         float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, pointDamage);
                         pointDamage -= Mathf.RoundToInt(ptDam * 2f);

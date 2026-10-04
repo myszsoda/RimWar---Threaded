@@ -82,7 +82,7 @@ namespace RimWar.Planet
                             if (CaravanDetected(playerCaravan) && (playerCaravan.PlayerWealthForStoryteller / 100) <= (int)(this.RimWarPoints) && this.Faction.HostileTo(playerCaravan.Faction))
                             {
                                 this.DestinationTarget = playerCaravan;
-                                break;                                                            
+                                break;
                                 //Log.Message(this.Label + " engaging nearby warband " + wo.Label);
                             }
                         }
@@ -101,7 +101,7 @@ namespace RimWar.Planet
                         if (wo is WarObject && this.Faction.HostileTo(wo.Faction))
                         {
                             WarObject warObject = wo as WarObject;
-                            if(warObject.RimWarPoints <= this.RimWarPoints)
+                            if (warObject.RimWarPoints <= this.RimWarPoints)
                             {
                                 this.DestinationTarget = wo;
                                 break;
@@ -144,12 +144,11 @@ namespace RimWar.Planet
             {
                 IncidentUtility.ResolveRimWarBattle(this, rwo);
             }
-            //ImmediateAction(rwo);            
+            //ImmediateAction(rwo);
         }
 
         public Scout()
         {
-
         }
 
         public override int RimWarPoints { get => base.RimWarPoints; set => base.RimWarPoints = value; }
@@ -191,14 +190,14 @@ namespace RimWar.Planet
 
         public override void ImmediateAction(WorldObject wo)
         {
-            base.ImmediateAction(wo);           
+            base.ImmediateAction(wo);
         }
 
         public override void ArrivalAction()
         {
             //Log.Message("beginning arrival actions - scout; destination: " + this.DestinationTarget.Label + " parent: " + this.ParentSettlement.Label);
             WorldObject wo = this.DestinationTarget;
-            if(wo != null && wo.Faction != this.Faction)
+            if (wo != null && wo.Faction != this.Faction)
             {
                 if (wo.Faction.HostileTo(this.Faction))
                 {
@@ -231,7 +230,7 @@ namespace RimWar.Planet
                     }
                     else
                     {
-                        RimWorld.Planet.Settlement wos = wo as RimWorld.Planet.Settlement;                        
+                        RimWorld.Planet.Settlement wos = wo as RimWorld.Planet.Settlement;
                         if (wos != null)
                         {
                             RimWarSettlementComp rwscDefender = wos.GetComponent<RimWarSettlementComp>();
@@ -257,11 +256,11 @@ namespace RimWar.Planet
                             bs.Units.Add(this);
                             base.ArrivalAction();
                         }
-                    }                
+                    }
                 }
                 else
                 {
-                    if(wo.Faction == Faction.OfPlayerSilentFail) // reinforce
+                    if (wo.Faction == Faction.OfPlayerSilentFail) // reinforce
                     {
                         RimWorld.Planet.Settlement playerSettlement = Find.WorldObjects.SettlementAt(this.Tile);
                         if (playerSettlement != null)
@@ -274,21 +273,21 @@ namespace RimWar.Planet
                     else
                     {
                         RimWarSettlementComp rwsc = WorldUtility.GetRimWarSettlementAtTile(this.Tile);
-                        if(rwsc != null)
+                        if (rwsc != null)
                         {
-                            rwsc.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints/2f);
+                            rwsc.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                             rwsc.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
                             base.ArrivalAction();
                         }
                     }
-                }                
+                }
             }
             else
             {
                 //Log.Message("this tile: " + this.Tile + " parent settlement tile: " + this.ParentSettlement.Tile + " pather destination " + this.pather.Destination);
-                if(this.Tile == ParentSettlement.Tile)
+                if (this.Tile == ParentSettlement.Tile)
                 {
-                    if(Find.World.worldObjects.AnyMapParentAt(this.Tile))
+                    if (Find.World.worldObjects.AnyMapParentAt(this.Tile))
                     {
                         //reinforce
                         //Log.Message("attempting to reinforce");
@@ -303,9 +302,8 @@ namespace RimWar.Planet
                         //Log.Message("parent settlement points: " + this.ParentSettlement.RimWarPoints);
                         if (wo.Faction != this.Faction) //could happen if parent town is taken over while army is away, in which case - perform another raid
                         {
-
                         }
-                        this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints/2f);
+                        this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                         this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
                     }
                     base.ArrivalAction();
@@ -313,7 +311,7 @@ namespace RimWar.Planet
                 else
                 {
                     RimWarSettlementComp _rwsc = wo.GetComponent<RimWarSettlementComp>();
-                    if(_rwsc != null && _rwsc.parent != null && _rwsc.parent.Faction == this.Faction)
+                    if (_rwsc != null && _rwsc.parent != null && _rwsc.parent.Faction == this.Faction)
                     {
                         _rwsc.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                         _rwsc.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
@@ -326,6 +324,6 @@ namespace RimWar.Planet
                 PathToTarget(DestinationTarget);
             }
             //Log.Message("ending arrival actions");
-        }       
+        }
     }
 }

@@ -38,7 +38,7 @@ namespace RimWar.Planet
 
         public override void Arrived(Caravan caravan)
         {
-            wo.EngageCaravan(caravan);            
+            wo.EngageCaravan(caravan);
         }
 
         public override void ExposeData()
@@ -53,7 +53,7 @@ namespace RimWar.Planet
             {
                 return false;
             }
-            if(wo.Faction != null && !wo.Faction.HostileTo(caravan.Faction))
+            if (wo.Faction != null && !wo.Faction.HostileTo(caravan.Faction))
             {
                 return false;
             }

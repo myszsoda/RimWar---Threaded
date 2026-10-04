@@ -20,20 +20,19 @@ namespace RimWar.Planet
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<int>(ref this.lastEventTick, "lastEventTick", 0, false);            
-            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2500, false);                       
+            Scribe_Values.Look<int>(ref this.lastEventTick, "lastEventTick", 0, false);
+            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2500, false);
         }
 
         public override WorldObjectDef GetDef => this.def;
 
         public Settler()
         {
-
         }
 
         public override int RimWarPoints { get => base.RimWarPoints; set => base.RimWarPoints = value; }
         public override bool MovesAtNight { get => base.MovesAtNight; set => base.MovesAtNight = value; }
-        public override float MovementModifier => (2500f/(float)TicksPerMove);
+        public override float MovementModifier => (2500f / (float)TicksPerMove);
 
         public override bool NightResting
         {
@@ -65,12 +64,12 @@ namespace RimWar.Planet
             {
                 this.ticksPerMove = value;
             }
-        }       
+        }
 
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            //stringBuilder.Append(base.GetInspectString());            
+            //stringBuilder.Append(base.GetInspectString());
 
             if (Find.World.worldObjects.AnySettlementAt(pather.Destination))
             {
@@ -87,7 +86,6 @@ namespace RimWar.Planet
                         stringBuilder.Append("RW_WarObjectInspectString".Translate(this.Name, "RW_ReturningTo".Translate(), wo.Label));
                     }
                 }
-                
             }
 
             if (pather.Moving)
@@ -99,9 +97,9 @@ namespace RimWar.Planet
                 }
                 stringBuilder.Append("RW_EstimatedTimeToDestination".Translate(num6.ToString("0.#")));
                 stringBuilder.Append(" (" + Find.WorldGrid.TraversalDistanceBetween(this.Tile, pather.Destination) + "RW_TilesAway_Verbatum".Translate() + ")");
-                if(this.NightResting)
+                if (this.NightResting)
                 {
-                    stringBuilder.Append("\n"+"RW_UnitCamped".Translate());
+                    stringBuilder.Append("\n" + "RW_UnitCamped".Translate());
                 }
             }
             if (stringBuilder.Length != 0)
@@ -112,7 +110,6 @@ namespace RimWar.Planet
             stringBuilder.Append("\n" + this.Faction.PlayerRelationKind.ToString());
             if (!pather.MovingNow)
             {
-
             }
             return stringBuilder.ToString();
         }
@@ -183,13 +180,13 @@ namespace RimWar.Planet
                 WorldObject wo = woList.RandomElement();
                 for (int i = 0; i < woList.Count; i++)
                 {
-                    if(woList[i] is RimWorld.Planet.Settlement)
+                    if (woList[i] is RimWorld.Planet.Settlement)
                     {
                         wo = woList[i];
                         break;
                     }
                 }
-                
+
                 if (wo != null && wo != this)
                 {
                     if (wo.Faction != this.Faction)
@@ -212,9 +209,9 @@ namespace RimWar.Planet
                                     IncidentUtility.DoCaravanAttackWithPoints(this, playerCaravan, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                                 }
                             }
-                            else if(wo is WarObject)
+                            else if (wo is WarObject)
                             {
-                                IncidentUtility.ResolveRimWarBattle(this, wo as WarObject);                                    
+                                IncidentUtility.ResolveRimWarBattle(this, wo as WarObject);
                             }
                             else
                             {
@@ -235,17 +232,17 @@ namespace RimWar.Planet
                     else
                     {
                         //Log.Message("this tile: " + this.Tile + " parent settlement tile: " + this.ParentSettlement.Tile);
-                        if(wo is RimWorld.Planet.Settlement)
+                        if (wo is RimWorld.Planet.Settlement)
                         {
                             RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
-                            if(rwsc != null)
+                            if (rwsc != null)
                             {
                                 rwsc.RimWarPoints += this.RimWarPoints;
                                 rwsc.PointDamage += this.PointDamage;
                             }
                         }
                     }
-                }                
+                }
             }
             else
             {
@@ -253,6 +250,6 @@ namespace RimWar.Planet
             }
             //Log.Message("ending arrival actions");
             base.ArrivalAction();
-        }    
+        }
     }
 }

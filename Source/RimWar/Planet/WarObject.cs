@@ -90,7 +90,7 @@ namespace RimWar.Planet
             get
             {
                 return this.def;
-            }            
+            }
         }
 
         private bool useDestinationTile = false;
@@ -173,7 +173,7 @@ namespace RimWar.Planet
         public bool CaravanDetected(Caravan car)
         {
             float vis = car.Visibility * (1f / Mathf.Max(1f, Find.WorldGrid.ApproxDistanceInTiles(car.Tile, this.Tile)));
-            float relativePower = (car.PlayerWealthForStoryteller/80f) / (float)this.RimWarPoints;
+            float relativePower = (car.PlayerWealthForStoryteller / 80f) / (float)this.RimWarPoints;
             bool det = Rand.Chance(vis * this.DetectionModifier * relativePower);
             return det;
         }
@@ -402,7 +402,6 @@ namespace RimWar.Planet
             }
             set
             {
-
             }
         }
 
@@ -457,13 +456,13 @@ namespace RimWar.Planet
         protected override void TickInterval(int delta)
         {
             base.TickInterval(delta);
-            if(this.PointDamage > 0 && Find.TickManager.TicksGame % 1001 == 0)
+            if (this.PointDamage > 0 && Find.TickManager.TicksGame % 1001 == 0)
             {
                 float damageSplit = (Rand.Range(.004f, .006f) * this.RimWarPoints);
                 this.PointDamage = Mathf.RoundToInt(Mathf.Clamp(this.PointDamage - (2f * damageSplit), 0, this.RimWarPoints));
                 this.RimWarPoints = Mathf.RoundToInt(Mathf.Clamp(RimWarPoints - damageSplit, 0, this.RimWarPoints));
             }
-            if(this.EffectivePoints <= 0)
+            if (this.EffectivePoints <= 0)
             {
                 this.ArrivalAction();
             }
@@ -564,7 +563,6 @@ namespace RimWar.Planet
 
         public virtual void Notify_Player()
         {
-
         }
 
         public virtual void ScanAction(float range)
@@ -576,7 +574,7 @@ namespace RimWar.Planet
                 {
                     for (int i = 0; i < worldObjects.Count; i++)
                     {
-                        WorldObject wo = worldObjects[i];                        
+                        WorldObject wo = worldObjects[i];
                         if (wo != null && !wo.Destroyed && wo.Faction != this.Faction && wo != this.DestinationTarget)
                         {
                             //Log.Message(this.Label + " has " + wo.Label + " in range [" + range + "]");
@@ -590,7 +588,7 @@ namespace RimWar.Planet
                                 }
                                 break;
                             }
-                            else if(wo is RimWarSite)
+                            else if (wo is RimWarSite)
                             {
                                 InteractWithSite(wo);
                                 break;
@@ -653,12 +651,10 @@ namespace RimWar.Planet
 
         public virtual void EngageNearbyCaravan(Caravan car)
         {
-
         }
 
         public virtual void EngageNearbyWarObject(WarObject rwo)
         {
-
         }
 
         public virtual void InteractWithSite(WorldObject wo)
@@ -668,7 +664,7 @@ namespace RimWar.Planet
                 return;
             }
             BattleSite bs = wo as BattleSite;
-            if(bs != null)
+            if (bs != null)
             {
                 bs.Units.Add(this);
                 this.ImmediateDestroy();
@@ -693,7 +689,7 @@ namespace RimWar.Planet
                 car.pather.StopDead();
                 if (this.Faction.HostileTo(car.Faction))
                 {
-                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), pgkd);                    
+                    IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn), pgkd);
                 }
                 else
                 {
@@ -740,7 +736,7 @@ namespace RimWar.Planet
         public override string GetInspectString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            //stringBuilder.Append(base.GetInspectString());            
+            //stringBuilder.Append(base.GetInspectString());
 
             WorldObject wo = Find.World.worldObjects.ObjectsAt(pather.Destination).FirstOrDefault();
             if (pauseFor > 0)
@@ -774,8 +770,7 @@ namespace RimWar.Planet
                 }
             }
 
-
-            if (pather.Moving && pauseFor <=0)
+            if (pather.Moving && pauseFor <= 0)
             {
                 float num6 = (float)Utility.ArrivalTimeEstimator.EstimatedTicksToArrive(base.Tile, pather.Destination, this) / 60000f;
                 if (stringBuilder.Length != 0)
@@ -804,7 +799,6 @@ namespace RimWar.Planet
             stringBuilder.Append("\n" + this.Faction.PlayerRelationKind.ToString());
             if (!pather.MovingNow)
             {
-
             }
             return stringBuilder.ToString();
         }

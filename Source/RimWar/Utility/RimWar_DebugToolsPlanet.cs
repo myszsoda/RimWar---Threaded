@@ -37,7 +37,7 @@ namespace RimWar.Utility
                     }
                 }
                 WarObject rwo = Find.WorldObjects.WorldObjectAt(tile, RimWarDefOf.RW_WarObject) as WarObject;
-                if(rwo != null)
+                if (rwo != null)
                 {
                     rwo.RimWarPoints += 1000;
                 }
@@ -199,22 +199,22 @@ namespace RimWar.Utility
                     {
                         List<Settlement> validVassalSettlements = new List<Settlement>();
                         validVassalSettlements.Clear();
-                        for(int i =0; i < Find.WorldObjects.Settlements.Count; i++)
+                        for (int i = 0; i < Find.WorldObjects.Settlements.Count; i++)
                         {
                             Settlement v = Find.WorldObjects.Settlements[i];
-                            if(WorldUtility.IsVassalFaction(v.Faction))
+                            if (WorldUtility.IsVassalFaction(v.Faction))
                             {
                                 validVassalSettlements.Add(v);
                             }
                         }
-                        if(validVassalSettlements != null && validVassalSettlements.Count > 0)
+                        if (validVassalSettlements != null && validVassalSettlements.Count > 0)
                         {
                             Settlement closest = validVassalSettlements[0];
-                            for(int i = 1; i < validVassalSettlements.Count; i++)
+                            for (int i = 1; i < validVassalSettlements.Count; i++)
                             {
                                 closest = (Settlement)WorldUtility.ReturnCloserWorldObjectTo(closest, validVassalSettlements[i], tile);
                             }
-                            if(closest != null)
+                            if (closest != null)
                             {
                                 WorldUtility.CreateScout(Rand.Range(100, 2000), rwsc.RWD, s, s.Tile, closest, WorldObjectDefOf.Settlement);
                             }
@@ -469,9 +469,9 @@ namespace RimWar.Utility
             Options.SettingsRef settingsRef = new Options.SettingsRef();
             int targetRange = Mathf.RoundToInt(rwsc.RimWarPoints / settingsRef.settlementScanRangeDivider);
             List<WorldObject> woList = WorldUtility.GetWorldObjectsInRange(tile, targetRange);
-            for(int i = 0; i < woList.Count; i++)
+            for (int i = 0; i < woList.Count; i++)
             {
-                if(woList[i] is Settlement)
+                if (woList[i] is Settlement)
                 {
                     Settlement s = woList[i] as Settlement;
                     Log.Message(s.Label + " in range of " + rwsc.parent.Label);
@@ -494,28 +494,26 @@ namespace RimWar.Utility
         [DebugAction("Rim War - Debug", "Reset Capitols", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         private static void DebugRimWarLegacyCapitols()
         {
-            foreach(RimWarData rwd in WorldUtility.GetRimWarData())
+            foreach (RimWarData rwd in WorldUtility.GetRimWarData())
             {
                 rwd.ClearCapitol();
             }
             List<WorldObject> remList = new List<WorldObject>();
-            for(int i = 0; i < Find.WorldObjects.AllWorldObjects.Count; i++)
+            for (int i = 0; i < Find.WorldObjects.AllWorldObjects.Count; i++)
             {
-                if(Find.WorldObjects.AllWorldObjects[i] is CapitolBuilding)
+                if (Find.WorldObjects.AllWorldObjects[i] is CapitolBuilding)
                 {
                     remList.Add(Find.WorldObjects.AllWorldObjects[i]);
                 }
             }
-            if(remList.Count > 0)
+            if (remList.Count > 0)
             {
-                for(int i = 0; i < remList.Count; i++)
+                for (int i = 0; i < remList.Count; i++)
                 {
                     remList[i].Destroy();
                 }
             }
         }
-
-
 
         public static void Debug_FixRimWarSettlements(bool generateReport = false, bool cleanupErrors = false)
         {
@@ -544,7 +542,7 @@ namespace RimWar.Utility
                             if (cleanupErrors)
                             {
                                 if (generateReport) { Log.Message("Cleaning RWS..."); }
-                                //WorldUtility.GetRimWarDataForFaction(wos.Faction)?.WorldSettlements?.Remove(rws);                                
+                                //WorldUtility.GetRimWarDataForFaction(wos.Faction)?.WorldSettlements?.Remove(rws);
                             }
                         }
                         else if (wos.Faction != rws.parent.Faction)
@@ -678,16 +676,16 @@ namespace RimWar.Utility
                         {
                             resetCount++;
                             RimWorld.Planet.Settlement settlement = rwd.WorldSettlements.RandomElement();
-                            if(settlement != null)
+                            if (settlement != null)
                             {
-                                if(settlement.Destroyed)
+                                if (settlement.Destroyed)
                                 {
                                     Log.Warning("Detected destroyed settlement in Rim War data for " + rwd.RimWarFaction.Name);
                                 }
                                 else
                                 {
                                     RimWarSettlementComp rwsc = settlement.GetComponent<RimWarSettlementComp>();
-                                    if(rwsc != null)
+                                    if (rwsc != null)
                                     {
                                         rwsc.RimWarPoints += rwo.RimWarPoints;
                                     }
@@ -743,26 +741,26 @@ namespace RimWar.Utility
             int initialPoints = GetPointsFromAllSettlements(out totalSettlements);
             float yearMultiplier = 1f + (GenDate.YearsPassed * .1f);
             List<RimWarData> rwdList = WorldUtility.Get_WCPT().RimWarData;
-            if(rwdList != null && rwdList.Count > 0)
+            if (rwdList != null && rwdList.Count > 0)
             {
-                for(int i = 0; i < rwdList.Count; i++)
+                for (int i = 0; i < rwdList.Count; i++)
                 {
                     List<RimWarSettlementComp> rwscList = rwdList[i].WarSettlementComps;
                     if (rwscList != null && rwscList.Count > 0 && rwdList[i].behavior != RimWarBehavior.Player)
                     {
-                        for(int j = 0; j < rwscList.Count; j++)
+                        for (int j = 0; j < rwscList.Count; j++)
                         {
                             rwscList[j].RimWarPoints = Mathf.RoundToInt(WorldUtility.CalculateSettlementPoints(rwscList[j].parent, rwscList[j].parent.Faction) * Rand.Range(.5f, 1.5f) * yearMultiplier);
                         }
                     }
                 }
-            }            
+            }
             int adjustedPoints = GetPointsFromAllSettlements(out totalSettlements);
-            Log.Message(totalSettlements + " settlements initially with " + initialPoints + "; " + Mathf.RoundToInt(initialPoints/totalSettlements) + " per settlement");
+            Log.Message(totalSettlements + " settlements initially with " + initialPoints + "; " + Mathf.RoundToInt(initialPoints / totalSettlements) + " per settlement");
             Log.Message(totalSettlements + " settlements adjusted to " + adjustedPoints + "; " + Mathf.RoundToInt(adjustedPoints / totalSettlements) + " per settlement");
         }
 
-        private static int GetPointsFromAllSettlements (out int totalSettlements)
+        private static int GetPointsFromAllSettlements(out int totalSettlements)
         {
             int totalPoints = 0;
             totalSettlements = 0;
@@ -782,7 +780,7 @@ namespace RimWar.Utility
                     }
                 }
             }
-            return totalPoints;            
+            return totalPoints;
         }
 
         //-- reset rimwar -- //
@@ -795,14 +793,13 @@ namespace RimWar.Utility
 
         public static void ResetRWD()
         {
-
         }
 
         public static void ResetFactions(bool clearExisting = true, bool displayDebugMessages = true)
         {
             List<RimWarData> rwdList = new List<RimWarData>();
             rwdList.Clear();
-            foreach(RimWarData rwd in WorldUtility.Get_WCPT().RimWarData)
+            foreach (RimWarData rwd in WorldUtility.Get_WCPT().RimWarData)
             {
                 rwdList.Add(rwd);
             }
@@ -812,7 +809,7 @@ namespace RimWar.Utility
                 if (displayDebugMessages) Log.Message("Clearing factions...");
                 rwdList.Clear();
             }
-            
+
             List<Faction> factionList = Find.FactionManager.AllFactions.ToList();
             List<Faction> rimwarFactions = new List<Faction>();
             rimwarFactions.Clear();
@@ -841,7 +838,7 @@ namespace RimWar.Utility
                     {
                         if (displayDebugMessages) Log.Message("Adding new faction " + allFactionsVisible[i].Name);
                         RimWarData rwd = AddRimWarFaction(allFactionsVisible[i], rwdList);
-                        if(rwd != null)
+                        if (rwd != null)
                         {
                             rwdList.Add(rwd);
                         }
@@ -866,7 +863,7 @@ namespace RimWar.Utility
                 AssignFactionSettlements(newRimWarFaction);
             }
             Settlement s = newRimWarFaction.GetCapitol;
-            return newRimWarFaction;                
+            return newRimWarFaction;
         }
 
         public static bool CheckForRimWarFaction(Faction faction, List<RimWarData> rwdList)
@@ -911,7 +908,7 @@ namespace RimWar.Utility
                     for (int j = 0; j < rwd[i].defDatas.Count; j++)
                     {
                         RimWarDefData defData = rwd[i].defDatas[j];
-                        //Log.Message("checking faction " + defData.factionDefname);                        
+                        //Log.Message("checking faction " + defData.factionDefname);
                         if (defData.factionDefname.ToString() == rimwarObject.RimWarFaction.def.ToString())
                         {
                             if (!settingsRef.randomizeFactionBehavior || defData.forceBehavior)
@@ -944,7 +941,6 @@ namespace RimWar.Utility
             }
             //Log.Message("generating faction behavior for " + rimwarObject.RimWarFaction);
             WorldUtility.CalculateFactionBehaviorWeights(rimwarObject);
-
         }
 
         public static void RandomizeFactionBehavior(RimWarData rimwarObject)

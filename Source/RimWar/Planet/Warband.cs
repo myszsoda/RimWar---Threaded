@@ -10,30 +10,29 @@ using Verse;
 namespace RimWar.Planet
 {
     public class Warband : WarObject
-    {        
-        private int lastEventTick = 0;        
+    {
+        private int lastEventTick = 0;
         private int ticksPerMove = 2800;
-        private int searchTick = 60;               
+        private int searchTick = 60;
 
         public override void ExposeData()
         {
             base.ExposeData();
-            
+
             Scribe_Values.Look<int>(ref this.lastEventTick, "lastEventTick", 0, false);
-            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2800, false);                       
+            Scribe_Values.Look<int>(ref this.ticksPerMove, "ticksPerMove", 2800, false);
         }
 
         public override WorldObjectDef GetDef => this.def;
 
         public Warband()
         {
-
         }
 
         public override int RimWarPoints { get => base.RimWarPoints; set => base.RimWarPoints = value; }
         public override bool MovesAtNight { get => base.MovesAtNight; set => base.MovesAtNight = value; }
         public override float DetectionModifier => .8f;
-        public override float MovementModifier => (2500f/(float)TicksPerMove);
+        public override float MovementModifier => (2500f / (float)TicksPerMove);
 
         public override bool NightResting
         {
@@ -65,12 +64,12 @@ namespace RimWar.Planet
             {
                 this.ticksPerMove = value;
             }
-        }      
+        }
 
         public override void Notify_Player()
         {
             base.Notify_Player();
-            if(!playerNotified && this.DestinationTarget != null)
+            if (!playerNotified && this.DestinationTarget != null)
             {
                 Options.SettingsRef settingsRef = new Options.SettingsRef();
                 if (this.DestinationTarget.Faction == Faction.OfPlayer && this.Faction.HostileTo(Faction.OfPlayer) && Find.WorldGrid.TraversalDistanceBetween(this.Tile, this.DestinationTarget.Tile) <= settingsRef.letterNotificationRange && Rand.Chance(.4f))
@@ -107,7 +106,7 @@ namespace RimWar.Planet
 
         public override void EngageNearbyCaravan(Caravan car)
         {
-            if(car.Faction != null && car.Faction == Faction.OfPlayer && this.Faction.HostileTo(car.Faction))
+            if (car.Faction != null && car.Faction == Faction.OfPlayer && this.Faction.HostileTo(car.Faction))
             {
                 if (ShouldInteractWith(car, this) || ((car.PlayerWealthForStoryteller / 80) <= (this.RimWarPoints) && CaravanDetected(car)))
                 {
@@ -117,12 +116,12 @@ namespace RimWar.Planet
             }
             else
             {
-                if(ShouldInteractWith(car, this))
+                if (ShouldInteractWith(car, this))
                 {
                     this.interactable = false;
                     IncidentUtility.DoCaravanAttackWithPoints(this, car, this.rimwarData, IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                 }
-            }            
+            }
         }
 
         public override void EngageNearbyWarObject(WarObject rwo)
@@ -130,7 +129,7 @@ namespace RimWar.Planet
             if (rwo.Faction != null && rwo.Faction.HostileTo(this.Faction))
             {
                 IncidentUtility.ResolveRimWarBattle(this, rwo);
-                //ImmediateAction(rwo);                
+                //ImmediateAction(rwo);
             }
         }
 
@@ -138,7 +137,7 @@ namespace RimWar.Planet
         {
             //Log.Message("beginning arrival actions - warband; destination: " + this.DestinationTarget.Label + " parent: " + this.ParentSettlement.Label);
             WorldObject wo = this.DestinationTarget;
-            if(wo != null)
+            if (wo != null)
             {
                 if (wo.Faction != this.Faction)
                 {
@@ -196,7 +195,7 @@ namespace RimWar.Planet
                                 {
                                     if (rwsc.parent.Faction == Faction.OfPlayer)
                                     {
-                                        //RimWorld.Planet.Settlement playerSettlement = Find.World.worldObjects.SettlementAt(this.Tile);                                        
+                                        //RimWorld.Planet.Settlement playerSettlement = Find.World.worldObjects.SettlementAt(this.Tile);
                                         IncidentUtility.DoRaidWithPoints(this, factionSettlement, WorldUtility.GetRimWarDataForFaction(this.Faction), IncidentUtility.PawnsArrivalModeOrRandom(PawnsArrivalModeDefOf.EdgeWalkIn));
                                     }
                                     else
@@ -254,10 +253,10 @@ namespace RimWar.Planet
                     this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                     this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
                     List<Map> maps = Find.Maps;
-                    for (int i =0; i < maps.Count; i++)
+                    for (int i = 0; i < maps.Count; i++)
                     {
                         RimWorld.Planet.Settlement sBase = maps[i].info.parent as RimWorld.Planet.Settlement;
-                        if(sBase != null && sBase.Faction != null && sBase.Tile == this.ParentSettlement.Tile)
+                        if (sBase != null && sBase.Faction != null && sBase.Tile == this.ParentSettlement.Tile)
                         {
                             //reinforcement against player
                             this.WarSettlementComp.RimWarPoints -= Mathf.RoundToInt(this.RimWarPoints / 2f);
@@ -271,9 +270,9 @@ namespace RimWar.Planet
             else
             {
                 //Log.Message("this tile: " + this.Tile + " parent settlement tile: " + this.ParentSettlement.Tile);
-                if(this.Tile == ParentSettlement.Tile)
+                if (this.Tile == ParentSettlement.Tile)
                 {
-                    if(Find.World.worldObjects.AnyMapParentAt(this.Tile))
+                    if (Find.World.worldObjects.AnyMapParentAt(this.Tile))
                     {
                         //reinforce
                         //Log.Message("attempting to reinforce");
@@ -288,7 +287,6 @@ namespace RimWar.Planet
                         //Log.Message("parent settlement points: " + this.ParentSettlement.RimWarPoints);
                         if (wo.Faction != this.Faction) //could happen if parent town is taken over while army is away, in which case - perform another raid
                         {
-
                         }
                         this.WarSettlementComp.RimWarPoints += Mathf.RoundToInt(this.RimWarPoints / 2f);
                         this.WarSettlementComp.PointDamage += Mathf.RoundToInt(this.PointDamage / 2f);
@@ -310,7 +308,7 @@ namespace RimWar.Planet
                 this.DestinationTarget = ParentSettlement;
                 PathToTarget(DestinationTarget);
             }
-            //Log.Message("ending arrival actions");            
-        }       
+            //Log.Message("ending arrival actions");
+        }
     }
 }

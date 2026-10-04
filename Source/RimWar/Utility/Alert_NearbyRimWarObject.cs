@@ -31,7 +31,8 @@ namespace RimWar.Utility
         {
             get
             {
-                if (updateRate >= refreshRate) {
+                if (updateRate >= refreshRate)
+                {
                     updateRate = 0;
 
                     woNearbyResult.Clear();
@@ -62,7 +63,9 @@ namespace RimWar.Utility
                             }
                         }
                     }
-                } else {
+                }
+                else
+                {
                     updateRate++;
                 }
 
@@ -86,22 +89,22 @@ namespace RimWar.Utility
                 Color colorDest = ColorUtility.DefaultColor;
                 string destinationTargetString = "";
                 string destinationActionString = "";
-                if(wo.DestinationTarget != null)
+                if (wo.DestinationTarget != null)
                 {
                     destinationTargetString = wo.DestinationTarget.Label;
                     colorDest = ColorUtility.GetColorForFaction(wo.DestinationTarget.Faction);
-                    if(wo.DestinationTarget.Faction.HostileTo(wo.Faction))
+                    if (wo.DestinationTarget.Faction.HostileTo(wo.Faction))
                     {
                         destinationActionString = " attacking ";
                     }
                     else
                     {
                         destinationActionString = " moving to ";
-                    }                    
+                    }
                 }
                 else
                 {
-                    if(wo is Settler)
+                    if (wo is Settler)
                     {
                         destinationActionString = " establishing a new colony at ";
                         destinationTargetString = Find.World.grid.LongLatOf(wo.DestinationTile).ToString();
@@ -115,7 +118,6 @@ namespace RimWar.Utility
 
         public override AlertReport GetReport()
         {
-
             if (Find.AnyPlayerHomeMap != null)
             {
                 return AlertReport.CulpritsAre(WOGTIList);
@@ -126,8 +128,6 @@ namespace RimWar.Utility
                 nullList.Clear();
                 return AlertReport.CulpritsAre(nullList);
             }
-
-            
         }
     }
 }

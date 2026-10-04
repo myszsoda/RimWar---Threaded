@@ -23,7 +23,7 @@ namespace RimWar.Planet
         //public RimWorld.Planet.Settlement parent = null;
         //public Faction fac = null;
         //public RimWarData rwd = null;
-        
+
         public PlanetTile CaravanTile
         {
             get
@@ -40,7 +40,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(caravanTarget != null)
+                if (caravanTarget != null)
                 {
                     return caravanTarget.Tile;
                 }
@@ -52,7 +52,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(caravan.pather != null)
+                if (caravan.pather != null)
                 {
                     return caravan.pather.Destination;
                 }
@@ -64,7 +64,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(caravanTarget.pather != null)
+                if (caravanTarget.pather != null)
                 {
                     return caravanTarget.pather.Destination;
                 }
@@ -78,15 +78,15 @@ namespace RimWar.Planet
             //{
             //    WorldUtility.CreateWarObjectOfType(caravanTarget, caravanTarget.RimWarPoints, caravanTarget.rimwarData, caravanTarget.ParentSettlement, caravanTarget.Tile, caravanTarget.DestinationTarget, null, caravanTarget.DestinationTile, false, false);
             //}
-            if(caravan == null || caravanTarget == null)
+            if (caravan == null || caravanTarget == null)
             {
                 return false;
             }
-            if(!Find.WorldObjects.Caravans.Contains(caravan))
+            if (!Find.WorldObjects.Caravans.Contains(caravan))
             {
                 return false;
             }
-            if(!Find.WorldObjects.Contains(caravanTarget))
+            if (!Find.WorldObjects.Contains(caravanTarget))
             {
                 caravan.pather.StopDead();
                 return false;
@@ -94,7 +94,6 @@ namespace RimWar.Planet
 
             return true;
         }
-
 
         public void ExposeData()
         {

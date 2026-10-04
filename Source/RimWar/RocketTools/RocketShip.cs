@@ -29,7 +29,8 @@ namespace RimWar.RocketMan
             private bool found = false;
             private MethodInfo method;
 
-            public SkipperPatch(Type type, string methodName, MethodType methodType = MethodType.Normal, Type[] methodArguments = null, Type[] genericsTypes = null)
+            public SkipperPatch(Type type, string methodName, MethodType methodType = MethodType.Normal,
+                                Type[] methodArguments = null, Type[] genericsTypes = null)
             {
                 this.targetMethod = methodName;
                 this.targetType = type;
@@ -127,16 +128,17 @@ namespace RimWar.RocketMan
             }
 
             [UsedImplicitly]
-            private static IEnumerable<CodeInstruction> SkipperTranspiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator, MethodBase original)
+            private static IEnumerable<CodeInstruction> SkipperTranspiler(IEnumerable<CodeInstruction> instructions,
+                                                                          ILGenerator generator, MethodBase original)
             {
                 return SetupSkipping(instructions, generator, original,
-                    AccessTools.Method(patchType, "Skipper"),
-                    AccessTools.Method(patchType, "Setter"));
+                                     AccessTools.Method(patchType, "Skipper"),
+                                     AccessTools.Method(patchType, "Setter"));
             }
 
-
             private static IEnumerable<CodeInstruction> SetupSkipping(IEnumerable<CodeInstruction> instructions,
-                ILGenerator generator, MethodBase original, MethodBase skipper, MethodBase setter)
+                                                                      ILGenerator generator, MethodBase original,
+                                                                      MethodBase skipper, MethodBase setter)
             {
                 var codes = instructions.ToList();
                 var returnType = (original as MethodInfo).ReturnType;
@@ -223,7 +225,8 @@ namespace RimWar.RocketMan
                 return false;
             }
 
-            private static IEnumerable<CodeInstruction> CallInside(MethodBase parent, MethodBase method, LocalBuilder state = null)
+            private static IEnumerable<CodeInstruction> CallInside(MethodBase parent, MethodBase method,
+                                                                   LocalBuilder state = null)
             {
                 if (!method.IsStatic)
                     throw new InvalidOperationException(
@@ -267,7 +270,6 @@ namespace RimWar.RocketMan
                             paramCounter++;
                         }
                     }
-
                 }
 
                 yield return new CodeInstruction(OpCodes.Call, method);

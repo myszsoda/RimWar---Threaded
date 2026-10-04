@@ -52,7 +52,7 @@ namespace RimWar.Utility
             parms.points *= IncidentPointsFactorRange.RandomInRange;
             Caravan caravan = (Caravan)parms.target;
             RimWarCaravanComp rwcc = caravan.GetComponent<RimWarCaravanComp>();
-            if(rwcc != null)
+            if (rwcc != null)
             {
                 rwcc.currentTarget = null;
             }
@@ -173,7 +173,7 @@ namespace RimWar.Utility
 
         public void ActionMoveOn(Caravan car, List<Pawn> attackers)
         {
-            if(!wo.Faction.HostileTo(car.Faction))
+            if (!wo.Faction.HostileTo(car.Faction))
             {
                 car.pather.StopDead();
             }
@@ -265,9 +265,9 @@ namespace RimWar.Utility
             if (list.Any())
             {
                 return new List<ThingCount>
-            {
-                new ThingCount(list.RandomElement(), 1)
-            };
+                {
+                    new ThingCount(list.RandomElement(), 1)
+                };
             }
             return null;
         }
@@ -334,7 +334,8 @@ namespace RimWar.Utility
             return list;
         }
 
-        private string GenerateMessageText(Faction enemyFaction, int attackerCount, List<ThingCount> demands, Caravan caravan)
+        private string GenerateMessageText(Faction enemyFaction, int attackerCount, List<ThingCount> demands,
+                                           Caravan caravan)
         {
             if (enemyFaction.HostileTo(caravan.Faction))
             {
@@ -411,10 +412,10 @@ namespace RimWar.Utility
                 {
                     LordMaker.MakeNewLord(enemyFaction, lordJob_AssaultColony, map, attackers);
                 }
-                while(this.pointDamage > 0)
+                while (this.pointDamage > 0)
                 {
                     float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, pointDamage);
-                    pointDamage -= Mathf.RoundToInt(ptDam *2f);
+                    pointDamage -= Mathf.RoundToInt(ptDam * 2f);
                     DamageInfo dinfo = new DamageInfo(RimWarDefOf.RW_CombatInjury, ptDam);
                     attackers.RandomElement().TakeDamage(dinfo);
                 }

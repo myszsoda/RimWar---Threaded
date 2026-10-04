@@ -19,7 +19,6 @@ namespace RimWar.Planet
 
         //Saved
 
-
         //Temp Stored
 
         public override void ExposeData()
@@ -32,6 +31,5 @@ namespace RimWar.Planet
             //Log.Message("world component power tracker init");
             //return;
         }
-
     }
 }

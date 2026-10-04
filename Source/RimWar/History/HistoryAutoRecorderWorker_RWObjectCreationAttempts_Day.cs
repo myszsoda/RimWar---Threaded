@@ -16,7 +16,7 @@ namespace RimWar.History
             float num = 0f;
             num = WorldUtility.Get_WCPT().creationAttempts;
             WorldUtility.Get_WCPT().creationAttempts = 0;
-            return num/10;
+            return num / 10;
         }
     }
 }

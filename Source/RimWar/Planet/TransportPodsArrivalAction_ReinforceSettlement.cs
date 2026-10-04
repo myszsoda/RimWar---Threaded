@@ -22,7 +22,6 @@ namespace RimWar.Planet
 
         public TransportPodsArrivalAction_ReinforceSettlement()
         {
-
         }
 
         public TransportPodsArrivalAction_ReinforceSettlement(Settlement _settlement, PawnsArrivalModeDef _arrivalMode)
@@ -72,7 +71,9 @@ namespace RimWar.Planet
             return true;
         }
 
-        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods, Settlement settlement)
+        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(
+            Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods,
+            Settlement settlement)
         {
             //if (representative.parent.TryGetComp<CompShuttle>() != null)
             //{
@@ -83,14 +84,14 @@ namespace RimWar.Planet
             //}
             //else
             //{
-                foreach (FloatMenuOption floatMenuOption2 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanReinforce(pods, settlement), () => new TransportPodsArrivalAction_ReinforceSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop), "RW_ReinforceAndDropAtEdge".Translate(settlement.Label), representative, settlement.Tile))
-                {
-                    yield return floatMenuOption2;
-                }
-                foreach (FloatMenuOption floatMenuOption3 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanReinforce(pods, settlement), () => new TransportPodsArrivalAction_ReinforceSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop), "RW_ReinforceAndDropInCenter".Translate(settlement.Label), representative, settlement.Tile))
-                {
-                    yield return floatMenuOption3;
-                }
+            foreach (FloatMenuOption floatMenuOption2 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanReinforce(pods, settlement), () => new TransportPodsArrivalAction_ReinforceSettlement(settlement, PawnsArrivalModeDefOf.EdgeDrop), "RW_ReinforceAndDropAtEdge".Translate(settlement.Label), representative, settlement.Tile))
+            {
+                yield return floatMenuOption2;
+            }
+            foreach (FloatMenuOption floatMenuOption3 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanReinforce(pods, settlement), () => new TransportPodsArrivalAction_ReinforceSettlement(settlement, PawnsArrivalModeDefOf.CenterDrop), "RW_ReinforceAndDropInCenter".Translate(settlement.Label), representative, settlement.Tile))
+            {
+                yield return floatMenuOption3;
+            }
             //}
         }
 

@@ -46,11 +46,11 @@ namespace RimWar.Planet
         public override void CompTick()
         {
             base.CompTick();
-            if(!initialized)
+            if (!initialized)
             {
                 MainthreadID = Thread.CurrentThread.ManagedThreadId;
             }
-            if(Find.TickManager.TicksGame % 121 == 0)
+            if (Find.TickManager.TicksGame % 121 == 0)
             {
                 if (Options.Settings.Instance.threadingEnabled)
                 {
@@ -96,15 +96,15 @@ namespace RimWar.Planet
             {
                 for (int i = 0; i < worldObjects.Count; i++)
                 {
-                    WorldObject wo = worldObjects[i];                    
+                    WorldObject wo = worldObjects[i];
                     if (wo != null && !wo.Destroyed && wo.Faction != this.parent.Faction)
                     {
-                        for(int j = 0; j < ctd.Count; j++)
+                        for (int j = 0; j < ctd.Count; j++)
                         {
-                            if(ctd[j].caravan == this.parent && ctd[j].caravanTarget == wo)
+                            if (ctd[j].caravan == this.parent && ctd[j].caravanTarget == wo)
                             {
                                 context.destinationTarget = wo;
-                                context.shouldExecute = true;                                
+                                context.shouldExecute = true;
                             }
                         }
                     }
@@ -119,7 +119,7 @@ namespace RimWar.Planet
                 return;
             }
             WarObject wo = context.destinationTarget as WarObject;
-            if(wo != null)
+            if (wo != null)
             {
                 wo.EngageCaravan(this.parent as Caravan);
             }

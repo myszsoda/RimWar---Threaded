@@ -13,13 +13,12 @@ namespace RimWar
 {
     public class RimWarData : IExposable //, ILoadReferenceable
     {
-
         //public int uniqueID = -1;
         //public string GetUniqueLoadID()
         //{
         //    return "RimWarData_" + uniqueID;
         //}
-        
+
         private Faction rimwarFaction;
         public int lastEventTick = 0;
         public List<WorldObject> factionWorldObjects;
@@ -79,7 +78,7 @@ namespace RimWar
         //public List<FactionRelation> RimWarFactionRelations
         //{
         //    get
-        //    {                
+        //    {
         //        rimwarFactionRelations = Traverse.Create(root: rimwarFaction).Field(name: "relations").GetValue<List<FactionRelation>>();
         //        if (rimwarFactionRelations == null)
         //        {
@@ -120,7 +119,7 @@ namespace RimWar
                 {
                     RimWarSettlementComp rwsc = capitol.GetComponent<RimWarSettlementComp>();
                     if (rwsc != null && rwsc.isCapitol)
-                    {                        
+                    {
                         return true;
                     }
                 }
@@ -128,13 +127,13 @@ namespace RimWar
                 {
                     if (WarSettlementComps != null && WarSettlementComps.Count > 0 && behavior != RimWarBehavior.Excluded)
                     {
-                        foreach(RimWarSettlementComp rwsc in WarSettlementComps)
+                        foreach (RimWarSettlementComp rwsc in WarSettlementComps)
                         {
                             if (!rwsc.isCapitol)
                             {
                                 continue;
                             }
-                            if(capitol == null)
+                            if (capitol == null)
                             {
                                 capitol = (Settlement)rwsc.parent;
                             }
@@ -159,7 +158,7 @@ namespace RimWar
         {
             get
             {
-                if(AnyCapitol)
+                if (AnyCapitol)
                 {
                     return capitol;
                 }
@@ -175,7 +174,7 @@ namespace RimWar
         {
             int bestPts = 0;
             Settlement bestSelection = null;
-            int index = 0;            
+            int index = 0;
             if (WarSettlementComps != null && WarSettlementComps.Count > 0)
             {
                 ClearCapitol();
@@ -304,7 +303,6 @@ namespace RimWar
             }
             return null;
         }
-
 
         public bool HasWarSettlementFor(RimWorld.Planet.Settlement wos, out RimWarSettlementComp rwsc)
         {
@@ -598,7 +596,6 @@ namespace RimWar
 
         public RimWarData()
         {
-
         }
 
         public RimWarData(Faction faction)
@@ -607,12 +604,10 @@ namespace RimWar
             //this.uniqueID = Find.UniqueIDsManager.GetNextWorldObjectID();
             //SetUniqueId();
             //this.factionName = faction.Name;
-
         }
 
         public RimWarAction GetWeightedSettlementAction()
         {
-
             float rnd = Rand.Value;
             if (rnd <= settlerChance)
             {

@@ -22,11 +22,10 @@ namespace RimWar
 
         public static readonly Texture2D Marker_ShowAggression = ContentFinder<Texture2D>.Get("World/WarbandExpanded");
 
-        public static readonly Material Material_Exclamation_Green = MaterialPool.MatFrom("World/Exclamation_Green");        
+        public static readonly Material Material_Exclamation_Green = MaterialPool.MatFrom("World/Exclamation_Green");
         public static readonly Material Material_CapitolStar_se = MaterialPool.MatFrom("World/capitol_star_se");
         public static readonly Material Material_FieldBattle = MaterialPool.MatFrom("World/FieldBattle");
         public static readonly Material Material_BattleSite = MaterialPool.MatFrom("World/BattleSite");
-        public static readonly Material Material_BattleSiteExpanded = MaterialPool.MatFrom("World/BattleSiteExpanded");        
-
+        public static readonly Material Material_BattleSiteExpanded = MaterialPool.MatFrom("World/BattleSiteExpanded");
     }
 }

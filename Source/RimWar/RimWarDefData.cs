@@ -21,6 +21,5 @@ namespace RimWar
         public float growthBonus = 1f;
 
         //preferred biome
-
     }
 }

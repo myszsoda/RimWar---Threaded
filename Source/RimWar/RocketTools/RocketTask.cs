@@ -6,7 +6,6 @@ using System.Threading;
 using Verse;
 using static RimWar.Planet.WorldComponent_PowerTracker;
 
-
 namespace RimWar.RocketTools
 {
     public class RocketTasker<T>
@@ -118,7 +117,6 @@ namespace RimWar.RocketTools
                 }
                 finally
                 {
-
                 }
             }
         }
@@ -201,7 +199,6 @@ namespace RimWar.RocketTools
                         Log.Warning("RIMWAR: interrupted excution.");
                     }
             }
-
         }
     }
 }

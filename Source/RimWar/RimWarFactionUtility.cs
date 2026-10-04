@@ -25,7 +25,7 @@ namespace RimWar
 
         private const float RelationsColumnWidth = 90f;
 
-        private const float NameLeftMargin = 15f;        
+        private const float NameLeftMargin = 15f;
 
         public static void DoWindowContents(Rect fillRect, ref Vector2 scrollPosition, ref float scrollViewHeight)
         {
@@ -61,7 +61,7 @@ namespace RimWar
             StringBuilder stringBuilder = new StringBuilder();
             if (faction != null && !faction.defeated)
             {
-                RimWarData rwd = WorldUtility.GetRimWarDataForFaction(faction);                
+                RimWarData rwd = WorldUtility.GetRimWarDataForFaction(faction);
                 if (rwd != null)
                 {
                     int costToAlly = rwd.TotalFactionPoints / 10;
@@ -258,11 +258,11 @@ namespace RimWar
         public static void DeclareWarOn(Faction declaringFaction, Faction withFaction)
         {
             List<RimWarData> rwdList = WorldUtility.GetRimWarData();
-            
+
             for (int i = 0; i < rwdList.Count; i++)
             {
                 RimWarData rwd = rwdList[i];
-                if(rwd.RimWarFaction == declaringFaction)
+                if (rwd.RimWarFaction == declaringFaction)
                 {
                     if (!rwd.IsAtWarWith(withFaction))
                     {
@@ -272,15 +272,15 @@ namespace RimWar
                         Find.LetterStack.ReceiveLetter("RW_DiplomacyLetter".Translate("RW_DiplomacyLabel_War".Translate()), "RW_DeclareWar".Translate(rwd.RimWarFaction.Name, withFaction.Name), RimWarDefOf.RimWar_HostileEvent);
                     }
 
-                    for(int j = 0; j < rwd.AllianceFactions.Count; j++)
+                    for (int j = 0; j < rwd.AllianceFactions.Count; j++)
                     {
                         if (!WorldUtility.GetRimWarDataForFaction(rwd.AllianceFactions[j]).IsAtWarWith(withFaction))
                         {
                             DeclareWarOn(rwd.AllianceFactions[j], withFaction);
-                         }
+                        }
                     }
                 }
-                if(rwd.RimWarFaction == withFaction)
+                if (rwd.RimWarFaction == withFaction)
                 {
                     if (!rwd.IsAtWarWith(declaringFaction))
                     {
@@ -320,9 +320,9 @@ namespace RimWar
                 Find.LetterStack.ReceiveLetter("RW_DiplomacyLetter".Translate("RW_DiplomacyLabel_Alliance".Translate()), "RW_DeclareAlliance".Translate(rwdAlly.RimWarFaction.Name, declaringFaction.Name), RimWarDefOf.RimWar_NeutralEvent);
             }
 
-            for(int i = 0; i < rwd.WarFactions.Count; i++)
+            for (int i = 0; i < rwd.WarFactions.Count; i++)
             {
-                if(!rwdAlly.IsAtWarWith(rwd.WarFactions[i]))
+                if (!rwdAlly.IsAtWarWith(rwd.WarFactions[i]))
                 {
                     DeclareWarOn(rwdAlly.RimWarFaction, rwd.WarFactions[i]);
                     //Find.LetterStack.ReceiveLetter("RW_DiplomacyLetter".Translate("RW_DiplomacyLabel_War".Translate()), "RW_DeclareWar".Translate(rwdAlly.RimWarFaction.Name, rwd.WarFactions[i].Name), RimWarDefOf.RimWar_HostileEvent);
@@ -386,15 +386,15 @@ namespace RimWar
         {
             Log.Message("Rim War: randomizing faction relations.");
             List<Faction> factions = Find.FactionManager.AllFactionsVisible.ToList();
-            for(int i = 0; i < factions.Count; i++)
+            for (int i = 0; i < factions.Count; i++)
             {
                 Faction firstFaction = factions[i];
-                for(int j = 0; j< factions.Count; j++)
+                for (int j = 0; j < factions.Count; j++)
                 {
                     Faction otherFaction = factions[j];
-                    if(firstFaction != otherFaction)
+                    if (firstFaction != otherFaction)
                     {
-                        if(!(firstFaction == Faction.OfPlayer && !otherFaction.def.permanentEnemy) && !(firstFaction != Faction.OfPlayer && otherFaction.def.permanentEnemyToEveryoneExceptPlayer) && 
+                        if (!(firstFaction == Faction.OfPlayer && !otherFaction.def.permanentEnemy) && !(firstFaction != Faction.OfPlayer && otherFaction.def.permanentEnemyToEveryoneExceptPlayer) &&
                             !(firstFaction.def.permanentEnemy && otherFaction == Faction.OfPlayer) && !(firstFaction.def.permanentEnemyToEveryoneExceptPlayer && otherFaction != Faction.OfPlayer))
                         {
                             firstFaction.TryAffectGoodwillWith(otherFaction, -1 * firstFaction.GoodwillWith(otherFaction), true, true, RimWarDefOf.RW_RandomizeRelations);
@@ -431,13 +431,13 @@ namespace RimWar
                     //foreach (Thing t in allZones[i].AllContainedThings)
                     //{
                     Thing t = allZones[i];
-                        if (t.def == ThingDefOf.Silver && amount > 0)
-                        {
-                            int splitAmount = amount > t.stackCount ? t.stackCount : amount;
-                            t.SplitOff(splitAmount).Destroy(DestroyMode.Vanish);
-                            amount -= splitAmount;
-                            doOnce = false;
-                        }
+                    if (t.def == ThingDefOf.Silver && amount > 0)
+                    {
+                        int splitAmount = amount > t.stackCount ? t.stackCount : amount;
+                        t.SplitOff(splitAmount).Destroy(DestroyMode.Vanish);
+                        amount -= splitAmount;
+                        doOnce = false;
+                    }
                     //}
                 }
             }
@@ -450,7 +450,7 @@ namespace RimWar
             //        {
             //            if (t.def == ThingDefOf.Silver && amount > 0)
             //            {
-            //                int splitAmount = amount > t.stackCount ? t.stackCount : amount;                            
+            //                int splitAmount = amount > t.stackCount ? t.stackCount : amount;
             //                t.SplitOff(splitAmount).Destroy(DestroyMode.Vanish);
             //                amount -= splitAmount;
             //                doOnce = false;
@@ -479,10 +479,10 @@ namespace RimWar
                         //foreach (Thing t in allZones[i].AllContainedThings)
                         //{
                         Thing t = allZones[i];
-                            if (t.def == ThingDefOf.Silver)
-                            {
-                                totalSilver += t.stackCount;
-                            }
+                        if (t.def == ThingDefOf.Silver)
+                        {
+                            totalSilver += t.stackCount;
+                        }
                         //}
                     }
                 }

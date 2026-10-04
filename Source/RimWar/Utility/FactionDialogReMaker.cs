@@ -19,7 +19,6 @@ namespace RimWar.Utility
 {
     public static class FactionDialogReMaker
     {
-
         public struct DisplayClass
         {
             public Pawn negotiator;
@@ -63,7 +62,6 @@ namespace RimWar.Utility
             }
             if (map != null && map.IsPlayerHome)
             {
-
                 AddAndDecorateOption(RequestTraderOption(map, faction, dc0.negotiator), true, ref dc0);
                 AddAndDecorateOption(RequestMilitaryAid_Scouts_Option(map, faction, dc0.negotiator), true, ref dc0);
                 AddAndDecorateOption(RequestMilitaryAid_Warband_Option(map, faction, dc0.negotiator), true, ref dc0);
@@ -91,7 +89,7 @@ namespace RimWar.Utility
                     if (royalty.GetCurrentTitle(faction).canBeInherited && !dc0.negotiator.IsQuestLodger())
                     {
                         AddAndDecorateOption((DiaOption)RequestRoyalHeirChangeOption.Invoke((object)typeof(FactionDialogMaker), new object[]
-                            {map, faction, pawn, dc0.negotiator }), true, ref dc0);
+                        { map, faction, pawn, dc0.negotiator }), true, ref dc0);
                     }
                 }
                 if (DefDatabase<ResearchProjectDef>.AllDefsListForReading.Any(delegate (ResearchProjectDef rp)
@@ -104,13 +102,13 @@ namespace RimWar.Utility
                 }))
                 {
                     AddAndDecorateOption((DiaOption)RequestAICoreQuest.Invoke((object)typeof(FactionDialogMaker), new object[]
-                        { map, faction, dc0.negotiator }), true, ref dc0);
+                    { map, faction, dc0.negotiator }), true, ref dc0);
                 }
             }
             if (Prefs.DevMode)
             {
                 foreach (DiaOption item3 in (IEnumerable<DiaOption>)DebugOptions.Invoke((object)typeof(FactionDialogMaker), new object[]
-                    { faction, dc0.negotiator }))
+                { faction, dc0.negotiator }))
                 {
                     AddAndDecorateOption(item3, false, ref dc0);
                 }
@@ -194,19 +192,19 @@ namespace RimWar.Utility
             //}
             DiaOption diaOption5 = new DiaOption(text);
             IEnumerable<Faction> source = (from x in map.attackTargetsCache.TargetsHostileToColony
-                                            where GenHostility.IsActiveThreatToPlayer(x)
-                                            select ((Thing)x).Faction).Where(delegate (Faction x)
-                                            {
-                                                if (x != null)
-                                                {
-                                                    return !x.HostileTo(faction);
-                                                }
-                                                return false;
-                                            }).Distinct();
+                                           where GenHostility.IsActiveThreatToPlayer(x)
+                                           select ((Thing)x).Faction).Where(delegate (Faction x)
+                                           {
+                                               if (x != null)
+                                               {
+                                                   return !x.HostileTo(faction);
+                                               }
+                                               return false;
+                                           }).Distinct();
             if (source.Any())
             {
                 DiaNode diaNode = new DiaNode("MilitaryAidConfirmMutualEnemy".Translate(faction.Name, (from fa in source
-                                                                                        select fa.Name).ToCommaList(useAnd: true)));
+                                                                                                       select fa.Name).ToCommaList(useAnd: true)));
                 DiaOption diaOption6 = new DiaOption("CallConfirm".Translate());
                 diaOption6.action = delegate
                 {
@@ -227,7 +225,7 @@ namespace RimWar.Utility
                 };
                 diaOption5.link = FightersSent(faction, negotiator);
             }
-            
+
             return diaOption5;
         }
 
@@ -340,7 +338,7 @@ namespace RimWar.Utility
             int minPoints = 0;
             if (rwd != null)
             {
-                minPoints = (int)(Find.WorldObjects.SettlementAt(map.Tile).GetComponent<RimWarSettlementComp>().RimWarPoints *.9f);
+                minPoints = (int)(Find.WorldObjects.SettlementAt(map.Tile).GetComponent<RimWarSettlementComp>().RimWarPoints * .9f);
                 wos = rwd.ClosestSettlementTo(map.Tile, minPoints);
                 if (wos != null)
                 {
@@ -359,9 +357,9 @@ namespace RimWar.Utility
             string text = "RequestMilitaryAid".Translate(requestCost);
             if (wos != null)
             {
-                text = "RW_RequestLaunchedWarband".Translate(requestCost, wos.Name, daysToArrive.ToString("#.#"), (int)(minPoints*rwd.combatAttribute));
+                text = "RW_RequestLaunchedWarband".Translate(requestCost, wos.Name, daysToArrive.ToString("#.#"), (int)(minPoints * rwd.combatAttribute));
             }
-            if(wos == null)
+            if (wos == null)
             {
                 DiaOption diaOptionUnable = new DiaOption(text);
                 diaOptionUnable.Disable("RW_NoTownForRequest".Translate());
@@ -481,7 +479,7 @@ namespace RimWar.Utility
                 diaOption.Disable("MustBeAlly".Translate());
                 return diaOption;
             }
-            if(rwd == null)
+            if (rwd == null)
             {
                 DiaOption diaOptionRWD = new DiaOption(taggedString);
                 diaOptionRWD.Disable("RW_InvalidRWD".Translate());
@@ -539,14 +537,15 @@ namespace RimWar.Utility
             return diaOption4;
         }
 
-        public static void CallForAid(WarObject rwo, int pts, Map map, Faction faction, int callRelationsCost, RimWarData rwd, Settlement sendingSettlement)
+        public static void CallForAid(WarObject rwo, int pts, Map map, Faction faction, int callRelationsCost,
+                                      RimWarData rwd, Settlement sendingSettlement)
         {
             Faction ofPlayer = Faction.OfPlayer;
             bool canSendMessage = false;
             string reason = "GoodwillChangedReason_RequestedMilitaryAid".Translate();
             faction.TryAffectGoodwillWith(ofPlayer, -callRelationsCost, canSendMessage, true, HistoryEventDefOf.RequestedMilitaryAid);
             sendingSettlement.GetComponent<RimWarSettlementComp>().RimWarPoints -= pts;
-            WorldUtility.CreateWarObjectOfType(rwo, pts, rwd, sendingSettlement, sendingSettlement.Tile, Find.WorldObjects.SettlementAt(map.Tile), WorldObjectDefOf.Settlement, PlanetTile.Invalid);            
+            WorldUtility.CreateWarObjectOfType(rwo, pts, rwd, sendingSettlement, sendingSettlement.Tile, Find.WorldObjects.SettlementAt(map.Tile), WorldObjectDefOf.Settlement, PlanetTile.Invalid);
         }
 
         public static DiaNode FightersSent(Faction faction, Pawn negotiator)
@@ -554,9 +553,9 @@ namespace RimWar.Utility
             return new DiaNode("MilitaryAidSent".Translate(faction.leader).CapitalizeFirst())
             {
                 options =
-            {
-                OKToRoot(faction, negotiator)
-            }
+                {
+                    OKToRoot(faction, negotiator)
+                }
             };
         }
 
@@ -573,7 +572,9 @@ namespace RimWar.Utility
             };
         }
 
-        public static void RequestTradePermissionDialog(Faction f, WarObject wo, Settlement playerSettlement, Map map, TaggedString threats, Action permit, Action delay4, Action delay12, Action refuse)
+        public static void RequestTradePermissionDialog(Faction f, WarObject wo, Settlement playerSettlement, Map map,
+                                                        TaggedString threats, Action permit, Action delay4,
+                                                        Action delay12, Action refuse)
         {
             var text = "RW_ConfirmTradersEnterDangerous".Translate(wo.Label, playerSettlement.Label, threats);
 
@@ -592,7 +593,6 @@ namespace RimWar.Utility
 
             string title = "RW_SettlementTrade".Translate(playerSettlement.Label);
             Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, true, title));
-
         }
     }
 }

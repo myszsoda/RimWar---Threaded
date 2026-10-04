@@ -12,7 +12,6 @@ namespace RimWar.Planet
     [StaticConstructorOnStartup]
     public class LaunchedWarObject : WorldObject
     {
-
         private int uniqueId = -1;
         private string nameInt;
         private int warPointsInt = -1;
@@ -105,13 +104,13 @@ namespace RimWar.Planet
         {
             base.PostAdd();
             initialTile = base.Tile;
-        }        
+        }
 
         public RimWorld.Planet.Settlement ParentSettlement
         {
             get
             {
-                if(this.parentSettlement == null)
+                if (this.parentSettlement == null)
                 {
                     FindParentSettlement();
                 }
@@ -125,7 +124,6 @@ namespace RimWar.Planet
                     this.parentSettlement = null;
                     return this.parentSettlement;
                 }
-
             }
             set
             {
@@ -137,7 +135,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(targetWorldObject != null && targetWorldObject.Destroyed)
+                if (targetWorldObject != null && targetWorldObject.Destroyed)
                 {
                     targetWorldObject = null;
                 }
@@ -160,14 +158,14 @@ namespace RimWar.Planet
         public virtual int RimWarPoints
         {
             get
-            {               
+            {
                 return this.warPointsInt;
             }
             set
             {
                 this.warPointsInt = value;
             }
-        }    
+        }
 
         public string Name
         {
@@ -187,7 +185,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(!HasName)
+                if (!HasName)
                 {
                     return "";
                 }
@@ -197,11 +195,10 @@ namespace RimWar.Planet
                 }
                 return base.Label;
             }
-        }       
+        }
 
         public LaunchedWarObject()
         {
-
         }
 
         public void SetUniqueId(int newId)
@@ -222,7 +219,7 @@ namespace RimWar.Planet
                 traveledPct = 1f;
                 ArrivalAction();
             }
-        }        
+        }
 
         public override void SpawnSetup()
         {
@@ -248,7 +245,7 @@ namespace RimWar.Planet
             {
                 if (wo.Faction != this.Faction)
                 {
-                    stringBuilder.Append("RW_WarObjectInspectString".Translate(this.Name, "RW_Attacking".Translate(), wo.Label));                    
+                    stringBuilder.Append("RW_WarObjectInspectString".Translate(this.Name, "RW_Attacking".Translate(), wo.Label));
                 }
                 else
                 {

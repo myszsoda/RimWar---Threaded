@@ -60,16 +60,16 @@ namespace RimWar.Planet
         public bool AnyCombatRemaining
         {
             get
-            {                
-                for(int i = 0; i < Units.Count; i++)
+            {
+                for (int i = 0; i < Units.Count; i++)
                 {
                     if (Units[i].EffectivePoints <= 0)
                     {
                         continue;
                     }
-                    for(int j = i + 1; j < Units.Count; j++)
+                    for (int j = i + 1; j < Units.Count; j++)
                     {
-                        if(Units[j].EffectivePoints > 0 && Units[j].Faction.HostileTo(Units[i].Faction))
+                        if (Units[j].EffectivePoints > 0 && Units[j].Faction.HostileTo(Units[i].Faction))
                         {
                             return true;
                         }
@@ -86,14 +86,13 @@ namespace RimWar.Planet
                                            select waro;
 
             return waros.Any();
-                                           
         }
 
         public bool AreAnyUnitsHostile(List<WarObject> unitList)
         {
-            for(int i = 1; i < unitList.Count; i++)
+            for (int i = 1; i < unitList.Count; i++)
             {
-                if(unitList[0].Faction.HostileTo(unitList[i].Faction))
+                if (unitList[0].Faction.HostileTo(unitList[i].Faction))
                 {
                     return true;
                 }
@@ -105,15 +104,15 @@ namespace RimWar.Planet
         {
             get
             {
-                if(!base.HasMap)
+                if (!base.HasMap)
                 {
                     return false;
                 }
-                if(base.Map != null)
+                if (base.Map != null)
                 {
-                    foreach(Pawn p in base.Map.mapPawns.AllPawns)
+                    foreach (Pawn p in base.Map.mapPawns.AllPawns)
                     {
-                        if(p.IsColonist && !p.Dead)
+                        if (p.IsColonist && !p.Dead)
                         {
                             return true;
                         }
@@ -146,7 +145,7 @@ namespace RimWar.Planet
             foreach (WarObject waro in Units)
             {
                 stringBuilder.Append("\n" + waro.Label + " " + waro.RimWarPoints + " (" + waro.PointDamage + ")");
-            }            
+            }
             return stringBuilder.ToString();
         }
 
@@ -175,15 +174,16 @@ namespace RimWar.Planet
             return base.GetFloatMenuOptions(caravan);
         }
 
-        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(IEnumerable<IThingHolder> pods,Action<PlanetTile, TransportersArrivalAction> representative)
+        public override IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(
+            IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> representative)
         {
             return base.GetTransportersFloatMenuOptions(pods, representative);
         }
 
-        public override IEnumerable<FloatMenuOption> GetShuttleFloatMenuOptions(IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
+        public override IEnumerable<FloatMenuOption> GetShuttleFloatMenuOptions(
+            IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> launchAction)
         {
             return base.GetShuttleFloatMenuOptions(pods, launchAction);
         }
     }
-
 }

@@ -41,6 +41,5 @@ namespace RimWar
         public static HistoryEventDef RW_ReinforcedSettlement;
 
         public static PawnsArrivalModeDef RandomDrop;
-
     }
 }

@@ -69,7 +69,7 @@ namespace RimWar.Planet
         {
             get
             {
-                if(atkos == null)
+                if (atkos == null)
                 {
                     atkos = new List<WarObject>();
                     atkos.Clear();
@@ -78,7 +78,7 @@ namespace RimWar.Planet
             }
             set
             {
-                if(atkos == null)
+                if (atkos == null)
                 {
                     atkos = new List<WarObject>();
                     atkos.Clear();
@@ -107,9 +107,9 @@ namespace RimWar.Planet
                 {
                     return false;
                 }
-                foreach(WarObject attacker in AttackingUnits)
+                foreach (WarObject attacker in AttackingUnits)
                 {
-                    if(attacker.Faction.HostileTo(Faction.OfPlayer))
+                    if (attacker.Faction.HostileTo(Faction.OfPlayer))
                     {
                         return true;
                     }
@@ -117,7 +117,6 @@ namespace RimWar.Planet
                 return false;
             }
         }
-
 
         private int playerHeat = 0;
         public int PlayerHeat
@@ -225,7 +224,7 @@ namespace RimWar.Planet
                 this.rimwarPointsInt = Mathf.Max(0, value);
             }
         }
-        
+
         public int EffectivePoints
         {
             get
@@ -268,16 +267,16 @@ namespace RimWar.Planet
         {
             get
             {
-                int pts = this.RimWarPoints - 1050;                
-                if(this.parent.def.defName == "City_Faction")
+                int pts = this.RimWarPoints - 1050;
+                if (this.parent.def.defName == "City_Faction")
                 {
                     pts -= 1000;
                 }
-                else if(this.parent.def.defName == "City_Citadel")
+                else if (this.parent.def.defName == "City_Citadel")
                 {
                     pts = -1;
                 }
-                else if(this.parent.def.defName == "City_Abandoned" || this.parent.def.defName == "City_Compromised" || this.parent.def.defName == "City_Ghost")
+                else if (this.parent.def.defName == "City_Abandoned" || this.parent.def.defName == "City_Compromised" || this.parent.def.defName == "City_Ghost")
                 {
                     pts = -1;
                 }
@@ -304,7 +303,7 @@ namespace RimWar.Planet
                     tmpSettlementsInRange.Clear();
                 }
                 settlementsInRange.Clear();
-                AddTmpSettlementsToMain();                
+                AddTmpSettlementsToMain();
                 //settlementsInRange.AddRange(tmpSettlementsInRange);
                 if (this.settlementsInRange.Count == 0 || this.nextSettlementScan <= Find.TickManager.TicksGame)
                 {
@@ -315,7 +314,7 @@ namespace RimWar.Planet
                         this.nextSettlementScan = Find.TickManager.TicksGame + settingsRef.settlementScanDelay;
                         WorldComponent_PowerTracker.tasker.Register(() =>
                         {
-                            //List<Settlement> tmpSettlementsInRange = new List<Settlement>();                            
+                            //List<Settlement> tmpSettlementsInRange = new List<Settlement>();
                             List<RimWorld.Planet.Settlement> scanSettlements = WorldUtility.GetRimWorldSettlementsInRange(this.parent.Tile, SettlementScanRange);
                             if (scanSettlements != null && scanSettlements.Count > 0)
                             {
@@ -345,7 +344,7 @@ namespace RimWar.Planet
                             }
                         }
                         this.nextSettlementScan = Find.TickManager.TicksGame + settingsRef.settlementScanDelay;
-                    }                    
+                    }
                 }
                 this.settlementsMutex.ReleaseMutex();
                 return this.settlementsInRange;
@@ -426,9 +425,9 @@ namespace RimWar.Planet
                 List<Settlement> tmpPlayerSettlements = new List<Settlement>();
                 this.settlementsMutex.WaitOne();
                 tmpPlayerSettlements.Clear();
-                foreach(Settlement s in NearbyHostileSettlements)
+                foreach (Settlement s in NearbyHostileSettlements)
                 {
-                    if(s.Faction == Faction.OfPlayer && !tmpPlayerSettlements.Contains(s))
+                    if (s.Faction == Faction.OfPlayer && !tmpPlayerSettlements.Contains(s))
                     {
                         tmpPlayerSettlements.Add(s);
                     }
@@ -497,7 +496,7 @@ namespace RimWar.Planet
             this.settlementsMutex.WaitOne();
             tmpSettlements.Clear();
             List<Settlement> allSettlements = Find.WorldObjects.Settlements;
-            if(allSettlements != null && allSettlements.Count > 0)
+            if (allSettlements != null && allSettlements.Count > 0)
             {
                 for (int i = 0; i < allSettlements.Count; i++)
                 {
@@ -513,7 +512,7 @@ namespace RimWar.Planet
                 }
             }
             this.settlementsMutex.ReleaseMutex();
-            return tmpSettlements;            
+            return tmpSettlements;
         }
 
         public override void Initialize(WorldObjectCompProperties props)
@@ -586,7 +585,7 @@ namespace RimWar.Planet
             }
 
             //Log.Message("setting point damage to " + tmpPoints + " for " + this.RimWarPoints);
-            this.PointDamage = Mathf.RoundToInt(tmpPoints);                
+            this.PointDamage = Mathf.RoundToInt(tmpPoints);
         }
 
         WorldObjectDef sendTypeDef = null;
@@ -596,19 +595,19 @@ namespace RimWar.Planet
             {
                 yield return gizmo;
             }
-            if(DebugSettings.godMode || WorldUtility.GetRimWarDataForFaction(this.parent.Faction).AllianceFactions.Contains(Faction.OfPlayer) || WorldUtility.GetRimWarDataForFaction(this.parent.Faction).behavior == RimWarBehavior.Vassal)
+            if (DebugSettings.godMode || WorldUtility.GetRimWarDataForFaction(this.parent.Faction).AllianceFactions.Contains(Faction.OfPlayer) || WorldUtility.GetRimWarDataForFaction(this.parent.Faction).behavior == RimWarBehavior.Vassal)
             {
                 int ptsToSend = 500;
                 int sendpwr = Mathf.RoundToInt(this.RimWarPoints * .3f);
                 Command_Action command_SendTrader = new Command_Action();
                 command_SendTrader.defaultLabel = "RW_SendTrader".Translate();
-                command_SendTrader.defaultDesc = "RW_SendTraderDesc".Translate(sendpwr, sendpwr*2);
+                command_SendTrader.defaultDesc = "RW_SendTraderDesc".Translate(sendpwr, sendpwr * 2);
                 command_SendTrader.icon = RimWarMatPool.Icon_Trader;
-                if(this.RimWarPoints < ptsToSend)
+                if (this.RimWarPoints < ptsToSend)
                 {
                     command_SendTrader.Disable("RW_NotEnoughPointsToSendUnit".Translate(this.RimWarPoints, ptsToSend, RimWarDefOf.RW_Trader.label));
                 }
-                else if((this.lastUnitRequest + this.unitRequestDelay) > Find.TickManager.TicksGame && !DebugSettings.godMode)
+                else if ((this.lastUnitRequest + this.unitRequestDelay) > Find.TickManager.TicksGame && !DebugSettings.godMode)
                 {
                     command_SendTrader.Disable("RW_UnitCreationNotReady".Translate(DaysTillNextUnit.ToString("n2")));
                 }
@@ -624,7 +623,7 @@ namespace RimWar.Planet
                 Command_Action command_SendScout = new Command_Action();
                 command_SendScout.defaultLabel = "RW_SendScout".Translate();
                 command_SendScout.defaultDesc = "RW_SendScoutDesc".Translate(sendpwr, sendpwr * 2);
-                command_SendScout.icon = RimWarMatPool.Icon_Scout;                
+                command_SendScout.icon = RimWarMatPool.Icon_Scout;
                 if (this.RimWarPoints < ptsToSend)
                 {
                     command_SendScout.Disable("RW_NotEnoughPointsToSendUnit".Translate(this.RimWarPoints, ptsToSend, RimWarDefOf.RW_Scout.label));
@@ -645,7 +644,7 @@ namespace RimWar.Planet
                 Command_Action command_SendWarband = new Command_Action();
                 command_SendWarband.defaultLabel = "RW_SendWarband".Translate();
                 command_SendWarband.defaultDesc = "RW_SendWarbandDesc".Translate(sendpwr, sendpwr * 2);
-                command_SendWarband.icon = RimWarMatPool.Icon_Warband;                
+                command_SendWarband.icon = RimWarMatPool.Icon_Warband;
                 if (this.RimWarPoints < ptsToSend)
                 {
                     command_SendWarband.Disable("RW_NotEnoughPointsToSendUnit".Translate(this.RimWarPoints, ptsToSend, RimWarDefOf.RW_Warband.label));
@@ -665,8 +664,8 @@ namespace RimWar.Planet
                 Command_Action command_LaunchWarband = new Command_Action();
                 command_LaunchWarband.defaultLabel = "RW_LaunchWarband".Translate();
                 command_LaunchWarband.defaultDesc = "RW_LaunchWarbandDesc".Translate(sendpwr, sendpwr * 2);
-                command_LaunchWarband.icon = RimWarMatPool.Icon_LaunchWarband;                
-                if(!RWD.CanLaunch)
+                command_LaunchWarband.icon = RimWarMatPool.Icon_LaunchWarband;
+                if (!RWD.CanLaunch)
                 {
                     command_LaunchWarband.Disable("RW_FactionIncapableOfTech".Translate(this.parent.Faction.Name));
                 }
@@ -720,9 +719,9 @@ namespace RimWar.Planet
             }
         }
 
-        public IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> representative)
+        public IEnumerable<FloatMenuOption> GetTransportersFloatMenuOptions(
+            IEnumerable<IThingHolder> pods, Action<PlanetTile, TransportersArrivalAction> representative)
         {
-
             foreach (FloatMenuOption floatMenuOption2 in TransportPodsArrivalAction_GiveSupplies.GetFloatMenuOptions(representative, pods, (Settlement)this.parent))
             {
                 yield return floatMenuOption2;
@@ -733,7 +732,6 @@ namespace RimWar.Planet
                 {
                     yield return floatMenuOption3;
                 }
-                
             }
         }
 
@@ -761,14 +759,14 @@ namespace RimWar.Planet
                 return false;
             }
             WorldObject wo = target.WorldObject;
-            
+
             if (wo != null)
             {
                 this.lastUnitRequest = Find.TickManager.TicksGame;
-                if(sendTypeDef == RimWarDefOf.RW_Trader)
+                if (sendTypeDef == RimWarDefOf.RW_Trader)
                 {
                     RimWorld.Planet.Settlement s = wo as Settlement;
-                    if(s != null)
+                    if (s != null)
                     {
                         if (this.parent.Faction.HostileTo(s.Faction))
                         {
@@ -884,14 +882,14 @@ namespace RimWar.Planet
                 return "RW_InvalidTarget".Translate();
             }
             if (sendTypeDef == RimWarDefOf.RW_Trader)
-            {                
+            {
                 Settlement s = wo as Settlement;
-                if(s == null)
+                if (s == null)
                 {
                     GUI.color = ColorLibrary.RedReadable;
                     return "RW_DestinationSettlementOnly".Translate();
                 }
-                if(this.parent.Faction.HostileTo(s.Faction))
+                if (this.parent.Faction.HostileTo(s.Faction))
                 {
                     GUI.color = ColorLibrary.RedReadable;
                     return "RW_DestinationHostile".Translate();
@@ -929,6 +927,5 @@ namespace RimWar.Planet
         //    }
         //    base.PostDrawExtraSelectionOverlays();
         //}
-
     }
 }

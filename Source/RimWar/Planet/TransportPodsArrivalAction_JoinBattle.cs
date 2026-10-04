@@ -67,7 +67,8 @@ namespace RimWar.Planet
             return true;
         }
 
-        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods, BattleSite bs)
+        public static IEnumerable<FloatMenuOption> GetFloatMenuOptions(
+            Action<PlanetTile, TransportersArrivalAction> representative, IEnumerable<IThingHolder> pods, BattleSite bs)
         {
             //if (representative.parent.TryGetComp<CompShuttle>() != null)
             //{
@@ -78,14 +79,14 @@ namespace RimWar.Planet
             //}
             //else
             //{
-                foreach (FloatMenuOption floatMenuOption2 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanAttack(pods, bs), () => new TransportPodsArrivalAction_JoinBattle(bs, PawnsArrivalModeDefOf.EdgeDrop), "AttackAndDropAtEdge".Translate(bs.Label), representative, bs.Tile))
-                {
-                    yield return floatMenuOption2;
-                }
-                foreach (FloatMenuOption floatMenuOption3 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanAttack(pods, bs), () => new TransportPodsArrivalAction_JoinBattle(bs, PawnsArrivalModeDefOf.CenterDrop), "AttackAndDropInCenter".Translate(bs.Label), representative, bs.Tile))
-                {
-                    yield return floatMenuOption3;
-                }
+            foreach (FloatMenuOption floatMenuOption2 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanAttack(pods, bs), () => new TransportPodsArrivalAction_JoinBattle(bs, PawnsArrivalModeDefOf.EdgeDrop), "AttackAndDropAtEdge".Translate(bs.Label), representative, bs.Tile))
+            {
+                yield return floatMenuOption2;
+            }
+            foreach (FloatMenuOption floatMenuOption3 in TransportersArrivalActionUtility.GetFloatMenuOptions(() => CanAttack(pods, bs), () => new TransportPodsArrivalAction_JoinBattle(bs, PawnsArrivalModeDefOf.CenterDrop), "AttackAndDropInCenter".Translate(bs.Label), representative, bs.Tile))
+            {
+                yield return floatMenuOption3;
+            }
             //}
         }
 

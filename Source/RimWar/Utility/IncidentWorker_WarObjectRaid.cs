@@ -7,12 +7,10 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-
 namespace RimWar.Utility
 {
     public class IncidentWorker_WarObjectRaid : IncidentWorker_Raid
-    {              
-
+    {
         protected override LetterDef GetLetterDef()
         {
             return LetterDefOf.ThreatBig;
@@ -59,7 +57,7 @@ namespace RimWar.Utility
             {
                 return false;
             }
-            
+
             float points = parms.points;
             List<Pawn> list = parms.raidStrategy.Worker.SpawnThreats(parms);
             if (list == null)
@@ -98,14 +96,13 @@ namespace RimWar.Utility
                 foreach (Pawn item in list)
                 {
                     list2.Add(item);
-                }               
-                
+                }
             }
             SendRimWarLetter(letterLabel, letterText, GetLetterDef(), parms, list2);
             parms.raidStrategy.Worker.MakeLords(parms, list);
-            if(parmsDamage > 0)
+            if (parmsDamage > 0)
             {
-                while(parmsDamage > 0)
+                while (parmsDamage > 0)
                 {
                     float ptDam = Mathf.Clamp(Rand.Range(2f, 10f), 0, parmsDamage);
                     parmsDamage -= Mathf.RoundToInt(ptDam * 2f);
@@ -181,7 +178,8 @@ namespace RimWar.Utility
             return false;
         }
 
-        public void SendRimWarLetter(TaggedString baseLetterLabel, TaggedString baseLetterText, LetterDef baseLetterDef, IncidentParms parms, LookTargets lookTargets, params NamedArgument[] textArgs)
+        public void SendRimWarLetter(TaggedString baseLetterLabel, TaggedString baseLetterText, LetterDef baseLetterDef,
+                                     IncidentParms parms, LookTargets lookTargets, params NamedArgument[] textArgs)
         {
             if (baseLetterLabel.NullOrEmpty() || baseLetterText.NullOrEmpty())
             {
