@@ -7,8 +7,7 @@ using RimWorld.Planet;
 using Verse;
 using UnityEngine;
 using HarmonyLib;
-using System.Threading;
-using RimWar.RocketTools;
+using RimWar.Threading;
 
 namespace RimWar.Planet
 {
@@ -265,15 +264,16 @@ namespace RimWar.Planet
             }
         }
 
+        // The getter does not write: clamping is applied to the returned value only, so reads have no side effects.
         public virtual int RimWarPoints
         {
             get
             {
-                this.warPointsInt = Mathf.Clamp(warPointsInt, 50, 100000);
-                return this.warPointsInt;
+                return Mathf.Clamp(warPointsInt, 50, 100000);
             }
             set
             {
+                MainThread.Verify();
                 this.warPointsInt = Mathf.Max(0, value);
             }
         }
@@ -286,6 +286,7 @@ namespace RimWar.Planet
             }
             set
             {
+                MainThread.Verify();
                 pointDamageInt = value;
             }
         }
@@ -424,7 +425,6 @@ namespace RimWar.Planet
             pather = new WarObject_PathFollower(this);
             gotoMote = new WarObject_GotoMoteRenderer();
             tweener = new WarObject_Tweener(this);
-            //MainthreadID = Thread.CurrentThread.ManagedThreadId;
         }
 
         public void SetUniqueId(int newId)
@@ -464,22 +464,9 @@ namespace RimWar.Planet
                 {
                     NextSearchTick = Find.TickManager.TicksGame + NextSearchTickIncrement;
                     this.ValidateParentSettlement();
-                    //scan for nearby engagements
-                    ScanAction(ScanRange);
-                    if (Options.Settings.Instance.threadingEnabled)
-                    {
-                        WorldComponent_PowerTracker.tasker.Register(() =>
-                        {
-                            return null;
-                        }, (context) =>
-                        {
-                            Notify_Player();
-                        });
-                    }
-                    else
-                    {
-                        Notify_Player();
-                    }
+                    //scan for nearby engagements; the engagement itself happens in WarObjectScanJob.Commit
+                    JobScheduler.Schedule(new WarObjectScanJob(this));
+                    Notify_Player();
                 }
                 if ((Find.TickManager.TicksGame + ID) % 251 == 0)
                     ValidateTargets();
@@ -502,7 +489,7 @@ namespace RimWar.Planet
                         }
                     }
 
-                    if (!UseDestinationTile)
+                    if (!UseDestinationTile && !this.CantMove)
                     {
                         if (this.DestinationTarget != null)
                         {
@@ -518,7 +505,7 @@ namespace RimWar.Planet
                             pather.StopDead();
                         }
                     }
-                    if (!canReachDestination)
+                    if (!canReachDestination && !this.CantMove)
                     {
                         ValidateParentSettlement();
                         if (this.ParentSettlement == null)
@@ -555,49 +542,6 @@ namespace RimWar.Planet
 
         public virtual void Notify_Player()
         {
-        }
-
-        public virtual void ScanAction(float range)
-        {
-            if (interactable)
-            {
-                List<WorldObject> worldObjects = WorldUtility.GetWorldObjectsInRange(this.Tile, range);
-                if (worldObjects != null && worldObjects.Count > 0)
-                {
-                    for (int i = 0; i < worldObjects.Count; i++)
-                    {
-                        WorldObject wo = worldObjects[i];
-                        if (wo != null && !wo.Destroyed && wo.Faction != this.Faction && wo != this.DestinationTarget)
-                        {
-                            //Log.Message(this.Label + " has " + wo.Label + " in range [" + range + "]");
-                            if (wo is Caravan) //or rimwar caravan, or diplomat, or merchant; ignore scouts and settlements
-                            {
-                                Caravan car = wo as Caravan;
-                                RimWarCaravanComp rwcc = car.GetComponent<RimWarCaravanComp>();
-                                if (rwcc != null && rwcc.currentTarget != this)
-                                {
-                                    EngageNearbyCaravan(wo as Caravan);
-                                }
-                                break;
-                            }
-                            else if (wo is RimWarSite)
-                            {
-                                InteractWithSite(wo);
-                                break;
-                            }
-                            else if (wo is WarObject)
-                            {
-                                EngageNearbyWarObject(wo as WarObject);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                //Log.Message(this.Name + " is not interactable");
-            }
         }
 
         public virtual bool ShouldInteractWith(Caravan car, WarObject rwo)
@@ -711,6 +655,12 @@ namespace RimWar.Planet
         {
             //Log.Message("arrival action for " + this.Name + "; dest " + DestinationTarget + " parent " + this.ParentSettlement);
             this.ImmediateDestroy();
+        }
+
+        public override void Destroy()
+        {
+            pather.StopDead();
+            base.Destroy();
         }
 
         public virtual void ImmediateDestroy()

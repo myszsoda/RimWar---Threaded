@@ -95,10 +95,6 @@
       <HintPath>$(RimWorldManagedDir)\UnityEngine.SubstanceModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.TextCoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(RimWorldManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
@@ -193,9 +189,19 @@
     <Compile Include="Utility\ColorUtility.cs" />
     <Compile Include="Utility\RW_Find.cs" />
     <Compile Include="Utility\TweenerUtility.cs" />
-    <Compile Include="RocketTools\RocketShip.cs" />
-    <Compile Include="RocketTools\RocketStorage.cs" />
-    <Compile Include="RocketTools\RocketTask.cs" />
+    <Compile Include="Planet\Jobs\DiplomatActionJob.cs" />
+    <Compile Include="Planet\Jobs\SettlementActionJob.cs" />
+    <Compile Include="Planet\Jobs\SettlementScanJob.cs" />
+    <Compile Include="Planet\Jobs\SettlerActionJob.cs" />
+    <Compile Include="Planet\Jobs\ScoutActionJob.cs" />
+    <Compile Include="Planet\Jobs\TradeActionJob.cs" />
+    <Compile Include="Planet\Jobs\WarbandActionJob.cs" />
+    <Compile Include="Planet\Jobs\WarObjectScanJob.cs" />
+    <Compile Include="Threading\JobScheduler.cs" />
+    <Compile Include="Threading\MainThread.cs" />
+    <Compile Include="Threading\ThreadRand.cs" />
+    <Compile Include="Threading\ThreadTripwires.cs" />
+    <Compile Include="Threading\WorldSnapshot.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -7,6 +7,7 @@ using RimWorld.Planet;
 using Verse;
 using UnityEngine;
 using RimWar.Planet;
+using RimWar.Threading;
 using HarmonyLib;
 
 namespace RimWar
@@ -203,6 +204,8 @@ namespace RimWar
             }
         }
 
+        // Game-thread caches. A rebuild always creates a new list (never Clear() + refill), so a caller that is iterating the
+        // previous list - possibly while code it calls triggers the rebuild - is never disturbed.
         private List<RimWorld.Planet.Settlement> worldSettlements;
         public List<RimWorld.Planet.Settlement> WorldSettlements
         {
@@ -211,17 +214,13 @@ namespace RimWar
                 bool flag = this.worldSettlements == null || Find.TickManager.TicksGame >= this.rwdNextUpdateTick;
                 if (flag)
                 {
+                    MainThread.Verify();
                     this.rwdNextUpdateTick = GetNextUpdateTick;
-                    if (worldSettlements == null)
-                    {
-                        this.worldSettlements = new List<RimWorld.Planet.Settlement>();
-                    }
-                    this.worldSettlements.Clear();
                     List<RimWorld.Planet.Settlement> tmpList = new List<RimWorld.Planet.Settlement>();
-                    tmpList.Clear();
-                    for (int i = 0; i < Find.WorldObjects.AllWorldObjects.Count; i++)
+                    List<WorldObject> allWorldObjects = Find.WorldObjects.AllWorldObjects;
+                    for (int i = 0; i < allWorldObjects.Count; i++)
                     {
-                        RimWorld.Planet.Settlement wos = Find.WorldObjects.AllWorldObjects[i] as RimWorld.Planet.Settlement;
+                        RimWorld.Planet.Settlement wos = allWorldObjects[i] as RimWorld.Planet.Settlement;
                         if (WorldUtility.IsValidSettlement(wos) && wos.Faction == this.RimWarFaction)
                         {
                             tmpList.Add(wos);
@@ -233,24 +232,31 @@ namespace RimWar
             }
         }
 
+        // Rebuilt only when WorldSettlements changed (new list, or callers removed entries from it), not on every read:
+        // loops such as `for (i < WarSettlementComps.Count) WarSettlementComps[i]` used to rebuild it per iteration.
         private List<RimWarSettlementComp> warSettlementComps;
+        private List<RimWorld.Planet.Settlement> warSettlementCompsSource;
+        private int warSettlementCompsSourceCount = -1;
         public List<RimWarSettlementComp> WarSettlementComps
         {
             get
             {
-                bool flag = this.warSettlementComps == null;
-                if (flag)
+                List<RimWorld.Planet.Settlement> settlements = WorldSettlements;
+                if (this.warSettlementComps == null || this.warSettlementCompsSource != settlements || this.warSettlementCompsSourceCount != settlements.Count)
                 {
-                    this.warSettlementComps = new List<RimWarSettlementComp>();
-                }
-                this.warSettlementComps.Clear();
-                for (int i = 0; i < WorldSettlements.Count; i++)
-                {
-                    RimWarSettlementComp rwsc = WorldSettlements[i].GetComponent<RimWarSettlementComp>();
-                    if (rwsc != null)
+                    MainThread.Verify();
+                    List<RimWarSettlementComp> comps = new List<RimWarSettlementComp>(settlements.Count);
+                    for (int i = 0; i < settlements.Count; i++)
                     {
-                        warSettlementComps.Add(rwsc);
+                        RimWarSettlementComp rwsc = settlements[i].GetComponent<RimWarSettlementComp>();
+                        if (rwsc != null)
+                        {
+                            comps.Add(rwsc);
+                        }
                     }
+                    this.warSettlementComps = comps;
+                    this.warSettlementCompsSource = settlements;
+                    this.warSettlementCompsSourceCount = settlements.Count;
                 }
                 return this.warSettlementComps;
             }
@@ -390,17 +396,16 @@ namespace RimWar
             }
         }
 
-        private int playerHeatInt;
         public int PlayerHeat
         {
             get
             {
-                playerHeatInt = 0;
+                int playerHeat = 0;
                 foreach (RimWarSettlementComp rwsc in WarSettlementComps)
                 {
-                    playerHeatInt += rwsc.PlayerHeat;
+                    playerHeat += rwsc.PlayerHeat;
                 }
-                return playerHeatInt;
+                return playerHeat;
             }
         }
 

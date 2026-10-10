@@ -9,6 +9,7 @@ using Verse;
 using UnityEngine;
 using HarmonyLib;
 using Verse.Noise;
+using RimWar.Threading;
 
 namespace RimWar.Planet
 {
@@ -21,7 +22,10 @@ namespace RimWar.Planet
         private static WorldComponent_PowerTracker wcpt = null;
 
         // Do not scan literally everything, put some arbitrary limit
-        private const int maxObjectsPerScan = 10;
+        public const int maxObjectsPerScan = 10;
+
+        // Settlements (nearest by approximate distance) that GetClosestSettlementInRWDTo path-checks.
+        private const int ClosestSettlementPathChecks = 3;
 
         public static WorldComponent_PowerTracker Get_WCPT()
         {
@@ -42,34 +46,13 @@ namespace RimWar.Planet
             return wcpt;
         }
 
-        private static object locker = new object();
-        private static List<WorldObject> _worldObjectsHolder = new List<WorldObject>();
-        public static List<WorldObject> WorldObjectsHolder
+        // Live world objects. Game thread only: worker threads read Threading.WorldSnapshot instead.
+        private static List<WorldObject> LiveWorldObjects
         {
             get
             {
-                if (false)//Options.Settings.Instance.threadingEnabled)
-                {
-                    return _worldObjectsHolder.Where(obj => obj != null).ToList();
-                }
-                else
-                {
-                    return Find.WorldObjects.AllWorldObjects;
-                }
-            }
-        }
-        public static void CopyData()
-        {
-            if (false)//Options.Settings.Instance.threadingEnabled)
-            {
-                lock (locker)
-                {
-                    _worldObjectsHolder = Find.WorldObjects.AllWorldObjects;
-                }
-            }
-            else
-            {
-                _worldObjectsHolder = Find.WorldObjects.AllWorldObjects;
+                MainThread.Verify();
+                return Find.WorldObjects.AllWorldObjects;
             }
         }
 
@@ -84,9 +67,10 @@ namespace RimWar.Planet
             {
                 for (int j = 0; j < wcpt.RimWarData.Count; j++)
                 {
-                    if (wcpt.RimWarData[j].RandomKey == faction.randomKey)
+                    RimWarData rwd = wcpt.RimWarData[j];
+                    if (rwd.RimWarFaction != null && rwd.RandomKey == faction.randomKey)
                     {
-                        return wcpt.RimWarData[j];
+                        return rwd;
                     }
                 }
             }
@@ -128,6 +112,7 @@ namespace RimWar.Planet
 
         public static void CreateRimWarSettlement(RimWarData rwd, WorldObject wo)
         {
+            MainThread.Verify();
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
                 return;
@@ -155,6 +140,7 @@ namespace RimWar.Planet
         public static void CreateRimWarSettlementWithPoints(RimWarData rwd, WorldObject wo, int points,
                                                             bool displayLetter = false, int pointDamage = 0)
         {
+            MainThread.Verify();
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
                 return;
@@ -179,7 +165,7 @@ namespace RimWar.Planet
         public static void CreateSettlement(WarObject warObject, List<WorldObject> objectsHere, RimWarData rwd,
                                             PlanetTile tile, Faction faction)
         {
-            //Log.Message("creating settlement");
+            MainThread.Verify();
             if (ValidForSettlement(warObject, objectsHere, rwd, tile, faction))
             {
                 RimWorld.Planet.Settlement worldSettlement = SettleUtility.AddNewHome(tile, faction);
@@ -219,6 +205,7 @@ namespace RimWar.Planet
         public static void ConvertSettlement(RimWorld.Planet.Settlement worldSettlement, RimWarData rwdFrom,
                                              RimWarData rwdTo, int points, int pointDamage = 0)
         {
+            MainThread.Verify();
             PlanetTile tile = worldSettlement.Tile;
             if (worldSettlement != null && rwdFrom != null && rwdTo != null)
             {
@@ -237,6 +224,7 @@ namespace RimWar.Planet
 
         public static void RemoveRWDFaction(RimWarData rwdFrom)
         {
+            MainThread.Verify();
             for (int i = 0; i < Find.WorldObjects.AllWorldObjects.Count; i++)
             {
                 WorldObject wo = Find.WorldObjects.AllWorldObjects[i];
@@ -266,7 +254,7 @@ namespace RimWar.Planet
                                                PlanetTile destinationTile, WorldObjectDef type,
                                                bool addToWorldPawnsIfNotAlready)
         {
-            //Log.Message("making world object");
+            MainThread.Verify();
             WarObject warObject = (WarObject)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_WarObject);
             if (startingTile.Valid)
             {
@@ -364,7 +352,7 @@ namespace RimWar.Planet
             //Log.Message("making world object warband");
             tmpPawns.Clear();
             tmpPawns.AddRange(pawns);
-            //Caravan warband = (Caravan)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Caravan);
+            MainThread.Verify();
             Warband_Caravan warband = (Warband_Caravan)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Warband);
             if (startingTile >= 0)
             {
@@ -448,6 +436,7 @@ namespace RimWar.Planet
 
         private static Warband MakeWarband(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             Warband warband = (Warband)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Warband);
             if (startingTile.Valid)
             {
@@ -490,6 +479,7 @@ namespace RimWar.Planet
 
         private static LaunchedWarband MakeLaunchedWarband(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             LaunchedWarband warband = (LaunchedWarband)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_LaunchedWarband);
             if (startingTile.Valid)
             {
@@ -551,6 +541,7 @@ namespace RimWar.Planet
 
         private static Scout MakeScout(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             Scout scout = (Scout)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Scout);
             if (startingTile.Valid)
             {
@@ -613,6 +604,7 @@ namespace RimWar.Planet
 
         private static Trader MakeTrader(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             Trader trader = (Trader)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Trader);
             if (startingTile.Valid)
             {
@@ -665,6 +657,7 @@ namespace RimWar.Planet
 
         private static Diplomat MakeDiplomat(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             Diplomat diplomat = (Diplomat)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Diplomat);
             if (startingTile.Valid)
             {
@@ -718,6 +711,7 @@ namespace RimWar.Planet
 
         private static Settler MakeSettler(Faction faction, PlanetTile startingTile)
         {
+            MainThread.Verify();
             Settler settler = (Settler)WorldObjectMaker.MakeWorldObject(RimWarDefOf.RW_Settler);
             if (startingTile.Valid)
             {
@@ -833,6 +827,45 @@ namespace RimWar.Planet
                 pointsNeeded *= 1.15f;
             }
             else if (rwd.behavior == RimWarBehavior.Aggressive)
+            {
+                pointsNeeded *= 1.15f;
+            }
+            return Mathf.Clamp(Mathf.RoundToInt(pointsNeeded), 50, 1000000);
+        }
+
+        // Job (worker-safe) variants of the formulas above: same math, random numbers from the job's seeded generator.
+
+        public static int CalculateWarbandPointsForRaid(int targetPoints, bool targetIsPlayer, System.Random rng)
+        {
+            int pointsNeeded = targetIsPlayer ? Mathf.RoundToInt(targetPoints * 1.25f) : targetPoints;
+            if (rng.Value() >= .8f)
+            {
+                //crushing attack
+                pointsNeeded = Mathf.RoundToInt(rng.Range(1.4f, 1.8f) * pointsNeeded);
+            }
+            else
+            {
+                pointsNeeded = Mathf.RoundToInt(rng.Range(1.1f, 1.5f) * pointsNeeded);
+            }
+            return Mathf.Clamp(pointsNeeded, 50, 2000000);
+        }
+
+        public static int CalculateTraderPoints(int townPoints, bool townIsPlayer, System.Random rng)
+        {
+            int pointsNeeded = townIsPlayer ? townPoints : Mathf.RoundToInt(townPoints * .25f);
+            pointsNeeded = Mathf.RoundToInt(rng.Range(.75f, 1.25f) * pointsNeeded);
+            return Mathf.Clamp(pointsNeeded, 200, 1000000);
+        }
+
+        public static int CalculateDiplomatPoints(System.Random rng)
+        {
+            return Mathf.Clamp(rng.Range(100, 200), 100, 1000000);
+        }
+
+        public static int CalculateScoutMissionPoints(RimWarBehavior behavior, int targetPoints, System.Random rng)
+        {
+            float pointsNeeded = rng.Range(.9f, 1.1f) * targetPoints;
+            if (behavior == RimWarBehavior.Expansionist || behavior == RimWarBehavior.Aggressive)
             {
                 pointsNeeded *= 1.15f;
             }
@@ -1141,6 +1174,7 @@ namespace RimWar.Planet
 
         public static void UpdateRWDSettlementLists(RimWarData rwd)
         {
+            MainThread.Verify();
             List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
             tmpSettlements.Clear();
             List<RimWorld.Planet.Settlement> settlementList = Find.WorldObjects.Settlements; //GetRimWarSettlements(GetRimWarData());
@@ -1264,16 +1298,20 @@ namespace RimWar.Planet
         public static RimWorld.Planet.Settlement GetClosestSettlementInRWDTo(RimWarData rwd, PlanetTile tile,
                                                                              int maxEvalRange = 100)
         {
-            WorldUtility.Get_WCPT().UpdateFactionSettlements(rwd);
+            MainThread.Verify();
             if (rwd != null && rwd.WorldSettlements != null && rwd.WorldSettlements.Count > 0)
             {
-                List<RimWorld.Planet.Settlement> settlements = rwd.WorldSettlements;
+                // TraversalDistanceBetween is a world flood fill (a 4s edge case was measured when it ran for every
+                // settlement), so rank by the cheap approximate distance and only path-check the nearest few.
+                List<RimWorld.Planet.Settlement> settlements = rwd.WorldSettlements
+                    .Where(s => s != null && !s.Destroyed)
+                    .OrderBy(s => Find.WorldGrid.ApproxDistanceInTiles(tile, s.Tile))
+                    .Take(ClosestSettlementPathChecks)
+                    .ToList();
                 RimWorld.Planet.Settlement closestSettlement = null;
                 int distance = 0;
                 for (int i = 0; i < settlements.Count; i++)
                 {
-                    // TODO refactor this call to TraversalDistanceBetween(),
-                    // cost of this is absurd - edge case measured is 4s
                     if (closestSettlement == null)
                     {
                         closestSettlement = settlements[i];
@@ -1286,14 +1324,11 @@ namespace RimWar.Planet
                         {
                             closestSettlement = settlements[i];
                             distance = dist;
-                            /* Cut off. Scanning after some point is from all settlements on map
-                             * is absurd amount of calculation, stop at some arbitrary limit.
-                             * Probably should calculate with party speed setting,
-                             * but whatever, right now just cut calculation.
-                             */
-                            if (distance < 25)
-                                break;
                         }
+                    }
+                    if (distance < 25)
+                    {
+                        break;
                     }
                 }
                 return closestSettlement;
@@ -1393,16 +1428,7 @@ namespace RimWar.Planet
         public static List<WarObject> GetRimWarObjectsAt(PlanetTile tile)
         {
             List<WarObject> warObjects = new List<WarObject>();
-            warObjects.Clear();
-            //List<WorldObject> worldObjects = Find.WorldObjects.AllWorldObjects.ToList();
-            List<WorldObject> worldObjects = null;
-            //List<WorldObject> tmpObjects = Find.WorldObjects.AllWorldObjects;
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                worldObjects = WorldObjectsHolder;
-            }
+            List<WorldObject> worldObjects = LiveWorldObjects;
             if (worldObjects != null && worldObjects.Count > 0)
             {
                 for (int i = 0; i < worldObjects.Count; i++)
@@ -1419,54 +1445,35 @@ namespace RimWar.Planet
 
         public static List<WorldObject> GetWorldObjectsInRange(PlanetTile from, float range)
         {
-            List<WorldObject> tmpObjects = null;
-            //List<WorldObject> tmpObjects = Find.WorldObjects.AllWorldObjects;
-
             if (from.Layer == Find.WorldGrid.Orbit)
             {
                 Log.WarningOnce("Attempting to GetWorldObjectsInRange while in space", 664799);
                 return null;
             }
 
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                tmpObjects = WorldObjectsHolder;
-            }
+            // Filter by range first, then shuffle only the matches: same random subset of at most
+            // maxObjectsPerScan objects as shuffling the whole world, without copying every object each call.
+            List<WorldObject> worldObjects = LiveWorldObjects;
             List<WorldObject> objectsInRange = new List<WorldObject>();
-            if (tmpObjects != null && tmpObjects.Count > 0)
+            for (int i = 0; i < worldObjects.Count; i++)
             {
-                List<WorldObject> worldObjects = tmpObjects.InRandomOrder().ToList();
-                if (worldObjects != null)
+                PlanetTile to = worldObjects[i].Tile;
+
+                // Probably in future add attacks between same layers
+                if (to.Layer == Find.WorldGrid.Orbit)
                 {
-                    for (int i = 0; i < worldObjects.Count; i++)
-                    {
-                        PlanetTile to = worldObjects[i].Tile;
-
-                        if (objectsInRange.Count >= maxObjectsPerScan)
-                            break;
-
-                        // Probably in future add attacks between same layers
-                        if (to.Layer == Find.WorldGrid.Orbit)
-                        {
-                            continue;
-                        }
-
-                        if (from == to)
-                        {
-                            objectsInRange.Add(worldObjects[i]);
-                            continue;
-                        }
-                        //int distance = Find.WorldGrid.TraversalDistanceBetween(from, to, false, range);
-                        float distance = Find.WorldGrid.ApproxDistanceInTiles(from, to);
-                        //Log.Message("getting tile in range is an approx distance of " + Find.WorldGrid.ApproxDistanceInTiles(from, to) + " travel distance is " + distance + " and has a range cap of " + range);
-                        if (distance <= range)
-                        {
-                            objectsInRange.Add(worldObjects[i]);
-                        }
-                    }
+                    continue;
                 }
+
+                if (from == to || Find.WorldGrid.ApproxDistanceInTiles(from, to) <= range)
+                {
+                    objectsInRange.Add(worldObjects[i]);
+                }
+            }
+            objectsInRange.Shuffle();
+            if (objectsInRange.Count > maxObjectsPerScan)
+            {
+                objectsInRange.RemoveRange(maxObjectsPerScan, objectsInRange.Count - maxObjectsPerScan);
             }
             return objectsInRange;
         }
@@ -1474,13 +1481,7 @@ namespace RimWar.Planet
         public static List<WorldObject> GetAllWorldObjectsAt(PlanetTile tile)
         {
             List<WorldObject> tmpObjects = new List<WorldObject>();
-            List<WorldObject> worldObjects = null; // Find.WorldObjects.AllWorldObjects.ToList();
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                worldObjects = WorldObjectsHolder; ;
-            }
+            List<WorldObject> worldObjects = LiveWorldObjects;
             if (worldObjects != null)
             {
                 for (int i = 0; i < worldObjects.Count; i++)
@@ -1498,14 +1499,7 @@ namespace RimWar.Planet
         public static List<WorldObject> GetAllWorldObjectsAtExcept(PlanetTile tile, WorldObject woThis)
         {
             List<WorldObject> tmpObjects = new List<WorldObject>();
-            List<WorldObject> worldObjects = Find.WorldObjects.AllWorldObjects.ToList();
-            //List<WorldObject> worldObjects = null; // Find.WorldObjects.AllWorldObjects.ToList();
-            //if (WorldObjectsHolder == null)
-            //    CopyData();
-            //lock (locker)
-            //{
-            //    worldObjects = WorldObjectsHolder.ToList();
-            //}
+            List<WorldObject> worldObjects = LiveWorldObjects;
             if (worldObjects != null)
             {
                 for (int i = 0; i < worldObjects.Count; i++)
@@ -1559,14 +1553,7 @@ namespace RimWar.Planet
         public static List<WarObject> GetWarObjectsInFaction(Faction faction)
         {
             List<WarObject> tmpWarObjects = new List<WarObject>();
-            tmpWarObjects.Clear();
-            List<WorldObject> tmpObjects = null; // Find.WorldObjects.AllWorldObjects.ToList();
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                tmpObjects = WorldObjectsHolder;
-            }
+            List<WorldObject> tmpObjects = LiveWorldObjects;
             if (tmpObjects != null && tmpObjects.Count > 0)
             {
                 for (int i = 0; i < tmpObjects.Count; i++)
@@ -1583,14 +1570,7 @@ namespace RimWar.Planet
         public static List<WorldObject> GetWorldObjectsInFaction(Faction faction)
         {
             List<WorldObject> tmpWorldObjects = new List<WorldObject>();
-            tmpWorldObjects.Clear();
-            List<WorldObject> tmpObjects = null; // Find.WorldObjects.AllWorldObjects.ToList();
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                tmpObjects = WorldObjectsHolder;
-            }
+            List<WorldObject> tmpObjects = LiveWorldObjects;
             if (tmpObjects != null && tmpObjects.Count > 0)
             {
                 for (int i = 0; i < tmpObjects.Count; i++)
@@ -1667,13 +1647,7 @@ namespace RimWar.Planet
 
         public static void ValidateObjectFactions(bool forced = false)
         {
-            List<WorldObject> woList = null;// Find.WorldObjects.AllWorldObjects;
-            if (WorldObjectsHolder == null)
-                CopyData();
-            lock (locker)
-            {
-                woList = WorldObjectsHolder;
-            }
+            List<WorldObject> woList = LiveWorldObjects;
             if (woList != null && woList.Count > 0)
             {
                 for (int i = 0; i < woList.Count; i++)

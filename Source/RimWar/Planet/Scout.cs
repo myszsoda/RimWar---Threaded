@@ -60,56 +60,7 @@ namespace RimWar.Planet
             base.TickInterval(delta);
         }
 
-        public override void ScanAction(float range)
-        {
-            //Scouts will prioritize other units
-            List<WorldObject> worldObjects = WorldUtility.GetWorldObjectsInRange(this.Tile, range);
-            if (worldObjects != null && worldObjects.Count > 0)
-            {
-                for (int i = 0; i < worldObjects.Count; i++)
-                {
-                    WorldObject wo = worldObjects[i];
-                    if (wo.Faction != this.Faction && wo != this.DestinationTarget && (this.DestinationTarget == null || (this.DestinationTarget != null && Find.WorldGrid.ApproxDistanceInTiles(wo.Tile, this.Tile) < Find.WorldGrid.ApproxDistanceInTiles(this.DestinationTarget.Tile, this.Tile))))
-                    {
-                        //Log.Message("" + this.Name + " scanned nearby object " + this.targetWorldObject.Label);
-                        if (wo is Caravan && interactable) //or rimwar caravan, or diplomat, or merchant; ignore scouts and settlements
-                        {
-                            //Log.Message(this.Name + "scanned a player caravan");
-                            Caravan playerCaravan = wo as Caravan;
-                            //Log.Message("evaluating player caravan with " + playerCaravan.PlayerWealthForStoryteller + " wealth");
-                            if (CaravanDetected(playerCaravan) && (playerCaravan.PlayerWealthForStoryteller / 100) <= (int)(this.RimWarPoints) && this.Faction.HostileTo(playerCaravan.Faction))
-                            {
-                                this.DestinationTarget = playerCaravan;
-                                break;
-                                //Log.Message(this.Label + " engaging nearby warband " + wo.Label);
-                            }
-                        }
-                        if (wo is BattleSite)
-                        {
-                            BattleSite bs = wo as BattleSite;
-                            foreach (WarObject rwo in bs.Units)
-                            {
-                                if (rwo.Faction == bs.Faction)
-                                {
-                                    this.DestinationTarget = wo;
-                                    break;
-                                }
-                            }
-                        }
-                        if (wo is WarObject && this.Faction.HostileTo(wo.Faction))
-                        {
-                            WarObject warObject = wo as WarObject;
-                            if (warObject.RimWarPoints <= this.RimWarPoints)
-                            {
-                                this.DestinationTarget = wo;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            base.ScanAction(1f);
-        }
+        // Scouts prioritise weaker nearby units; that scan (formerly ScanAction) is WarObjectScanJob's scout rules.
 
         public override void EngageNearbyCaravan(Caravan car)
         {

@@ -10,6 +10,7 @@ namespace RimWar.History
     {
         public static RW_Letter Make_RWLetter(RW_LetterDef def)
         {
+            RimWar.Threading.MainThread.Verify();
             RW_Letter letter = (RW_Letter)Activator.CreateInstance(def.letterClass);
             letter.def = def;
             letter.ID = Find.UniqueIDsManager.GetNextLetterID();
@@ -18,6 +19,7 @@ namespace RimWar.History
 
         public static void Archive_RWLetter(RW_Letter let)
         {
+            RimWar.Threading.MainThread.Verify();
             let.arrivalTime = Time.time;
             let.arrivalTick = Find.TickManager.TicksGame;
             Find.Archive.Add(let);

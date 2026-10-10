@@ -80,6 +80,9 @@ namespace RimWar.Harmony
         public RimWarMod(ModContentPack content) : base(content)
         {
             harmonyInstance = new HarmonyLib.Harmony(ModId);
+#if RIMWAR_TRIPWIRES
+            RimWar.Threading.ThreadTripwires.Install(harmonyInstance);
+#endif
             //Postfix
             //1.3 //
             //harmonyInstance.Patch(AccessTools.Method(typeof(TransportPodsArrivalAction_Shuttle), "Arrived", new Type[]
@@ -794,11 +797,13 @@ namespace RimWar.Harmony
         public static bool TryResolveParms_Points_Prefix(IncidentParms parms)
         {
             return true;
+            /*
             if (parms.points <= 1000)
             {
                 return true;
             }
             return false;
+            */
         }
 
         public static bool Caravan_Give_Prefix(Caravan caravan, List<ThingCount> demands, List<Pawn> attackers)

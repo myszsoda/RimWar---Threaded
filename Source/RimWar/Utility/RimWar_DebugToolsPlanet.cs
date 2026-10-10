@@ -17,6 +17,64 @@ namespace RimWar.Utility
 {
     public static class RimWar_DebugToolsPlanet
     {
+        [DebugAction("Rim War", "Job scheduler stats", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.Playing)]
+        private static void LogJobStats()
+        {
+            Log.Message(RimWar.Threading.JobScheduler.Stats());
+        }
+
+        // Compare the output of two runs of the same save (threading on vs off): it must be identical.
+        [DebugAction("Rim War", "Dump state (threading A/B)", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.Playing)]
+        private static void DumpStateForComparison()
+        {
+            WorldComponent_PowerTracker wcpt = WorldUtility.Get_WCPT();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("RimWar state at tick " + Find.TickManager.TicksGame);
+            sb.AppendLine(string.Format("counters: objectsCreated={0} creationAttempts={1} settlementSearches={2} globalActions={3} minHeat={4}",
+                wcpt.objectsCreated, wcpt.creationAttempts, wcpt.settlementSearches, wcpt.globalActions, wcpt.minimumHeatForPlayerAction));
+            List<WorldObject> objects = Find.WorldObjects.AllWorldObjects.OrderBy(o => o.ID).ToList();
+            Dictionary<string, int> unitCounts = new Dictionary<string, int>();
+            foreach (WorldObject wo in objects)
+            {
+                RimWarSettlementComp rwsc = wo.GetComponent<RimWarSettlementComp>();
+                if (rwsc != null)
+                {
+                    sb.AppendLine(string.Format("settlement {0} {1}: pts={2} dmg={3} heat={4} vassalHeat={5} attackers={6}",
+                        wo.ID, wo.Faction?.Name, rwsc.RimWarPoints, rwsc.PointDamage, rwsc.PlayerHeat, rwsc.vassalHeat, rwsc.AttackingUnits.Count));
+                }
+                else if (wo is WarObject warObject)
+                {
+                    string type = warObject.GetType().Name;
+                    unitCounts[type] = unitCounts.TryGetValue(type, out int n) ? n + 1 : 1;
+                }
+                else if (wo is RimWarSite site)
+                {
+                    sb.AppendLine(string.Format("site {0} tile {1}: {2}", wo.ID, wo.Tile,
+                        string.Join(", ", site.Units.Select(u => u.Faction?.Name + ":" + u.RimWarPoints + "/" + u.PointDamage).ToArray())));
+                }
+            }
+            foreach (KeyValuePair<string, int> pair in unitCounts.OrderBy(p => p.Key))
+            {
+                sb.AppendLine("units " + pair.Key + "=" + pair.Value);
+            }
+            Log.Message(sb.ToString());
+        }
+
+        // Conflict test: many scans in one tick for every unit, so commits race for the same targets and battle sites.
+        [DebugAction("Rim War", "Stress: rescan all units x5", actionType = DebugActionType.Action, allowedGameStates = AllowedGameStates.Playing)]
+        private static void StressRescanAllUnits()
+        {
+            List<WarObject> units = Find.WorldObjects.AllWorldObjects.OfType<WarObject>().ToList();
+            for (int pass = 0; pass < 5; pass++)
+            {
+                foreach (WarObject unit in units)
+                {
+                    RimWar.Threading.JobScheduler.Schedule(new WarObjectScanJob(unit));
+                }
+            }
+            Log.Message("Scheduled " + (units.Count * 5) + " scan jobs. " + RimWar.Threading.JobScheduler.Stats());
+        }
+
         [DebugAction("Rim War", "Add 1k pts", actionType = DebugActionType.ToolWorld, allowedGameStates = AllowedGameStates.PlayingOnWorld)]
         private static void Add1000RWP()
         {

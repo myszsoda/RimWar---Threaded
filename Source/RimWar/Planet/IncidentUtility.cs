@@ -5,6 +5,7 @@ using System.Text;
 using RimWorld;
 using RimWorld.Planet;
 using Verse;
+using RimWar.Threading;
 using UnityEngine;
 using Verse.AI.Group;
 using RimWar.History;
@@ -18,6 +19,7 @@ namespace RimWar.Planet
 
         public static void ResolveWorldEngagement(WarObject warObject, WorldObject wo)
         {
+            MainThread.Verify();
             if (warObject == null || wo == null)
             {
                 return;
@@ -60,6 +62,7 @@ namespace RimWar.Planet
 
         public static void ResolveRimWarBattle(WarObject attacker, WarObject defender)
         {
+            MainThread.Verify();
             List<WorldObject> wos = WorldUtility.GetAllWorldObjectsAtExcept(defender.Tile, attacker);
             if (ValidateRimWarAction(attacker, defender, wos))
             {
@@ -213,6 +216,7 @@ namespace RimWar.Planet
                                                               RimWorld.Planet.Settlement parentSettlement,
                                                               RimWarSettlementComp defender, RimWarData rwd)
         {
+            MainThread.Verify();
             //Log.Message("resolving war object attack on settlement for " + attacker.Name + " against " + defender.parent.Label);
             if (!ValidateRimWarAction(attacker, defender, WorldUtility.GetAllWorldObjectsAtExcept(attacker.Tile, attacker)))
             {
@@ -489,6 +493,7 @@ namespace RimWar.Planet
 
         public static void ResolveRimWarTrade(Trader attacker, Trader defender)
         {
+            MainThread.Verify();
             if (attacker == null || attacker.Faction == null || defender == null || defender.Faction == null)
             {
                 return;
@@ -535,6 +540,7 @@ namespace RimWar.Planet
 
         public static void ResolveSettlementTrade(Trader attacker, RimWarSettlementComp defenderTown)
         {
+            MainThread.Verify();
             if (ValidateRimWarAction(attacker, defenderTown, WorldUtility.GetAllWorldObjectsAtExcept(attacker.Tile, attacker)))
             {
                 float attackerRoll = Rand.Value;
@@ -594,6 +600,7 @@ namespace RimWar.Planet
         public static void DoRaidWithPoints(WarObject wo, RimWorld.Planet.Settlement playerSettlement, RimWarData rwd,
                                             PawnsArrivalModeDef arrivalMode, PawnGroupKindDef groupDef = null)
         {
+            MainThread.Verify();
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
                 return;
@@ -676,6 +683,7 @@ namespace RimWar.Planet
                                                      RimWarData rwd, PawnsArrivalModeDef arrivalMode,
                                                      PawnGroupKindDef groupDef = null)
         {
+            MainThread.Verify();
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
                 return;
@@ -748,6 +756,7 @@ namespace RimWar.Planet
         public static void DoCaravanAttackWithPoints(WarObject warObject, Caravan playerCaravan, RimWarData rwd,
                                                      PawnsArrivalModeDef arrivalMode, PawnGroupKindDef groupDef = null)
         {
+            MainThread.Verify();
             if (rwd == null)// && Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) && !rwd.RimWarFaction.defeated)
             {
                 return;
@@ -864,6 +873,7 @@ namespace RimWar.Planet
         public static void DoCaravanTradeWithPoints(WarObject warObject, Caravan playerCaravan, RimWarData rwd,
                                                     PawnsArrivalModeDef arrivalMode)
         {
+            MainThread.Verify();
             IncidentParms parms = new IncidentParms();
             parms.faction = rwd.RimWarFaction;
             parms.raidArrivalMode = arrivalMode;
@@ -887,6 +897,7 @@ namespace RimWar.Planet
                                                        RimWarData rwd, PawnsArrivalModeDef arrivalMode,
                                                        TraderKindDef traderKind)
         {
+            MainThread.Verify();
             if (rwd == null || !Find.FactionManager.AllFactions.Contains(rwd.RimWarFaction) || rwd.RimWarFaction.defeated)
             {
                 return;
@@ -916,6 +927,7 @@ namespace RimWar.Planet
         public static void DoPeaceTalks_Caravan(WarObject warObject, Caravan playerCaravan, RimWarData rwd,
                                                 PawnsArrivalModeDef arrivalMode)
         {
+            MainThread.Verify();
             IncidentParms parms = new IncidentParms();
             parms.faction = rwd.RimWarFaction;
             parms.raidArrivalMode = arrivalMode;
@@ -1123,6 +1135,7 @@ namespace RimWar.Planet
 
         public static BattleSite CreateNewBattleSite(PlanetTile tile, List<WarObject> wos)
         {
+            MainThread.Verify();
             tile = GetValidBattleSiteTile(tile);
             if (tile != PlanetTile.Invalid)
             {
@@ -1194,6 +1207,7 @@ namespace RimWar.Planet
 
         public static void ResolveCombat_Settlement(RimWarSettlementComp defender, WarObject attacker)
         {
+            MainThread.Verify();
             float pointClamp = 200f;
             if (attacker.RimWarPoints > 20000)
             {
@@ -1280,6 +1294,7 @@ namespace RimWar.Planet
 
         public static void ResolveBattle_Settlement(RimWarSettlementComp defender, WarObject attacker, float pointClamp)
         {
+            MainThread.Verify();
             RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_NeutralEvent);
             let.Label = "RW_LetterSettlementBattle".Translate();
 
@@ -1403,6 +1418,7 @@ namespace RimWar.Planet
 
         public static void ResolveCombat_Units(WarObject attacker, WarObject defender) //offense, defense
         {
+            MainThread.Verify();
             //Log.Message("resolving combat between " + attacker.Label + " pts " + attacker.EffectivePoints + " " + defender.Label + " pts " + defender.EffectivePoints);
             float pointClamp = 200f;
             if (attacker.RimWarPoints > 20000)
@@ -1472,6 +1488,7 @@ namespace RimWar.Planet
 
         public static void ResolveBattle_Units(BattleSite bs)
         {
+            MainThread.Verify();
             //Log.Message("resolving field combat");
             RW_Letter let = RW_LetterMaker.Make_RWLetter(RimWarDefOf.RimWar_NeutralEvent);
             let.Label = "RW_LetterBattle".Translate();
@@ -1549,6 +1566,7 @@ namespace RimWar.Planet
         public static void AttackBattleSite(Caravan car, BattleSite bs, List<ActiveTransporterInfo> pods = null,
                                             PawnsArrivalModeDef arrivalMode = null)
         {
+            MainThread.Verify();
             if (!bs.HasMap)
             {
                 LongEventHandler.QueueLongEvent(delegate

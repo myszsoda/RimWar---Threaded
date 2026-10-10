@@ -342,6 +342,10 @@ namespace RimWar.Planet
         private bool TrySetNewPath()
         {
             WorldPath worldPath = GenerateNewPath();
+            if (curPath != null)
+            {
+                curPath.ReleaseToPool();
+            }
             curPath = worldPath;
             return true;
         }
@@ -383,8 +387,8 @@ namespace RimWar.Planet
             //}
             //catch
             //{
-            warObject.pauseFor = 10;
-            return new WorldPath();
+            //warObject.pauseFor = 10;
+            //return new WorldPath();
             //}
         }
 

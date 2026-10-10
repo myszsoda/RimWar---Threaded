@@ -10,8 +10,6 @@ using RimWar.History;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RimWar.RocketTools;
-using System.Threading;
 using System.Diagnostics;
 
 namespace RimWar

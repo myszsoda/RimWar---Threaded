@@ -340,8 +340,8 @@ namespace RimWar.Utility
                 wos = rwd.ClosestSettlementTo(map.Tile, minPoints);
                 if (wos != null)
                 {
-                    // Try to find an existing WarObject of the right type for estimation
-                    WarObject existingUnit = rwd.FactionUnits.FirstOrDefault(wo => wo is LaunchedWarband);
+                    // Try to find an existing LaunchedWarband for estimation
+                    LaunchedWarband existingUnit = rwd.FactionObjects.OfType<LaunchedWarband>().FirstOrDefault();
                     if (existingUnit != null)
                     {
                         daysToArrive = (float)Utility.ArrivalTimeEstimator.EstimatedTicksToArrive(wos.Tile, map.Tile, existingUnit) / 60000f;

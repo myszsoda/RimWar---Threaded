@@ -9,7 +9,7 @@ using HarmonyLib;
 using RimWar;
 using RimWorld;
 using RimWorld.Planet;
-using System.Threading;
+using RimWar.Threading;
 //using FactionColonies;
 
 namespace RimWar.Planet
@@ -65,24 +65,21 @@ namespace RimWar.Planet
             }
         }
 
+        // Game thread only; workers see attackers through WorldSnapshot.
         public List<WarObject> AttackingUnits
         {
             get
             {
+                MainThread.Verify();
                 if (atkos == null)
                 {
                     atkos = new List<WarObject>();
-                    atkos.Clear();
                 }
                 return atkos;
             }
             set
             {
-                if (atkos == null)
-                {
-                    atkos = new List<WarObject>();
-                    atkos.Clear();
-                }
+                MainThread.Verify();
                 atkos = value;
             }
         }
@@ -127,6 +124,7 @@ namespace RimWar.Planet
             }
             set
             {
+                MainThread.Verify();
                 playerHeat = Mathf.Clamp(value, 0, 10000);
             }
         }
@@ -135,15 +133,16 @@ namespace RimWar.Planet
         {
             get
             {
+                MainThread.Verify();
                 if (consolidatePoints == null)
                 {
                     consolidatePoints = new List<ConsolidatePoints>();
-                    consolidatePoints.Clear();
                 }
                 return consolidatePoints;
             }
             set
             {
+                MainThread.Verify();
                 consolidatePoints = value;
             }
         }
@@ -160,9 +159,15 @@ namespace RimWar.Planet
         {
             get
             {
-                float r = ((.4f * this.RimWarPoints) + 1400) / Options.Settings.Instance.settlementScanRangeDivider;
-                return Mathf.RoundToInt(Mathf.Clamp(r, 10, Options.Settings.Instance.maxSettlementScanRange));
+                return ScanRangeFor(this.RimWarPoints, Options.Settings.Instance.settlementScanRangeDivider, Options.Settings.Instance.maxSettlementScanRange);
             }
+        }
+
+        /// <summary>Pure; shared by SettlementScanRange and job Compute() code (which passes snapshot settings).</summary>
+        public static int ScanRangeFor(int rimWarPoints, float scanRangeDivider, float maxScanRange)
+        {
+            float r = ((.4f * rimWarPoints) + 1400) / scanRangeDivider;
+            return Mathf.RoundToInt(Mathf.Clamp(r, 10, maxScanRange));
         }
 
         public int PointDamage
@@ -173,17 +178,20 @@ namespace RimWar.Planet
             }
             set
             {
+                MainThread.Verify();
                 pointDamageInt = value;
             }
         }
 
+        // The getter does not write: clamping is applied to the returned value only, so reads have no side effects.
         public int RimWarPoints
         {
             get
             {
-                if (this.RWD != null && this.parent != null)
+                RimWarData rwd = this.RWD;
+                if (rwd != null && this.parent != null)
                 {
-                    if (this.RWD.behavior == RimWarBehavior.Player)
+                    if (rwd.behavior == RimWarBehavior.Player)
                     {
                         Map map = null;
                         for (int i = 0; i < Verse.Find.Maps.Count; i++)
@@ -207,20 +215,20 @@ namespace RimWar.Planet
                             return 0;
                         }
                     }
-                    if (this.RWD.behavior == RimWarBehavior.Vassal || ModCheck.Empire.EmpireFaction_ColonyCheck(parent.Tile))
-                    {
-                        this.rimwarPointsInt = Mathf.Clamp(this.rimwarPointsInt, 100, 10000);
-                    }
-                    if (this.RWD.behavior == RimWarBehavior.Excluded)
+                    if (rwd.behavior == RimWarBehavior.Excluded)
                     {
                         return 0;
                     }
+                    if (rwd.behavior == RimWarBehavior.Vassal || ModCheck.Empire.EmpireFaction_ColonyCheck(parent.Tile))
+                    {
+                        return Mathf.Clamp(this.rimwarPointsInt, 100, 10000);
+                    }
                 }
-                this.rimwarPointsInt = Mathf.Clamp(this.rimwarPointsInt, 100, 100000);
-                return this.rimwarPointsInt;
+                return Mathf.Clamp(this.rimwarPointsInt, 100, 100000);
             }
             set
             {
+                MainThread.Verify();
                 this.rimwarPointsInt = Mathf.Max(0, value);
             }
         }
@@ -284,136 +292,70 @@ namespace RimWar.Planet
             }
         }
 
+        // Settlements near this one, excluding itself. Game-thread data, refreshed only by SettlementScanJob.Commit,
+        // which swaps in a new list instead of mutating this one, so callers iterating the old list are never disturbed.
         private List<RimWorld.Planet.Settlement> settlementsInRange;
-        private List<Settlement> tmpSettlementsInRange;
-        private Mutex settlementsMutex;
+
+        // Re-scan sooner than settlementScanDelay when the last scan found nothing, so new neighbours are noticed.
+        private const int EmptyRescanDelay = 2500;
+
         public List<RimWorld.Planet.Settlement> OtherSettlementsInRange
         {
             get
             {
-                this.settlementsMutex.WaitOne();
+                MainThread.Verify();
                 if (this.settlementsInRange == null)
                 {
                     this.settlementsInRange = new List<RimWorld.Planet.Settlement>();
-                    this.settlementsInRange.Clear();
                 }
-                if (tmpSettlementsInRange == null)
-                {
-                    tmpSettlementsInRange = new List<Settlement>();
-                    tmpSettlementsInRange.Clear();
-                }
-                settlementsInRange.Clear();
-                AddTmpSettlementsToMain();
-                //settlementsInRange.AddRange(tmpSettlementsInRange);
-                if (this.settlementsInRange.Count == 0 || this.nextSettlementScan <= Find.TickManager.TicksGame)
-                {
-                    if (Options.Settings.Instance.threadingEnabled)
-                    {
-                        tmpSettlementsInRange.Clear();
-                        Options.SettingsRef settingsRef = new Options.SettingsRef();
-                        this.nextSettlementScan = Find.TickManager.TicksGame + settingsRef.settlementScanDelay;
-                        WorldComponent_PowerTracker.tasker.Register(() =>
-                        {
-                            //List<Settlement> tmpSettlementsInRange = new List<Settlement>();
-                            List<RimWorld.Planet.Settlement> scanSettlements = WorldUtility.GetRimWorldSettlementsInRange(this.parent.Tile, SettlementScanRange);
-                            if (scanSettlements != null && scanSettlements.Count > 0)
-                            {
-                                this.settlementsMutex.WaitOne();
-                                AddSettlementsToTmp(scanSettlements);
-                                this.settlementsMutex.ReleaseMutex();
-                            }
-                            //this.settlementsInRange = tmpSettlementsInRange;
-                            return null;
-                        }, (context) =>
-                        {
-                        });
-                    }
-                    else
-                    {
-                        tmpSettlementsInRange.Clear();
-                        Options.SettingsRef settingsRef = new Options.SettingsRef();
-                        List<RimWorld.Planet.Settlement> scanSettlements = WorldUtility.GetRimWorldSettlementsInRange(this.parent.Tile, SettlementScanRange);
-                        if (scanSettlements != null && scanSettlements.Count > 0)
-                        {
-                            for (int i = 0; i < scanSettlements.Count; i++)
-                            {
-                                if (scanSettlements[i] != this.parent)
-                                {
-                                    tmpSettlementsInRange.Add(scanSettlements[i]);
-                                }
-                            }
-                        }
-                        this.nextSettlementScan = Find.TickManager.TicksGame + settingsRef.settlementScanDelay;
-                    }
-                }
-                this.settlementsMutex.ReleaseMutex();
                 return this.settlementsInRange;
             }
-            set
-            {
-                this.settlementsInRange = value;
-            }
         }
 
-        private void AddTmpSettlementsToMain()
+        private void RequestSettlementScanIfDue()
         {
-            this.settlementsMutex.WaitOne();
-            try
+            int now = Find.TickManager.TicksGame;
+            if (this.nextSettlementScan > now)
             {
-                foreach (Settlement s in tmpSettlementsInRange)
-                {
-                    if (!settlementsInRange.Contains(s))
-                    {
-                        settlementsInRange.Add(s);
-                    }
-                }
+                return;
             }
-            catch { }
-            this.settlementsMutex.ReleaseMutex();
+            this.nextSettlementScan = now + Options.Settings.Instance.settlementScanDelay;
+            JobScheduler.Schedule(new SettlementScanJob(this));
         }
 
-        private void AddSettlementsToTmp(List<RimWorld.Planet.Settlement> scanSettlements)
+        /// <summary>Game thread; called by SettlementScanJob.Commit.</summary>
+        internal void ApplySettlementScan(List<RimWorld.Planet.Settlement> found)
         {
-            this.settlementsMutex.WaitOne();
-            for (int i = 0; i < scanSettlements.Count; i++)
+            MainThread.Verify();
+            this.settlementsInRange = found;
+            if (found.Count == 0)
             {
-                if (scanSettlements[i] != this.parent)
-                {
-                    tmpSettlementsInRange.Add(scanSettlements[i]);
-                }
+                this.nextSettlementScan = Mathf.Min(this.nextSettlementScan, Find.TickManager.TicksGame + EmptyRescanDelay);
             }
-            this.settlementsMutex.ReleaseMutex();
         }
 
         public List<RimWorld.Planet.Settlement> NearbyHostileSettlements
         {
             get
             {
+                List<RimWorld.Planet.Settlement> inRange = OtherSettlementsInRange;
                 List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
-                this.settlementsMutex.WaitOne();
-                tmpSettlements.Clear();
-                if (OtherSettlementsInRange != null && OtherSettlementsInRange.Count > 0)
+                for (int i = 0; i < inRange.Count; i++)
                 {
-                    try
-                    {
-                        for (int i = 0; i < OtherSettlementsInRange.Count; i++)
-                        {
-                            if (tmpSettlements.Count >= maxObjectsPerScan)
-                                break;
+                    if (tmpSettlements.Count >= maxObjectsPerScan)
+                        break;
 
-                            RimWarSettlementComp rwsc = OtherSettlementsInRange[i].GetComponent<RimWarSettlementComp>();
-                            if (OtherSettlementsInRange[i] != null && rwsc != null && rwsc.RimWarPoints > 0 && OtherSettlementsInRange[i].Faction != null && OtherSettlementsInRange[i].Faction.HostileTo(this.parent.Faction))
-                            {
-                                tmpSettlements.Add(OtherSettlementsInRange[i]);
-                            }
-                        }
-                    }
-                    catch
+                    RimWorld.Planet.Settlement s = inRange[i];
+                    if (s == null || s.Destroyed)
                     {
-                        return tmpSettlements;
+                        continue;
+                    }
+                    RimWarSettlementComp rwsc = s.GetComponent<RimWarSettlementComp>();
+                    if (rwsc != null && rwsc.RimWarPoints > 0 && s.Faction != null && s.Faction.HostileTo(this.parent.Faction))
+                    {
+                        tmpSettlements.Add(s);
                     }
                 }
-                this.settlementsMutex.ReleaseMutex();
                 return tmpSettlements;
             }
         }
@@ -423,8 +365,6 @@ namespace RimWar.Planet
             get
             {
                 List<Settlement> tmpPlayerSettlements = new List<Settlement>();
-                this.settlementsMutex.WaitOne();
-                tmpPlayerSettlements.Clear();
                 foreach (Settlement s in NearbyHostileSettlements)
                 {
                     if (s.Faction == Faction.OfPlayer && !tmpPlayerSettlements.Contains(s))
@@ -432,7 +372,6 @@ namespace RimWar.Planet
                         tmpPlayerSettlements.Add(s);
                     }
                 }
-                this.settlementsMutex.ReleaseMutex();
                 return tmpPlayerSettlements;
             }
         }
@@ -460,41 +399,32 @@ namespace RimWar.Planet
         {
             get
             {
+                List<RimWorld.Planet.Settlement> inRange = OtherSettlementsInRange;
                 List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
-                this.settlementsMutex.WaitOne();
-                tmpSettlements.Clear();
-                if (OtherSettlementsInRange != null && OtherSettlementsInRange.Count > 0)
+                for (int i = 0; i < inRange.Count; i++)
                 {
-                    try
-                    {
-                        for (int i = 0; i < OtherSettlementsInRange.Count; i++)
-                        {
-                            if (tmpSettlements.Count >= maxObjectsPerScan)
-                                break;
+                    if (tmpSettlements.Count >= maxObjectsPerScan)
+                        break;
 
-                            RimWarSettlementComp rwsc = OtherSettlementsInRange[i].GetComponent<RimWarSettlementComp>();
-                            if (OtherSettlementsInRange[i] != null && rwsc != null && rwsc.RimWarPoints > 0 && !OtherSettlementsInRange[i].Faction.HostileTo(this.parent.Faction))
-                            {
-                                //Log.Message(OtherSettlementsInRange[i].Label);
-                                tmpSettlements.Add(OtherSettlementsInRange[i]);
-                            }
-                        }
-                    }
-                    catch
+                    RimWorld.Planet.Settlement s = inRange[i];
+                    if (s == null || s.Destroyed || s.Faction == null)
                     {
-                        return tmpSettlements;
+                        continue;
+                    }
+                    RimWarSettlementComp rwsc = s.GetComponent<RimWarSettlementComp>();
+                    if (rwsc != null && rwsc.RimWarPoints > 0 && !s.Faction.HostileTo(this.parent.Faction))
+                    {
+                        tmpSettlements.Add(s);
                     }
                 }
-                this.settlementsMutex.ReleaseMutex();
                 return tmpSettlements;
             }
         }
 
         public List<RimWorld.Planet.Settlement> NearbyFriendlySettlementsWithinRange(float range)
         {
+            MainThread.Verify();
             List<RimWorld.Planet.Settlement> tmpSettlements = new List<RimWorld.Planet.Settlement>();
-            this.settlementsMutex.WaitOne();
-            tmpSettlements.Clear();
             List<Settlement> allSettlements = Find.WorldObjects.Settlements;
             if (allSettlements != null && allSettlements.Count > 0)
             {
@@ -511,7 +441,6 @@ namespace RimWar.Planet
                     }
                 }
             }
-            this.settlementsMutex.ReleaseMutex();
             return tmpSettlements;
         }
 
@@ -519,19 +448,22 @@ namespace RimWar.Planet
         {
             base.Initialize(props);
             this.settlementsInRange = new List<RimWorld.Planet.Settlement>();
-            this.settlementsInRange.Clear();
-            this.settlementsMutex = new Mutex();
         }
 
         public override void CompTick()
         {
-            if (RWD == null)
+            RimWarData rwd = RWD;
+            if (rwd == null)
             {
                 return;
             }
-            if (RWD.behavior == RimWarBehavior.Player)// && RWD.behavior != RimWarBehavior.Vassal)
+            if (rwd.behavior == RimWarBehavior.Player)// && RWD.behavior != RimWarBehavior.Vassal)
             {
                 return;
+            }
+            if (rwd.behavior != RimWarBehavior.Excluded)
+            {
+                RequestSettlementScanIfDue();
             }
             if (nextCombatTick >= Find.TickManager.TicksGame)
             {

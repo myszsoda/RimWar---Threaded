@@ -75,20 +75,15 @@ namespace RimWar.Planet
 
         private void CheckAndCleanDuplicates()
         {
-            Restart:;
-            for (int i = 0; i < this.Units.Count; i++)
+            List<WarObject> units = this.Units;
+            for (int i = 0; i < units.Count; i++)
             {
-                WarObject first = this.Units[i];
-                if (i < this.Units.Count - 1)
+                WarObject first = units[i];
+                for (int j = units.Count - 1; j > i; j--)
                 {
-                    for (int j = i + 1; j < this.Units.Count; j++)
+                    if (first.Faction == units[j].Faction && first.RimWarPoints == units[j].RimWarPoints)
                     {
-                        if (first.Faction == this.Units[j].Faction && first.RimWarPoints == this.Units[j].RimWarPoints)
-                        {
-                            //Log.Message("removing " + this.Units[j].Name);
-                            this.Units.Remove(this.Units[j]);
-                            goto Restart;
-                        }
+                        units.RemoveAt(j);
                     }
                 }
             }

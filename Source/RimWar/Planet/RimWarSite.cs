@@ -6,6 +6,7 @@ using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;
+using RimWar.Threading;
 
 namespace RimWar.Planet
 {
@@ -23,24 +24,21 @@ namespace RimWar.Planet
             Scribe_Values.Look<int>(ref this.nextCombatTick, "nextCombatTick", 0, false);
         }
 
+        // Game thread only; workers see site units through WorldSnapshot.SiteUnits.
         public List<WarObject> Units
         {
             get
             {
+                MainThread.Verify();
                 if (units == null)
                 {
                     units = new List<WarObject>();
-                    units.Clear();
                 }
                 return units;
             }
             set
             {
-                if (units == null)
-                {
-                    units = new List<WarObject>();
-                    units.Clear();
-                }
+                MainThread.Verify();
                 units = value;
             }
         }
