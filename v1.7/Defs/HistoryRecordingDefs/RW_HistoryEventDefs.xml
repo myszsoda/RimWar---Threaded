@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <HistoryEventDef>
+    <defName>RW_RandomizeRelations</defName>
+    <label>Rim War - Randomize Relation</label>
+  </HistoryEventDef>
+  
+  <HistoryEventDef>
+    <defName>RW_UnitRequest</defName>
+    <label>Rim War - Unit Request</label>
+  </HistoryEventDef>
+  
+  <HistoryEventDef>
+    <defName>RW_DiplomacyAction</defName>
+    <label>Rim War - Diplomacy Result</label>
+  </HistoryEventDef>
+  
+  <HistoryEventDef>
+    <defName>RW_ReinforcedSettlement</defName>
+    <label>Rim War - Settlements Reinforced</label>
+  </HistoryEventDef>
+
+
+</Defs>

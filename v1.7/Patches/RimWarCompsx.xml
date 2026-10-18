@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+	<Operation Class="PatchOperationAdd">
+	  <xpath>*/WorldObjectDef[worldObjectClass = "Settlement"]/comps</xpath>
+	  <value>
+		<li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarSettlement"></li>
+	  </value>
+	</Operation> 
+
+    <Operation Class="PatchOperationSequence">
+	  <success>Always</success>
+		<operations>
+			<li Class="PatchOperationTest">
+				<xpath>*/WorldObjectDef[worldObjectClass = "Caravan"]/comps</xpath>
+				<success>Invert</success>
+			</li>
+			<li Class="PatchOperationAdd">
+			  <xpath>*/WorldObjectDef[worldObjectClass = "Caravan"]</xpath>
+			  <value>
+				<comps>
+					<li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarCaravan"></li>
+				</comps>           					
+			  </value>
+			</li>
+		</operations>
+	</Operation> 	
+	
+	<Operation Class="PatchOperationSequence">
+	  <success>Always</success>
+		<operations>
+			<li Class="PatchOperationTest">
+			  <xpath>*/WorldObjectDef[worldObjectClass = "Caravan"]/comps</xpath>
+			</li>
+			<li Class="PatchOperationAdd">
+			  <xpath>*/WorldObjectDef[worldObjectClass = "Caravan"]/comps</xpath>
+			  <value>
+				 <li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarCaravan"></li>         					
+			  </value>
+			</li>
+		</operations>
+	</Operation> 
+	
+	<Operation Class="PatchOperationSequence">
+	<success>Always</success>
+	<operations>
+		<li Class="PatchOperationTest">
+			<xpath>*/WorldObjectDef[worldObjectClass = "Cities.City"]/comps</xpath>
+		</li>
+	   <li Class="PatchOperationAdd">
+			<xpath>*/WorldObjectDef[worldObjectClass = "Cities.City"]/comps</xpath>
+			<value>
+				<li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarSettlement"></li>
+			</value>
+	  </li>
+	 </operations>
+  </Operation>	
+  
+	<Operation Class="PatchOperationSequence">
+	  <success>Always</success>
+		<operations>
+			<li Class="PatchOperationTest">
+			  <xpath>*/WorldObjectDef[worldObjectClass = "FactionColonies.WorldSettlementFC"]/comps</xpath>
+			</li>
+			<li Class="PatchOperationAdd">
+			  <xpath>*/WorldObjectDef[worldObjectClass = "FactionColonies.WorldSettlementFC"]/comps</xpath>
+			  <value>
+				 <li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarSettlement"></li>         					
+			  </value>
+			</li>
+		</operations>
+	</Operation> 
+  
+  	<Operation Class="PatchOperationSequence">
+	<success>Always</success>
+	<operations>
+		<li Class="PatchOperationTest">
+			<xpath>*/WorldObjectDef[worldObjectClass = "FactionColonies.WorldSettlementFC"]/comps</xpath>
+			<success>Invert</success>
+		</li>
+	   <li Class="PatchOperationAdd">
+			<xpath>*/WorldObjectDef[worldObjectClass = "FactionColonies.WorldSettlementFC"]</xpath>
+			<value>
+				<comps>
+					<li Class = "RimWar.Planet.WorldObjectCompProperties_RimWarSettlement"></li>
+				</comps>  
+			</value>
+	  </li>
+	 </operations>
+  </Operation>	
+  
+
+  
+	
+</Patch>

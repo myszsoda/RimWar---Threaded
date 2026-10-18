@@ -1,38 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F6526F49-1209-4D3F-A378-D569118CD86D}</ProjectGuid>
+    <TargetFramework>net10.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RimWar</RootNamespace>
     <AssemblyName>RimWar</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>12</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <!-- Version info lives in Properties\AssemblyInfo.cs -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\v1.6\Assemblies\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputPath>..\..\v1.7\Assemblies\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <RimWorldManagedDir>..\..\..\..\RimWorldWin64_Data\Managed</RimWorldManagedDir>
@@ -41,171 +32,26 @@
     <RimWorldWorkshopDir Condition="!Exists('$(RimWorldWorkshopDir)')">..\..\..\RimWorld\workshop\content\294100</RimWorldWorkshopDir>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>$(RimWorldWorkshopDir)\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HarmonyMod">
-      <HintPath>$(RimWorldWorkshopDir)\2009463077\Current\Assemblies\HarmonyMod.dll</HintPath>
+    <Reference Include="UnityStubs">
+      <HintPath>$(RimWorldManagedDir)\UnityStubs.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Waylith">
+      <HintPath>$(RimWorldManagedDir)\Waylith.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(RimWorldWorkshopDir)\2009463077\1.7\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RimCities">
       <HintPath>$(RimWorldWorkshopDir)\1775170117\1.6\Assemblies\RimCities.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>$(RimWorldManagedDir)\Unity.TextMeshPro.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.InputModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.SharedInternalsModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.SharedInternalsModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.SubstanceModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.SubstanceModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.UIElementsModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Base.cs" />
-    <Compile Include="ModCheck\Empire.cs" />
-    <Compile Include="ModCheck\Validate.cs" />
-    <Compile Include="Planet\CaravanArrivalAction_JoinBattle.cs" />
-    <Compile Include="Planet\TransportPodsArrivalAction_GiveSupplies.cs" />
-    <Compile Include="Planet\TransportPodsArrivalAction_ReinforceSettlement.cs" />
-    <Compile Include="Planet\TransportPodsArrivalAction_Shuttle_ReinforceSettlement.cs" />
-    <Compile Include="Planet\TransportPodsArrivalAction_Shuttle_JoinBattle.cs" />
-    <Compile Include="Planet\TransportPodsArrivalAction_JoinBattle.cs" />
-    <Compile Include="Planet\RimWarSite.cs" />
-    <Compile Include="Planet\BattleSite.cs" />
-    <Compile Include="Planet\RimWarCaravanComp.cs" />
-    <Compile Include="Planet\SettlementUtility.cs" />
-    <Compile Include="Planet\RimWarSettlementComp.cs" />
-    <Compile Include="Planet\WorldComponent_IncidentTracker.cs" />
-    <Compile Include="Planet\WorldObjectCompProperties_RimWarCaravan.cs" />
-    <Compile Include="Planet\WorldObjectCompProperties_RimWarSettlement.cs" />
-    <Compile Include="RimWarMatPool.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWObjectCreationAttempts_Day.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWGlobalActions_Day.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWSettlementSearches_Day.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWPlayer_Power.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWSettlerCount.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWScoutCount.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWObjectsCreated_Day.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWWarbandCount.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWTraderCount.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWSettlementCount.cs" />
-    <Compile Include="Options\RimWarSettingsWindow.cs" />
-    <Compile Include="Planet\CaravanTargetData.cs" />
-    <Compile Include="RimWarFactionUtility.cs" />
-    <Compile Include="History\RW_LetterMaker.cs" />
-    <Compile Include="History\RW_LetterDef.cs" />
-    <Compile Include="History\RW_Letter.cs" />
-    <Compile Include="History\HistoryAutoRecorderWorker_RWRival_Power.cs" />
-    <Compile Include="MainTabWindow_RimWar.cs" />
-    <Compile Include="Options\Controller.cs" />
-    <Compile Include="Options\SettingsRef.cs" />
-    <Compile Include="Options\Settings.cs" />
-    <Compile Include="Planet\CaravanArrivalAction_EngageWarObject.cs" />
-    <Compile Include="Planet\CaravanArrivalAction_AttackWarObject.cs" />
-    <Compile Include="Planet\IncidentUtility.cs" />
-    <Compile Include="Planet\Scout.cs" />
-    <Compile Include="Planet\Trader.cs" />
-    <Compile Include="Planet\Settler.cs" />
-    <Compile Include="Planet\Diplomat.cs" />
-    <Compile Include="Planet\LaunchedWarObject.cs" />
-    <Compile Include="Planet\LaunchedWarband.cs" />
-    <Compile Include="RimWarAction.cs" />
-    <Compile Include="RimWarBehavior.cs" />
-    <Compile Include="RimWarDefData.cs" />
-    <Compile Include="RimWarDef.cs" />
-    <Compile Include="Planet\CapitolBuilding.cs" />
-    <Compile Include="RimWarData.cs" />
-    <Compile Include="Planet\Warband.cs" />
-    <Compile Include="Planet\WarObject_GotoMoteRenderer.cs" />
-    <Compile Include="Planet\WarObject_Tweener.cs" />
-    <Compile Include="Planet\WarObject_PathFollower.cs" />
-    <Compile Include="Planet\WarObject.cs" />
-    <Compile Include="RimWarDefOf.cs" />
-    <Compile Include="Harmony\HarmonyPatches.cs" />
-    <Compile Include="Planet\WorldUtility.cs" />
-    <Compile Include="Planet\Warband_Caravan.cs" />
-    <Compile Include="Planet\WorldComponentMod.cs" />
-    <Compile Include="Planet\WorldComponent_PowerTracker.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\ArrivalTimeEstimator.cs" />
-    <Compile Include="Utility\Alert_NearbyRimWarObject.cs" />
-    <Compile Include="Utility\FactionDialogReMaker.cs" />
-    <Compile Include="Utility\IncidentWorker_WarObjectRaid.cs" />
-    <Compile Include="Utility\IncidentWorker_WarObjectDemand.cs" />
-    <Compile Include="Utility\IncidentWorker_WarObjectMeeting.cs" />
-    <Compile Include="Utility\RimWar_DebugToolsPlanet.cs" />
-    <Compile Include="Utility\ColorUtility.cs" />
-    <Compile Include="Utility\RW_Find.cs" />
-    <Compile Include="Utility\TweenerUtility.cs" />
-    <Compile Include="Planet\Jobs\DiplomatActionJob.cs" />
-    <Compile Include="Planet\Jobs\SettlementActionJob.cs" />
-    <Compile Include="Planet\Jobs\SettlementScanJob.cs" />
-    <Compile Include="Planet\Jobs\SettlerActionJob.cs" />
-    <Compile Include="Planet\Jobs\ScoutActionJob.cs" />
-    <Compile Include="Planet\Jobs\TradeActionJob.cs" />
-    <Compile Include="Planet\Jobs\WarbandActionJob.cs" />
-    <Compile Include="Planet\Jobs\WarObjectScanJob.cs" />
-    <Compile Include="Threading\JobScheduler.cs" />
-    <Compile Include="Threading\MainThread.cs" />
-    <Compile Include="Threading\ThreadRand.cs" />
-    <Compile Include="Threading\ThreadTripwires.cs" />
-    <Compile Include="Threading\WorldSnapshot.cs" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

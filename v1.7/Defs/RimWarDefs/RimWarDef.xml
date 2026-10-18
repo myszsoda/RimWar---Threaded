@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+ 
+<Defs>
+
+	<RimWar.RimWarDef Name="RimWarDef_FactionBehavior">
+		<defName>RimWar_FactionBehavior</defName>
+		<defDatas>		
+		  <li>
+			<factionDefname>PlayerTribe</factionDefname>
+			<behavior>Player</behavior>
+			<createsSettlements>false</createsSettlements>
+			<hatesPlayer>false</hatesPlayer>
+			<movesAtNight>false</movesAtNight>
+		  </li>
+		  <li>
+			<factionDefname>PlayerColony</factionDefname>
+			<behavior>Player</behavior>
+			<createsSettlements>false</createsSettlements>
+			<hatesPlayer>false</hatesPlayer>
+			<movesAtNight>false</movesAtNight>
+		  </li>
+		  <li>
+			<factionDefname>OutlanderCivil</factionDefname>
+			<behavior>Cautious</behavior>
+			<growthBonus>1.1</growthBonus>
+			<combatBonus>.9</combatBonus>
+		  </li>
+		  <li>
+			<factionDefname>OutlanderRough</factionDefname>
+			<behavior>Aggressive</behavior>
+			<combatBonus>1.1</combatBonus>
+			<movementBonus>1.05</movementBonus>
+			<growthBonus>.85</growthBonus>
+		  </li>
+		  <li>
+			<factionDefname>TribeCivil</factionDefname>
+			<behavior>Expansionist</behavior>
+			<movementBonus>1.15</movementBonus>
+			<growthBonus>.95</growthBonus>
+			<combatBonus>1.05</combatBonus>
+		  </li>
+		  <li>
+			<factionDefname>TribeRough</factionDefname>
+			<behavior>Warmonger</behavior>
+			<movementBonus>1.2</movementBonus>
+			<growthBonus>.9</growthBonus>
+			<combatBonus>1.1</combatBonus>
+		  </li>
+		  <li>
+			<factionDefname>Pirate</factionDefname>
+			<behavior>Warmonger</behavior>
+			<createsSettlements>false</createsSettlements>
+			<hatesPlayer>true</hatesPlayer>
+			<movementBonus>1.1</movementBonus>
+			<growthBonus>.8</growthBonus>
+			<combatBonus>1.2</combatBonus>
+		  </li>
+		</defDatas>	
+	</RimWar.RimWarDef>
+	
+</Defs>
+
+	<!-- ============ 
+	behavior types: 
+		Expansionist,
+        Cautious,
+        Merchant,
+        Aggressive,
+        Warmonger,
+        Random,
+		Player,  (only used for player faction)
+		Vassal, (only use if controlled by player)
+		Excluded, (only use for factions intended to be excluded by rimwar)
+        Undefined
+	=============-->

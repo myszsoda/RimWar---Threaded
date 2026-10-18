@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+
+  <WorldObjectDef>
+    <defName>RW_Warband_Caravan</defName>
+    <label>warband_caravan</label>
+    <description>A warband with pawns.</description>
+    <worldObjectClass>RimWar.Planet.Warband_Caravan</worldObjectClass>
+    <texture>World/WorldObjects/Caravan</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WorldObjects/Expanding/Caravan</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+    <allowCaravanIncidentsWhichGenerateMap>true</allowCaravanIncidentsWhichGenerateMap>
+    <IncidentTargetTags>
+      <li>Caravan</li>
+    </IncidentTargetTags>
+    <inspectorTabs>
+      <li>WITab_Caravan_Health</li>
+      <li>WITab_Caravan_Needs</li>
+      <li>WITab_Caravan_Gear</li>
+      <li>WITab_Caravan_Social</li>
+      <li>WITab_Caravan_Items</li>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_CapitolBuilding</defName>
+    <label>Capitol</label>
+    <description>Marks a faction capitol</description>
+    <worldObjectClass>RimWar.Planet.CapitolBuilding</worldObjectClass>
+    <texture>World/capitol_star_se</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/capitol_star_s</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<selectable>false</selectable>
+	<neverMultiSelect>true</neverMultiSelect>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef Name="RW_Site">
+    <defName>RW_Site</defName>
+    <label>Interactive Site</label>
+    <description>Interactive site.</description>
+    <worldObjectClass>RimWar.Planet.RimWarSite</worldObjectClass>
+    <texture>World/BattleSite</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/BattleSiteExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<selectable>true</selectable>
+	<neverMultiSelect>true</neverMultiSelect>
+	<comps>
+      <li Class="WorldObjectCompProperties_FormCaravan" />
+	  <li Class="WorldObjectCompProperties_EnterCooldown" />
+    </comps>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef ParentName = "RW_Site"> 
+    <defName>RW_BattleSite</defName>
+    <label>Battle Site</label>
+    <description>Site of an ongoing battle.</description>
+    <worldObjectClass>RimWar.Planet.BattleSite</worldObjectClass>
+    <texture>World/BattleSite</texture>
+    <expandingIconTexture>World/BattleSiteExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_WarObject</defName>
+    <label>RimWar world object</label>
+    <description>A world object for RimWar.</description>
+    <worldObjectClass>RimWar.Planet.WarObject</worldObjectClass>
+    <texture>World/WorldObjects/Caravan</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WorldObjects/Expanding/Caravan</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_LaunchedWarObject</defName>
+    <label>RimWar flying world object</label>
+    <description>a war object in drop pods</description>
+    <worldObjectClass>RimWar.Planet.LaunchedWarObject</worldObjectClass>
+    <texture>World/WorldObjects/Caravan</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/LaunchWarbandExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+	<expandingIconDrawSize>.8</expandingIconDrawSize>
+    <expandMore>true</expandMore>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_Warband</defName>
+    <label>Warband</label>
+    <description>a warband</description>
+    <worldObjectClass>RimWar.Planet.Warband</worldObjectClass>
+    <texture>World/Warband</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/WarbandExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_LaunchedWarband</defName>
+    <label>Flying Warband</label>
+    <description>a warband in drop pods</description>
+    <worldObjectClass>RimWar.Planet.LaunchedWarband</worldObjectClass>
+    <texture>World/WorldObjects/TravelingTransportPods</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/LaunchWarbandExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_Scout</defName>
+    <label>Scouting party</label>
+    <description>a scouting party</description>
+    <worldObjectClass>RimWar.Planet.Scout</worldObjectClass>
+    <texture>World/Scout</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/ScoutExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_Trader</defName>
+    <label>Trader</label>
+    <description>a caravan trader</description>
+    <worldObjectClass>RimWar.Planet.Trader</worldObjectClass>
+    <texture>World/Trader</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/TraderExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_Diplomat</defName>
+    <label>Diplomat</label>
+    <description>a diplomatic envoy</description>
+    <worldObjectClass>RimWar.Planet.Diplomat</worldObjectClass>
+    <texture>World/Diplomat</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/DiplomatExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+  <WorldObjectDef>
+    <defName>RW_Settler</defName>
+    <label>Settler</label>
+    <description>a settling party</description>
+    <worldObjectClass>RimWar.Planet.Settler</worldObjectClass>
+    <texture>World/Settler</texture>
+    <useDynamicDrawer>true</useDynamicDrawer>
+    <expandingIcon>true</expandingIcon>
+    <expandingIconTexture>World/SettlerExpanded</expandingIconTexture>
+    <expandingIconPriority>100</expandingIconPriority>
+    <expandMore>true</expandMore>
+	<expandingIconDrawSize>.7</expandingIconDrawSize>
+    <inspectorTabs>
+    </inspectorTabs>
+  </WorldObjectDef>
+  
+
+</Defs>

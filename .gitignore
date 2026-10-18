@@ -113,3 +113,7 @@ temp/
 *.orig
 *.rej
 *~
+
+# AI stuff
+*.claude
+*.omo

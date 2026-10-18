@@ -720,8 +720,7 @@ namespace RimWar.Harmony
             }
         }
 
-        public static void AttackNow_SettlementReinforcement_Postfix(RimWorld.Planet.SettlementUtility __instance,
-                                                                     Caravan caravan,
+        public static void AttackNow_SettlementReinforcement_Postfix(Caravan caravan,
                                                                      RimWorld.Planet.Settlement settlement)
         {
             RimWarSettlementComp rwsc = settlement.GetComponent<RimWarSettlementComp>();

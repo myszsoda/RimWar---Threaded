@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <DamageDef>
+    <defName>RW_CombatInjury</defName>
+    <label>combat injury</label>
+    <workerClass>DamageWorker_AddInjury</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} has died due to combat injuries.</deathMessage>
+    <hediff>RW_CombatInjuryHD</hediff>
+    <hediffSkin>RW_CombatInjuryHD</hediffSkin>
+    <hediffSolid>RW_CombatInjuryHD</hediffSolid>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <impactSoundType>Blunt</impactSoundType>
+    <armorCategory>Blunt</armorCategory>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+	<makesBlood>false</makesBlood>
+  </DamageDef>
+  
+  <HediffDef ParentName="InjuryBase">
+    <defName>RW_CombatInjuryHD</defName>
+    <label>combat injury</label>
+    <labelNoun>a combat wound</labelNoun>
+    <description>A combat wound.</description>
+    <comps>
+      <li Class="HediffCompProperties_TendDuration">
+        <labelTendedWell>bandaged</labelTendedWell>
+        <labelTendedWellInner>sutured</labelTendedWellInner>
+        <labelSolidTendedWell>set</labelSolidTendedWell>
+      </li>
+      <li Class="HediffCompProperties_Infecter">
+        <infectionChance>0.15</infectionChance>
+      </li>
+      <li Class="HediffCompProperties_GetsPermanent">
+        <permanentLabel>old wound</permanentLabel>
+        <instantlyPermanentLabel>permanent combat injury</instantlyPermanentLabel>
+      </li>
+    </comps>
+    <injuryProps>
+      <painPerSeverity>0.0125</painPerSeverity>
+      <averagePainPerSeverityPermanent>0.00625</averagePainPerSeverityPermanent>
+      <bleedRate>0</bleedRate>
+      <canMerge>false</canMerge>
+      <destroyedLabel>Destroyed</destroyedLabel>
+      <destroyedOutLabel>Destroyed</destroyedOutLabel>
+    </injuryProps>
+  </HediffDef>
+
+</Defs>
